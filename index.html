@@ -4,87 +4,90 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>天堂聚合站 - joe666.dpdns.org</title>
-    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+    <script src="https://lf26-cdn.pubg.com/cdn/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://lf26-cdn.pubg.com/cdn/file-saver/2.0.5/FileSaver.min.js"></script>
     <style>
+        :root{--main:#ff00cc;--grad:linear-gradient(45deg,#ff00cc,#9c27b0)}
         *{margin:0;padding:0;box-sizing:border-box}
-        body{font-family:"Microsoft YaHei",Arial;background:linear-gradient(135deg,#1a0933,#2d1b4e);color:#fff;min-height:100vh}
-        .header{background:rgba(20,0,40,0.92);backdrop-filter:blur(15px);position:fixed;top:0;width:100%;z-index:999;padding:15px 20px;box-shadow:0 5px 30px rgba(138,43,226,0.5);text-align:center}
+        body{font-family:Segoe UI,Microsoft YaHei,Arial;background:linear-gradient(135deg,#1a0933,#2d1b4e);color:#fff;min-height:100vh;overflow-x:hidden}
+        .header{position:fixed;top:0;width:100%;background:rgba(20,0,40,0.92);backdrop-filter:blur(15px);z-index:999;padding:15px 20px;text-align:center;box-shadow:0 8px 32px rgba(138,43,226,0.4)}
         .logo{font-size:2.5em;font-weight:bold;background:linear-gradient(90deg,#ff00cc,#00ffcc);-webkit-background-clip:text;color:transparent}
-        .search-bar{max-width:1000px;margin:90px auto 30px;padding:0 20px}
-        .search-box{display:flex;gap:12px;margin-bottom:20px}
+        .search{max-width:1000px;margin:90px auto 20px;padding:0 20px}
+        .bar{display:flex;gap:12px;margin-bottom:20px}
         #kw{flex:1;padding:20px 25px;border:none;border-radius:50px;background:rgba(255,255,255,0.15);color:#fff;font-size:1.3em;outline:none}
-        button{padding:20px 50px;border:none;border-radius:50px;background:linear-gradient(45deg,#ff00cc,#9c27b0);color:#fff;font-size:1.3em;cursor:pointer;box-shadow:0 10px 30px rgba(156,39,176,0.6)}
-        button:hover{transform:translateY(-4px)}
-        .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:20px;padding:0 15px;margin-bottom:100px}
-        .item{position:relative;border-radius:16px;overflow:hidden;background:rgba(0,0,0,0.4);box-shadow:0 10px 30px rgba(0,0,0,0.7);transition:0.4s;cursor:pointer}
+        button{padding:20px 50px;border:none;border-radius:50px;background:var(--grad);color:#fff;font-size:1.3em;cursor:pointer;box-shadow:0 10px 30px rgba(156,39,176,0.6);transition:.3s}
+        button:hover{transform:translateY(-4px);box-shadow:0 20px 40px rgba(156,39,176,0.8)}
+        .btns{text-align:center;margin:20px 0}
+        .btns button{margin:0 8px;padding:12px 30px;background:rgba(255,255,255,0.1);border:1px solid var(--main)}
+        .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:20px;padding:0 15px;min-height:100vh}
+        .item{position:relative;border-radius:16px;overflow:hidden;background:rgba(0,0,0,0.4);box-shadow:0 10px 30px rgba(0,0,0,0.7);transition:.4s;opacity:0;transform:translateY(20px)}
+        .item.show{opacity:1;transform:none}
         .item:hover{transform:translateY(-12px);box-shadow:0 25px 50px rgba(255,0,204,0.5)}
-        .item img{width:100%;height:280px;object-fit:cover}
-        .title{position:absolute;bottom:0;left:0;right:0;padding:20px 15px;background:linear-gradient(transparent,#000000dd);font-size:1em;line-height:1.4}
-        .loading{text-align:center;padding:80px 0;font-size:1.6em;color:#ff8a8a}
-        .spinner{width:70px;height:70px;border:8px solid rgba(255,0,204,0.3);border-top:8px solid #ff00cc;border-radius:50%;animation:s 1s linear infinite;margin:30px auto}
+        .item img{width:100%;height:280px;object-fit:cover;background:#111}
+        .title{position:absolute;bottom:0;left:0;right:0;padding:20px 15px;background:linear-gradient(transparent,#000d);font-size:1em;line-height:1.4}
+        .loading{display:none;text-align:center;padding:80px 0;font-size:1.6em}
+        .spinner{width:70px;height:70px;border:8px solid rgba(255,0,204,0.3);border-top:8px solid var(--main);border-radius:50%;animation:s 1s linear infinite;margin:30px auto}
         @keyframes s{to{transform:rotate(360deg)}}
-
-        /* 在线阅读器 */
         #reader{position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:9999;display:none;overflow:hidden}
         #reader-header{position:fixed;top:0;left:0;right:0;height:60px;background:rgba(0,0,0,0.8);backdrop-filter:blur(10px);z-index:10;display:flex;align-items:center;justify-content:space-between;padding:0 20px}
-        #reader-title{font-size:1.4em;max-width:70%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-        #close-reader{color:#ff00cc;font-size:2em;cursor:pointer}
-        #reader-progress{position:fixed;bottom:0;left:0;width:100%;height:5px;background:#333;z-index:10}
-        #progress-bar{height:100%;background:#ff00cc;width:0;transition:width 0.3s}
-        #reader-content{height:100%;overflow-y:scroll;overflow-x:hidden;padding-top:60px;padding-bottom:50px}
-        #reader-content img{max-width:100%;display:block;margin:10px auto;cursor:pointer;user-select:none}
+        #close-reader{color:var(--main);font-size:2em;cursor:pointer}
+        #progress-bar{height:5px;background:var(--main);width:0;position:fixed;bottom:0;left:0;z-index:10;transition:width .3s}
+        #reader-content{padding:60px 0 50px;overflow-y:scroll;height:100%}
+        #reader-content img{max-width:100%;display:block;margin:0 auto 10px;cursor:zoom-in;user-select:none}
         .page-num{text-align:center;color:#999;margin:10px 0;font-size:0.9em}
+        footer{text-align:center;padding:50px;color:#aaa;font-size:0.9em}
     </style>
 </head>
 <body>
 
-<div class="header">
-    <div class="logo">天堂聚合站</div>
-</div>
+<div class="header"><div class="logo">天堂聚合站</div></div>
 
-<div class="search-bar">
-    <div class="search-box">
-        <input type="text" id="kw" placeholder="输入关键词、作者、标签，直接秒搜全网" autofocus>
-        <button onclick="search()">搜 索</button>
+<div class="search">
+    <div class="bar">
+        <input type="text" id="kw" placeholder="输入关键词、作者、标签，直接秒搜" autofocus>
+        <button onclick="debouncedSearch()">搜索</button>
     </div>
-    <div style="text-align:center">
+    <div class="btns">
         <button onclick="downloadAll()">整部打包下载</button>
-        <button onclick="clearGallery()" style="background:#666">清空</button>
+        <button onclick="clearAll()">清空</button>
     </div>
 </div>
 
-<div class="loading" id="loading" style="display:none">
-    <div class="spinner"></div>
-    <p>正在从最新线路抓取…</p>
-</div>
-
+<div class="loading" id="loading"><div class="spinner"></div><p>正在极速加载…</p></div>
 <div class="grid" id="grid"></div>
+<div id="progress-bar"></div>
 
-<!-- 在线阅读器 -->
 <div id="reader">
     <div id="reader-header">
         <div id="reader-title">加载中…</div>
         <div id="close-reader" onclick="closeReader()">×</div>
     </div>
-    <div id="reader-progress"><div id="progress-bar"></div></div>
     <div id="reader-content"></div>
 </div>
 
-<footer style="text-align:center;padding:50px;color:#aaa">
-    © 2025 天堂聚合站 • 资源搜索与阅读工具
-</footer>
+<footer>© 2025 天堂聚合站 • 极速资源搜索与阅读工具</footer>
 
 <script>
-    let allImages = [];
-    let currentChapterImages = [];
     const PROXY = "https://cors-joe666.deno.dev/?u=";
+    let cache = new Map();
+    let currentImages = [];
+    let observer, debounceTimer;
+
+    // 防抖搜索
+    const debouncedSearch = () => {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(search, 600);
+    };
 
     async function search(){
         const kw = document.getElementById("kw").value.trim() || "最新";
+        if(cache.has(kw)){
+            renderGrid(cache.get(kw));
+            return;
+        }
+
         document.getElementById("loading").style.display = "block";
         document.getElementById("grid").innerHTML = "";
-        allImages = [];
 
         const urls = [
             `https://jmcomic.la/search/photos?search_query=${encodeURIComponent(kw)}`,
@@ -94,9 +97,13 @@
 
         for(let url of urls){
             try{
-                const html = await fetch(PROXY + encodeURIComponent(url)).then(r=>r.text());
-                parseJMComic(html);
-                break;
+                const html = await fetch(PROXY + encodeURIComponent(url), {cache: "force-cache"}).then(r=>r.text());
+                const items = parseJMComic(html);
+                if(items.length > 0){
+                    cache.set(kw, items);
+                    renderGrid(items);
+                    break;
+                }
             }catch(e){}
         }
         document.getElementById("loading").style.display = "none";
@@ -104,106 +111,110 @@
 
     function parseJMComic(html){
         const doc = new DOMParser().parseFromString(html, "text/html");
-        const items = doc.querySelectorAll("a.video-title, .card a, .thumb a");
-
-        items.forEach(a => {
+        const items = [];
+        doc.querySelectorAll("a[href*='album'], a.video-title, .thumb a").forEach(a => {
             const img = a.querySelector("img");
-            const title = a.querySelector("h3, .video-title")?.innerText.trim() || "作品";
+            const title = (a.querySelector("h3, .video-title")?.innerText || "作品").trim().slice(0,30);
             let src = img?.getAttribute("data-original") || img?.src || "";
             if(src && src.startsWith("//")) src = "https:" + src;
+            const href = a.href?.includes("http") ? a.href : "https://jmcomic.la" + a.href;
 
-            if(src && src.includes("/media/photos/")){
-                const div = document.createElement("div");
-                div.className = "item";
-                div.innerHTML = `
-                    <img src="${src}" loading="lazy">
-                    <div class="title">${title}</div>
-                `;
-                div.onclick = () => openReader(a.href || a.closest("a")?.href || "");
-                document.getElementById("grid").appendChild(div);
+            if(src.includes("/media/photos/")){
+                items.push({src, title, href});
             }
         });
+        return items;
     }
 
-    async function openReader(chapterUrl){
-        if(!chapterUrl) return alert("无法打开阅读器");
+    function renderGrid(items){
+        const grid = document.getElementById("grid");
+        const fragment = document.createDocumentFragment();
+
+        items.forEach((item,i) => {
+            const div = document.createElement("div");
+            div.className = "item";
+            div.innerHTML = `
+                <img src="${item.src}" loading="lazy" alt="${item.title}">
+                <div class="title">${item.title}</div>
+            `;
+            div.onclick = () => openReader(item.href);
+            div.style.transitionDelay = `${i*30}ms`;
+            setTimeout(() => div.classList.add("show"), 100);
+            fragment.appendChild(div);
+        });
+        grid.appendChild(fragment);
+    }
+
+    async function openReader(url){
         document.getElementById("reader").style.display = "block";
-        document.getElementById("reader-content").innerHTML = "<div class='loading'>正在加载整部图片…</div>";
-        document.getElementById("reader-title").innerText = "加载中…";
-        currentChapterImages = [];
+        document.getElementById("reader-content").innerHTML = "<div class='loading'>正在加载图片…</div>";
+        currentImages = [];
 
         try{
-            const html = await fetch(PROXY + encodeURIComponent(chapterUrl)).then(r=>r.text());
+            const html = await fetch(PROXY + encodeURIComponent(url)).then(r=>r.text());
             const doc = new DOMParser().parseFromString(html, "text/html");
-            const title = doc.querySelector("h1, .panel-title")?.innerText.trim() || "天堂作品";
-            document.getElementById("reader-title").innerText = title;
+            document.getElementById("reader-title").innerText = doc.querySelector("h1, title")?.innerText.trim() || "阅读中";
 
-            let imgList = [];
-            const scripts = doc.querySelectorAll("script");
-            scripts.forEach(s => {
-                if(s.innerHTML.includes("chapterImages") || s.innerHTML.includes("imgList")){
-                    const match = s.innerHTML.match(/\[(.*?)\]/s);
-                    if(match) imgList = JSON.parse(match[0]);
+            let imgs = [];
+            doc.querySelectorAll("script").forEach(s => {
+                if(s.innerHTML.includes("chapterImages")){
+                    const m = s.innerHTML.match(/\[(.*?)\]/s);
+                    if(m) imgs = JSON.parse(m[0]);
                 }
             });
 
-            if(imgList.length === 0){
-                const imgs = doc.querySelectorAll("#comic-page img, .comic-page img");
-                imgs.forEach(img => {
-                    let src = img.src || img.dataset.src || "";
-                    if(src && src.includes("media")) imgList.push(src);
-                });
+            if(imgs.length === 0){
+                imgs = Array.from(doc.querySelectorAll("#comic-page img, img.lazy")).map(img => 
+                    img.src || img.dataset.src || img.getAttribute("data-original") || ""
+                ).filter(Boolean);
             }
 
-            currentChapterImages = imgList.map(url => url.startsWith("http") ? url : "https://jmcomic.la" + url);
+            currentImages = imgs.map(u => u.startsWith("http") ? u : "https://jmcomic.la" + u);
 
-            const content = document.getElementById("reader-content");
-            content.innerHTML = "";
-            currentChapterImages.forEach((url,i) => {
-                const div = document.createElement("div");
-                div.innerHTML = `<img src="${url}" loading="lazy" onclick="this.requestFullscreen?.()" onload="updateProgress(${i+1})">
-                                 <div class="page-num">${i+1} / ${currentChapterImages.length}</div>`;
-                content.appendChild(div);
+            const container = document.getElementById("reader-content");
+            container.innerHTML = "";
+            currentImages.forEach((src,i) => {
+                const img = document.createElement("img");
+                img.src = src;
+                img.loading = "lazy";
+                img.onclick = () => img.requestFullscreen?.();
+                img.onload = () => document.getElementById("progress-bar").style.width = `${(i+1)/currentImages.length*100}%`;
+                container.appendChild(img);
+                const p = document.createElement("div");
+                p.className = "page-num";
+                p.innerText = `${i+1} / ${currentImages.length}`;
+                container.appendChild(p);
             });
-
-            updateProgress(1);
         }catch(e){
-            document.getElementById("reader-content").innerHTML = "<p style='color:#ff00cc;text-align:center;padding:100px'>加载失败，可尝试刷新或更换关键词</p>";
+            document.getElementById("reader-content").innerHTML = "<p style='text-align:center;padding:100px;color:#ff00cc'>加载失败，可刷新重试</p>";
         }
-    }
-
-    function updateProgress(current){
-        const total = currentChapterImages.length || 1;
-        const percent = (current / total) * 100;
-        document.getElementById("progress-bar").style.width = percent + "%";
     }
 
     function closeReader(){
         document.getElementById("reader").style.display = "none";
-        document.getElementById("reader-content").innerHTML = "";
-        currentChapterImages = [];
+        document.getElementById("progress-bar").style.width = "0";
     }
 
     function downloadAll(){
-        if(currentChapterImages.length > 0){
-            const zip = new JSZip();
-            const folder = zip.folder("天堂合集");
-            currentChapterImages.forEach((url,i) => {
-                fetch(url).then(r=>r.blob()).then(blob=>folder.file(`${i+1}.jpg`, blob));
-            });
-            zip.generateAsync({type:"blob"}).then(content=>saveAs(content, "天堂合集_"+Date.now()+".zip"));
-        }else{
-            alert("请先打开阅读器再打包下载");
-        }
+        if(currentImages.length === 0) return alert("请先打开阅读器");
+        const zip = new JSZip();
+        const folder = zip.folder("天堂合集");
+        currentImages.forEach((url,i) => {
+            fetch(url).then(r=>r.blob()).then(b=>folder.file(`${i+1}.jpg`, b));
+        });
+        zip.generateAsync({type:"blob"}).then(c=>saveAs(c, "天堂合集_"+Date.now()+".zip"));
     }
 
-    function clearGallery(){
+    function clearAll(){
         document.getElementById("grid").innerHTML = "";
-        allImages = [];
+        cache.clear();
     }
 
-    document.getElementById("kw").addEventListener("keypress", e=>{if(e.key==="Enter") search();});
-    document.addEventListener("keydown", e=>{if(document.getElementById("reader").style.display==="block" && e.key==="Escape") closeReader();});
+    document.getElementById("kw").addEventListener("input", debouncedSearch);
+    document.addEventListener("keydown", e => {
+        if(e.key === "Enter") debouncedSearch();
+        if(e.key === "Escape" && document.getElementById("reader").style.display === "block") closeReader();
+    });
 </script>
 </body>
 </html>
