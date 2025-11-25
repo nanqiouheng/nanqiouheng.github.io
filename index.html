@@ -3,59 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>禁漫天堂·私人加强版 - joe666.dpdns.org</title>
+    <title>天堂聚合站 - joe666.dpdns.org</title>
     <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
     <style>
-        /* 和原版禁漫天堂一模一样的深紫毛玻璃风格 */
         *{margin:0;padding:0;box-sizing:border-box}
         body{font-family:"Microsoft YaHei",Arial;background:linear-gradient(135deg,#1a0933,#2d1b4e);color:#fff;min-height:100vh}
-        .header{background:rgba(20,0,40,0.9);backdrop-filter:blur(15px);position:fixed;top:0;width:100%;z-index:999;padding:15px 20px;box-shadow:0 5px 30px rgba(138,43,226,0.5);text-align:center}
+        .header{background:rgba(20,0,40,0.92);backdrop-filter:blur(15px);position:fixed;top:0;width:100%;z-index:999;padding:15px 20px;box-shadow:0 5px 30px rgba(138,43,226,0.5);text-align:center}
         .logo{font-size:2.5em;font-weight:bold;background:linear-gradient(90deg,#ff00cc,#00ffcc);-webkit-background-clip:text;color:transparent}
         .search-bar{max-width:1000px;margin:90px auto 30px;padding:0 20px}
         .search-box{display:flex;gap:12px;margin-bottom:20px}
         #kw{flex:1;padding:20px 25px;border:none;border-radius:50px;background:rgba(255,255,255,0.15);color:#fff;font-size:1.3em;outline:none}
         button{padding:20px 50px;border:none;border-radius:50px;background:linear-gradient(45deg,#ff00cc,#9c27b0);color:#fff;font-size:1.3em;cursor:pointer;box-shadow:0 10px 30px rgba(156,39,176,0.6)}
-        button:hover{transform:translateY(-4px);box-shadow:0 20px 40px rgba(156,39,176,0.8)}
-        .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:20px;padding:0 15px}
+        button:hover{transform:translateY(-4px)}
+        .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:20px;padding:0 15px;margin-bottom:100px}
         .item{position:relative;border-radius:16px;overflow:hidden;background:rgba(0,0,0,0.4);box-shadow:0 10px 30px rgba(0,0,0,0.7);transition:0.4s;cursor:pointer}
         .item:hover{transform:translateY(-12px);box-shadow:0 25px 50px rgba(255,0,204,0.5)}
         .item img{width:100%;height:280px;object-fit:cover}
         .title{position:absolute;bottom:0;left:0;right:0;padding:20px 15px;background:linear-gradient(transparent,#000000dd);font-size:1em;line-height:1.4}
-        .dl{position:absolute;top:12px;right:12px;background:#ff00cc;padding:10px 14px;border-radius:50%;opacity:0;transition:0.3s;font-weight:bold}
-        .item:hover .dl{opacity:1}
         .loading{text-align:center;padding:80px 0;font-size:1.6em;color:#ff8a8a}
         .spinner{width:70px;height:70px;border:8px solid rgba(255,0,204,0.3);border-top:8px solid #ff00cc;border-radius:50%;animation:s 1s linear infinite;margin:30px auto}
         @keyframes s{to{transform:rotate(360deg)}}
+
+        /* 在线阅读器 */
+        #reader{position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:9999;display:none;overflow:hidden}
+        #reader-header{position:fixed;top:0;left:0;right:0;height:60px;background:rgba(0,0,0,0.8);backdrop-filter:blur(10px);z-index:10;display:flex;align-items:center;justify-content:space-between;padding:0 20px}
+        #reader-title{font-size:1.4em;max-width:70%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+        #close-reader{color:#ff00cc;font-size:2em;cursor:pointer}
+        #reader-progress{position:fixed;bottom:0;left:0;width:100%;height:5px;background:#333;z-index:10}
+        #progress-bar{height:100%;background:#ff00cc;width:0;transition:width 0.3s}
+        #reader-content{height:100%;overflow-y:scroll;overflow-x:hidden;padding-top:60px;padding-bottom:50px}
+        #reader-content img{max-width:100%;display:block;margin:10px auto;cursor:pointer;user-select:none}
+        .page-num{text-align:center;color:#999;margin:10px 0;font-size:0.9em}
     </style>
 </head>
 <body>
 
 <div class="header">
-    <div class="logo">禁漫天堂·私人加强版</div>
+    <div class="logo">天堂聚合站</div>
 </div>
 
 <div class="search-bar">
     <div class="search-box">
-        <input type="text" id="kw" placeholder="输入本子关键词、作者、标签或番号，直接搜全站" autofocus>
+        <input type="text" id="kw" placeholder="输入关键词、作者、标签，直接秒搜全网" autofocus>
         <button onclick="search()">搜 索</button>
     </div>
     <div style="text-align:center">
-        <button onclick="downloadAll()">打包下载整部 (ZIP)</button>
+        <button onclick="downloadAll()">整部打包下载</button>
         <button onclick="clearGallery()" style="background:#666">清空</button>
     </div>
 </div>
 
 <div class="loading" id="loading" style="display:none">
     <div class="spinner"></div>
-    <p>正在从禁漫天堂最新镜像疯狂抓取…（已换超稳线路，基本3-8秒出结果）</p>
+    <p>正在从最新线路抓取…</p>
 </div>
 
 <div class="grid" id="grid"></div>
 
+<!-- 在线阅读器 -->
+<div id="reader">
+    <div id="reader-header">
+        <div id="reader-title">加载中…</div>
+        <div id="close-reader" onclick="closeReader()">×</div>
+    </div>
+    <div id="reader-progress"><div id="progress-bar"></div></div>
+    <div id="reader-content"></div>
+</div>
+
+<footer style="text-align:center;padding:50px;color:#aaa">
+    © 2025 天堂聚合站 • 资源搜索与阅读工具
+</footer>
+
 <script>
     let allImages = [];
-    // 2025年11月实测最稳线路（我专为你部署的防封代理）
+    let currentChapterImages = [];
     const PROXY = "https://cors-joe666.deno.dev/?u=";
 
     async function search(){
@@ -64,7 +86,6 @@
         document.getElementById("grid").innerHTML = "";
         allImages = [];
 
-        // 优先用禁漫天堂最新最稳镜像（2025年11月实测）
         const urls = [
             `https://jmcomic.la/search/photos?search_query=${encodeURIComponent(kw)}`,
             `https://jmcomic.me/search/photos?search_query=${encodeURIComponent(kw)}`,
@@ -75,75 +96,105 @@
             try{
                 const html = await fetch(PROXY + encodeURIComponent(url)).then(r=>r.text());
                 parseJMComic(html);
-                break; // 只要有一个成功就跳出
-            }catch(e){
-                console.log("尝试下一个镜像…");
-            }
+                break;
+            }catch(e){}
         }
         document.getElementById("loading").style.display = "none";
     }
 
     function parseJMComic(html){
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(html, "text/html");
-        const imgs = [...doc.querySelectorAll("img[data-original], img.lazy")];
+        const doc = new DOMParser().parseFromString(html, "text/html");
+        const items = doc.querySelectorAll("a.video-title, .card a, .thumb a");
 
+        items.forEach(a => {
+            const img = a.querySelector("img");
+            const title = a.querySelector("h3, .video-title")?.innerText.trim() || "作品";
+            let src = img?.getAttribute("data-original") || img?.src || "";
+            if(src && src.startsWith("//")) src = "https:" + src;
 
-        imgs.forEach(img=>{
-            let src = img.getAttribute("data-original") || img.src;
-            if(!src || src.includes("logo")) return;
-            if(src.startsWith("//")) src = "https:" + src;
-            if(src.includes("/media/photos/")){
-                // 转换为大图
-                src = src.replace(/\/media\/photos\/\d+\//, "/media/photos/resize/");
-                src = src.replace(/\.jpg.*$/, ".jpg");
-            }
-
-            if(!allImages.includes(src)){
-                allImages.push(src);
-
+            if(src && src.includes("/media/photos/")){
                 const div = document.createElement("div");
                 div.className = "item";
                 div.innerHTML = `
                     <img src="${src}" loading="lazy">
-                    <div class="dl" onclick="event.stopPropagation();downloadSingle('${src}')">↓</div>
-                    <div class="title">点击查看大图 · 长按或↓下载</div>
+                    <div class="title">${title}</div>
                 `;
-                div.onclick = () => window.open(src);
+                div.onclick = () => openReader(a.href || a.closest("a")?.href || "");
                 document.getElementById("grid").appendChild(div);
             }
         });
     }
 
-    function downloadSingle(url){
-        fetch(url).then(r=>r.blob()).then(blob=>{
-            const a = document.createElement("a");
-            a.href = URL.createObjectURL(blob);
-            a.download = url.split("/").pop().split("?")[0] || "hentai.jpg";
-            a.click();
-        });
+    async function openReader(chapterUrl){
+        if(!chapterUrl) return alert("无法打开阅读器");
+        document.getElementById("reader").style.display = "block";
+        document.getElementById("reader-content").innerHTML = "<div class='loading'>正在加载整部图片…</div>";
+        document.getElementById("reader-title").innerText = "加载中…";
+        currentChapterImages = [];
+
+        try{
+            const html = await fetch(PROXY + encodeURIComponent(chapterUrl)).then(r=>r.text());
+            const doc = new DOMParser().parseFromString(html, "text/html");
+            const title = doc.querySelector("h1, .panel-title")?.innerText.trim() || "天堂作品";
+            document.getElementById("reader-title").innerText = title;
+
+            let imgList = [];
+            const scripts = doc.querySelectorAll("script");
+            scripts.forEach(s => {
+                if(s.innerHTML.includes("chapterImages") || s.innerHTML.includes("imgList")){
+                    const match = s.innerHTML.match(/\[(.*?)\]/s);
+                    if(match) imgList = JSON.parse(match[0]);
+                }
+            });
+
+            if(imgList.length === 0){
+                const imgs = doc.querySelectorAll("#comic-page img, .comic-page img");
+                imgs.forEach(img => {
+                    let src = img.src || img.dataset.src || "";
+                    if(src && src.includes("media")) imgList.push(src);
+                });
+            }
+
+            currentChapterImages = imgList.map(url => url.startsWith("http") ? url : "https://jmcomic.la" + url);
+
+            const content = document.getElementById("reader-content");
+            content.innerHTML = "";
+            currentChapterImages.forEach((url,i) => {
+                const div = document.createElement("div");
+                div.innerHTML = `<img src="${url}" loading="lazy" onclick="this.requestFullscreen?.()" onload="updateProgress(${i+1})">
+                                 <div class="page-num">${i+1} / ${currentChapterImages.length}</div>`;
+                content.appendChild(div);
+            });
+
+            updateProgress(1);
+        }catch(e){
+            document.getElementById("reader-content").innerHTML = "<p style='color:#ff00cc;text-align:center;padding:100px'>加载失败，可尝试刷新或更换关键词</p>";
+        }
     }
 
-    async function downloadAll(){
-        if(allImages.length===0) return alert("还没有图片哦~");
-        document.getElementById("loading").style.display = "block";
-        document.getElementById("loading").innerHTML = "<div class='spinner'></div><p>正在打包ZIP，大概30秒左右…</p>";
+    function updateProgress(current){
+        const total = currentChapterImages.length || 1;
+        const percent = (current / total) * 100;
+        document.getElementById("progress-bar").style.width = percent + "%";
+    }
 
-        const zip = new JSZip();
-        const folder = zip.folder("禁漫天堂_"+new Date().getTime());
+    function closeReader(){
+        document.getElementById("reader").style.display = "none";
+        document.getElementById("reader-content").innerHTML = "";
+        currentChapterImages = [];
+    }
 
-        for(let i=0;i<allImages.length;i++){
-            try{
-                const res = await fetch(allImages[i]);
-                const blob = await res.blob();
-                folder.file(`${i+1}.jpg`, blob);
-            }catch(e){}
+    function downloadAll(){
+        if(currentChapterImages.length > 0){
+            const zip = new JSZip();
+            const folder = zip.folder("天堂合集");
+            currentChapterImages.forEach((url,i) => {
+                fetch(url).then(r=>r.blob()).then(blob=>folder.file(`${i+1}.jpg`, blob));
+            });
+            zip.generateAsync({type:"blob"}).then(content=>saveAs(content, "天堂合集_"+Date.now()+".zip"));
+        }else{
+            alert("请先打开阅读器再打包下载");
         }
-
-        zip.generateAsync({type:"blob"}).then(content=>{
-            saveAs(content, "禁漫天堂合集_"+new Date().getTime()+".zip");
-            document.getElementById("loading").style.display = "none";
-        });
     }
 
     function clearGallery(){
@@ -151,8 +202,8 @@
         allImages = [];
     }
 
-    // 回车搜索
     document.getElementById("kw").addEventListener("keypress", e=>{if(e.key==="Enter") search();});
+    document.addEventListener("keydown", e=>{if(document.getElementById("reader").style.display==="block" && e.key==="Escape") closeReader();});
 </script>
 </body>
 </html>
