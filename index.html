@@ -3,114 +3,122 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>全免费资源站 - joe666.dpdns.org</title>
+    <title>H漫天堂聚合站 - joe666.dpdns.org</title>
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
-        body{font-family:'Segoe UI',Arial,sans-serif;background:#0f0c29;color:#fff;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:20px;overflow-x:hidden}
+        body{font-family:Segoe UI,Arial,sans-serif;background:#120023;color:#fff;min-height:100vh;overflow-x:hidden}
         canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1}
-        .card{max-width:900px;width:100%;background:rgba(255,255,255,0.12);border-radius:25px;padding:35px;margin:20px 0;backdrop-filter:blur(20px);box-shadow:0 25px 50px rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.1)}
-        h1{font-size:3.8em;text-align:center;margin:20px 0;background:linear-gradient(90deg,#ff8a00,#e94057,#1bffff);-webkit-background-clip:text;color:transparent;animation:g 8s infinite}
-        @keyframes g{0%{filter:hue-rotate(0deg)}100%{filter:hue-rotate(360deg)}}
-        .switch label{font-size:1.3em;color:#ff4757;cursor:pointer}
-        input,select,button{width:100%;padding:18px;margin:12px 0;border:none;border-radius:50px;font-size:1.2em;background:rgba(255,255,255,0.1);color:#fff;border:1px solid rgba(255,255,255,0.2)}
-        button{background:linear-gradient(45deg,#ff4757,#ff6b6b);cursor:pointer;transition:0.4s;animation:p 2s infinite;box-shadow:0 10px 30px rgba(255,71,87,0.4)}
-        @keyframes p{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
-        button:hover{transform:scale(1.1);box-shadow:0 15px 40px rgba(255,71,87,0.6)}
-        button:disabled{background:#666;animation:none;cursor:not-allowed}
-        #result{margin-top:20px;padding:20px;background:rgba(0,0,0,0.4);border-radius:20px;max-height:600px;overflow-y:auto;display:none;font-size:1.1em}
-        .item{margin:15px 0;padding:15px;background:rgba(255,255,255,0.05);border-radius:15px;opacity:0;animation:fadeIn 0.5s forwards;transition:0.3s}
-        @keyframes fadeIn{to{opacity:1;transform:translateY(0)}}
-        .item:hover{transform:translateY(-5px);box-shadow:0 10px 20px rgba(0,0,0,0.3)}
-        .adult{color:#ff3742;font-weight:bold;font-size:1.4em}
-        .preview-img{max-width:200px;height:auto;border-radius:10px}
-        .preview-video{width:100%;max-width:400px;height:200px;border-radius:10px}
-        #loader{display:none;text-align:center;margin:20px 0}
-        .spinner{width:50px;height:50px;border:5px solid rgba(255,255,255,0.3);border-top:5px solid #ff4757;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto}
-        @keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
-        footer{margin-top:50px;opacity:0.7;font-size:0.9em}
-        @media (max-width:768px){h1{font-size:2.5em}button{padding:15px}}
+        .container{max-width:1100px;margin:0 auto;padding:20px;text-align:center}
+        h1{font-size:3.8em;background:linear-gradient(90deg,#ff006e,#833ab4,#fd1d1d,#fcb045);-webkit-background-clip:text;color:transparent;animation:hue 10s infinite}
+        @keyframes hue{0%{filter:hue-rotate(0deg)}100%{filter:hue-rotate(360deg)}}
+        .sites{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:15px;margin:30px 0}
+        .site{padding:20px;background:rgba(255,255,255,0.08);border-radius:15px;cursor:pointer;transition:0.4s;border:1px solid rgba(255,255,255,0.1);backdrop-filter:blur(10px)}
+        .site:hover{transform:translateY(-10px);box-shadow:0 20px 40px rgba(255,0,110,0.4);background:rgba(255,20,120,0.15)}
+        .site h3{color:#ff6bc9}
+        .search{margin:30px 0}
+        input,button{width:100%;padding:18px;border:none;border-radius:50px;font-size:1.2em;margin:10px 0}
+        input{background:rgba(255,255,255,0.1);color:#fff;border:1px solid rgba(255,255,255,0.2)}
+        button{background:linear-gradient(45deg,#ff006e,#ff8a00);cursor:pointer;animation:pulse 2s infinite}
+        @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+        #gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:15px;margin-top:30px}
+        .pic{position:relative;overflow:hidden;border-radius:12px;cursor:pointer}
+        .pic img{width:100%;height:100%;object-fit:cover;transition:0.5s}
+        .pic:hover img{transform:scale(1.15)}
+        .loading{margin:40px 0;font-size:1.3em}
+        .spinner{width:50px;height:50px;border:6px solid rgba(255,255,255,0.3);border-top:6px solid #ff006e;border-radius:50%;animation:spin 1s linear infinite;margin:20px auto}
+        @keyframes spin{to{transform:rotate(360deg)}}
+        footer{margin-top:60px;opacity:0.7}
     </style>
 </head>
 <body>
-    <canvas id="particles"></canvas>
-    
+    <canvas id="bg"></canvas>
     <div class="container">
-        <h1>全免费资源站 2025</h1>
-        <p style="font-size:1.4em">漫画 · 动漫 · 电影 · 18+一键切换 · 在线预览</p>
+        <h1>H漫天堂聚合站 2025</h1>
+        <p style="font-size:1.5em;margin:15px;color:#ff8a8a">HentaiFox · Nhentai · E-Hentai · Hitomi · 禁漫天堂 一键全收录</p>
 
-        <div class="card">
-            <div class="switch">
-                <label><input type="checkbox" id="adult"> 开启18+模式（成人内容）</label>
-            </div>
-            <select id="type">
-                <option value="manga">漫画 (Manhuagui/HentaiFox)</option>
-                <option value="anime">动漫 (Aniwatch/Hanime.tv)</option>
-                <option value="movies">电影 (1337x/Pirate Bay)</option>
-            </select>
-            <input type="text" id="keyword" placeholder="输入关键词（如 海贼王 / Naruto / Avengers）" value="海贼王">
-            <button id="searchBtn" onclick="searchMedia()">开始搜索</button>
+        <div class="sites">
+            <div class="site" onclick="loadSite('hentaifox')"><h3>HentaiFox</h3><p>高清无广告</p></div>
+            <div class="site" onclick="loadSite('nhentai')"><h3>Nhentai</h3><p>标签最强</p></div>
+            <div class="site" onclick="loadSite('ehentai')"><h3>E-Hentai</h3><p>海量资源</p></div>
+            <div class="site" onclick="loadSite('hitomi')"><h3>Hitomi.la</h3><p>无码最快</p></div>
+            <div class="site" onclick="loadSite('jmcomic')"><h3>禁漫天堂</h3><p>中文最全</p></div>
         </div>
 
-        <div id="loader"><div class="spinner"></div><p>疯狂爬取中...（10-30秒）</p></div>
+        <div class="search">
+            <input type="text" id="kw" placeholder="直接输入本子关键词或番号（如 500500 / parodies:original）" value="">
+            <button onclick="searchAll()">全局搜索</button>
+        </div>
 
-        <div id="result"></div>
+        <div id="loading" class="loading" style="display:none">
+            <div class="spinner"></div>
+            <p>正在从五个站点疯狂爬取中…（10-25秒）</p>
+        </div>
+
+        <div id="gallery"></div>
     </div>
 
-    <footer>© 2025 joe666.dpdns.org • 基于免费资源，安全无限使用</footer>
+    <footer>© 2025 joe666.dpdns.org • 全球最强免费H漫聚合站 • 仅限18岁以上</footer>
 
     <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
     <script>
-        particlesJS("particles", {particles:{number:{value:100},color:{value:"#ffffff"},size:{value:3},line_linked:{enable:true,distance:150,color:"#ffffff",opacity:0.4},move:{enable:true,speed:2}},interactivity:{events:{onhover:{enable:true,mode:"repulse"}}}});
+        particlesJS("bg",{particles:{number:{value:80},color:{value:"#ff006e"},size:{value:4},opacity:{value:0.5,random:true},line_linked:{enable:true,distance:150,color:"#ff006e",opacity:0.3},move:{enable:true,speed:3}},interactivity:{events:{onhover:{enable:true,mode:"repulse"}}}});
 
-        async function searchMedia() {
-            const adult = document.getElementById("adult").checked;
-            const type = document.getElementById("type").value;
-            const keyword = document.getElementById("keyword").value.trim();
-            if (!keyword) return alert("请输入关键词！");
+        const sites = {
+            hentaifox: "https://hentaifox.com",
+            nhentai: "https://nhentai.net",
+            ehentai: "https://e-hentai.org",
+            hitomi: "https://hitomi.la",
+            jmcomic: "https://jmcomic-zzz.one"
+        };
 
-            const btn = document.getElementById("searchBtn");
-            const loader = document.getElementById("loader");
-            const result = document.getElementById("result");
-            btn.disabled = true;
-            btn.textContent = "搜索中...";
-            loader.style.display = "block";
-            result.style.display = "none";
-
-            try {
-                // 用 Netlify 函数路径（部署后自动 /api/search）
-                const response = await fetch("/.netlify/functions/search", {
-                    method: "POST",
-                    headers: {"Content-Type":"application/json"},
-                    body: JSON.stringify({keyword, type, adult})
-                });
-                const data = await response.json();
-
-                loader.style.display = "none";
-                if (data.results && data.results.length > 0) {
-                    let html = `<h3 class="adult">找到 ${data.results.length} 个资源（${adult ? '18+模式' : '普通模式'}）：</h3><div style="display:grid;gap:15px;">`;
-                    data.results.forEach((r, i) => {
-                        html += `<div class="item" style="animation-delay:${i * 0.1}s"><strong>${r.title}</strong><br>`;
-                        if (r.preview && type === 'manga') html += `<img src="${r.preview}" alt="预览" class="preview-img" onerror="this.style.display='none'"><br>`;
-                        if (r.preview && type === 'anime') html += `<video src="${r.preview}" controls class="preview-video" onerror="this.style.display='none'"></video><br>`;
-                        if (r.magnet) html += `<a href="${r.magnet}" target="_blank" style="color:#1bffff">Magnet下载</a><br>`;
-                        if (r.download) html += `<a href="${r.download}" target="_blank" style="color:#4ecdc4">直接播放/下载</a>`;
-                        html += `</div>`;
-                    });
-                    result.innerHTML = html + "</div>";
-                } else {
-                    result.innerHTML = "<p>暂无结果，换个关键词试试？（站点可能限速）</p>";
-                }
-            } catch (error) {
-                loader.style.display = "none";
-                result.innerHTML = `<p style="color:#ff3742">搜索出错：${error.message}（检查网络或VPN）</p>`;
-            } finally {
-                result.style.display = "block";
-                btn.disabled = false;
-                btn.textContent = "开始搜索";
-            }
+        async function loadSite(name){
+            document.getElementById("loading").style.display = "block";
+            document.getElementById("gallery").innerHTML = "";
+            const url = sites[name] + "/?page=1";
+            const res = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`);
+            const html = await res.text();
+            showGallery(html, name);
         }
 
-        document.getElementById("keyword").addEventListener("keypress", (e) => { if (e.key === "Enter") searchMedia(); });
+        async function searchAll(){
+            const kw = document.getElementById("kw").value.trim();
+            if(!kw) return alert("请输入关键词或番号");
+            document.getElementById("loading").style.display = "block";
+            document.getElementById("gallery").innerHTML = "";
+            const promises = Object.keys(sites).map(async site => {
+                const url = site === "nhentai" ? `${sites[site]}/search/?q=${kw}` :
+                           site === "jmcomic" ? `${sites[site]}/search/photos?search_query=${kw}` :
+                           `${sites[site]}/?s=${kw}`;
+                try{
+                    const res = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`);
+                    const html = await res.text();
+                    showGallery(html, site);
+                }catch(e){}
+            });
+            await Promise.all(promises);
+            document.getElementById("loading").style.display = "none";
+        }
+
+        function showGallery(html, source){
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, "text/html");
+            let imgs = [];
+
+            if(source.includes("hentaifox")) imgs = [...doc.querySelectorAll(".gallery_thumb")].map(x=>x.src.replace("t.","."));
+            if(source.includes("nhentai")) imgs = [...doc.querySelectorAll(".gallery a img")].map(x=>x.getAttribute("data-src") || x.src).map(x=>x.replace("/thumb/","/galleries/"+x.match(/galleries\/(\d+)\//)[1]+"/1."));
+            if(source.includes("e-hentai")) imgs = [...doc.querySelectorAll(".gl1t img, .it5 a img")].map(x=>x.src || x.getAttribute("data-src"));
+            if(source.includes("hitomi")) imgs = [...doc.querySelectorAll(".dj img")].map(x=>x.src.replace("//tn.","//a."));
+            if(source.includes("jmcomic")) imgs = [...doc.querySelectorAll(".video-title+img, .wp-manga-cover img")].map(x=>x.src || x.getAttribute("data-original") || x.getAttribute("data-src"));
+
+            imgs.slice(0,30).forEach(src=>{
+                if(!src) return;
+                const div = document.createElement("div");
+                div.className = "pic";
+                div.innerHTML = `<img src="${src}" loading="lazy" onclick="window.open('${src}')">`;
+                document.getElementById("gallery").appendChild(div);
+            });
+            document.getElementById("loading").style.display = "none";
+        }
     </script>
 </body>
 </html>
