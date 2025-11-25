@@ -3,122 +3,159 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>H漫天堂聚合站 - joe666.dpdns.org</title>
+    <title>禁漫天堂聚合站 - joe666.dpdns.org</title>
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
-        body{font-family:Segoe UI,Arial,sans-serif;background:#120023;color:#fff;min-height:100vh;overflow-x:hidden}
-        canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1}
-        .container{max-width:1100px;margin:0 auto;padding:20px;text-align:center}
-        h1{font-size:3.8em;background:linear-gradient(90deg,#ff006e,#833ab4,#fd1d1d,#fcb045);-webkit-background-clip:text;color:transparent;animation:hue 10s infinite}
-        @keyframes hue{0%{filter:hue-rotate(0deg)}100%{filter:hue-rotate(360deg)}}
-        .sites{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:15px;margin:30px 0}
-        .site{padding:20px;background:rgba(255,255,255,0.08);border-radius:15px;cursor:pointer;transition:0.4s;border:1px solid rgba(255,255,255,0.1);backdrop-filter:blur(10px)}
-        .site:hover{transform:translateY(-10px);box-shadow:0 20px 40px rgba(255,0,110,0.4);background:rgba(255,20,120,0.15)}
-        .site h3{color:#ff6bc9}
-        .search{margin:30px 0}
-        input,button{width:100%;padding:18px;border:none;border-radius:50px;font-size:1.2em;margin:10px 0}
-        input{background:rgba(255,255,255,0.1);color:#fff;border:1px solid rgba(255,255,255,0.2)}
-        button{background:linear-gradient(45deg,#ff006e,#ff8a00);cursor:pointer;animation:pulse 2s infinite}
-        @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
-        #gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:15px;margin-top:30px}
-        .pic{position:relative;overflow:hidden;border-radius:12px;cursor:pointer}
-        .pic img{width:100%;height:100%;object-fit:cover;transition:0.5s}
-        .pic:hover img{transform:scale(1.15)}
-        .loading{margin:40px 0;font-size:1.3em}
-        .spinner{width:50px;height:50px;border:6px solid rgba(255,255,255,0.3);border-top:6px solid #ff006e;border-radius:50%;animation:spin 1s linear infinite;margin:20px auto}
-        @keyframes spin{to{transform:rotate(360deg)}}
-        footer{margin-top:60px;opacity:0.7}
+        body{font-family:"Microsoft YaHei",Arial;background:linear-gradient(135deg,#1a0933,#2d1b4e);color:#fff;min-height:100vh}
+        .header{background:rgba(20,0,40,0.85);backdrop-filter:blur(15px);position:fixed;top:0;width:100%;z-index:999;padding:15px 20px;box-shadow:0 5px 20px rgba(138,43,226,0.4)}
+        .logo{font-size:2.2em;font-weight:bold;background:linear-gradient(90deg,#ff00cc,#833ab4,#00ffcc);background-clip:text;-webkit-background-clip:text;color:transparent}
+        .search-bar{max-width:900px;margin:80px auto 20px;padding:0 20px}
+        .search-box{display:flex;gap:10px;margin-bottom:20px}
+        #kw{flex:1;padding:18px 25px;border:none;border-radius:50px;background:rgba(255,255,255,0.15);color:#fff;font-size:1.2em;outline:none;border:2px solid transparent;transition:0.3s}
+        #kw:focus{border:2px solid #ff00cc}
+        button{padding:18px 40px;border:none;border-radius:50px;background:linear-gradient(45deg,#ff00cc,#9c27b0);color:#fff;font-size:1.2em;cursor:pointer;box-shadow:0 8px 25px rgba(156,39,176,0.5);transition:0.3s}
+        button:hover{transform:translateY(-3px);box-shadow:0 15px 35px rgba(156,39,176,0.7)}
+        .controls{text-align:center;margin:20px 0}
+        .controls button{margin:0 10px;padding:12px 30px;border-radius:30px;background:rgba(255,255,255,0.1);border:1px solid #ff00cc}
+        .container{max-width:1400px;margin:0 auto;padding:0 15px}
+        .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:18px;margin-top:20px}
+        .item{position:relative;border-radius:15px;overflow:hidden;background:rgba(0,0,0,0.3);box-shadow:0 8px 25px rgba(0,0,0,0.6);transition:0.3s;cursor:pointer}
+        .item:hover{transform:translateY(-10px);box-shadow:0 20px 40px rgba(255,0,204,0.4)}
+        .item img{width:100%;height:260px;object-fit:cover;transition:0.5s}
+        .item:hover img{transform:scale(1.15)}
+        .title{position:absolute;bottom:0;left:0;right:0;padding:15px;background:linear-gradient(transparent,#000);font-size:0.95em;line-height:1.4}
+        .dl{position:absolute;top:10px;right:10px;background:#ff00cc;padding:8px 12px;border-radius:50%;opacity:0;transition:0.3s;font-weight:bold}
+        .item:hover .dl{opacity:1}
+        .loading{text-align:center;padding:60px 0;font-size:1.5em}
+        .spinner{width:60px;height:60px;border:6px solid rgba(255,0,204,0.3);border-top:6px solid #ff00cc;border-radius:50%;animation:s 1s linear infinite;margin:20px auto}
+        @keyframes s{to{transform:rotate(360deg)}}
+        footer{text-align:center;padding:50px 20px;opacity:0.7;font-size:0.9em}
     </style>
 </head>
 <body>
-    <canvas id="bg"></canvas>
-    <div class="container">
-        <h1>H漫天堂聚合站 2025</h1>
-        <p style="font-size:1.5em;margin:15px;color:#ff8a8a">HentaiFox · Nhentai · E-Hentai · Hitomi · 禁漫天堂 一键全收录</p>
 
-        <div class="sites">
-            <div class="site" onclick="loadSite('hentaifox')"><h3>HentaiFox</h3><p>高清无广告</p></div>
-            <div class="site" onclick="loadSite('nhentai')"><h3>Nhentai</h3><p>标签最强</p></div>
-            <div class="site" onclick="loadSite('ehentai')"><h3>E-Hentai</h3><p>海量资源</p></div>
-            <div class="site" onclick="loadSite('hitomi')"><h3>Hitomi.la</h3><p>无码最快</p></div>
-            <div class="site" onclick="loadSite('jmcomic')"><h3>禁漫天堂</h3><p>中文最全</p></div>
-        </div>
+<div class="header">
+    <div class="logo">H漫天堂聚合站</div>
+</div>
 
-        <div class="search">
-            <input type="text" id="kw" placeholder="直接输入本子关键词或番号（如 500500 / parodies:original）" value="">
-            <button onclick="searchAll()">全局搜索</button>
-        </div>
-
-        <div id="loading" class="loading" style="display:none">
-            <div class="spinner"></div>
-            <p>正在从五个站点疯狂爬取中…（10-25秒）</p>
-        </div>
-
-        <div id="gallery"></div>
+<div class="search-bar">
+    <div class="search-box">
+        <input type="text" id="kw" placeholder="输入本子名称、作者、标签或番号（如 500500 / full color / 巨乳）" autofocus>
+        <button onclick="search()">搜 索</button>
     </div>
+    <div class="controls">
+        <button onclick="downloadAll()">打包下载整部 (ZIP)</button>
+        <button onclick="clearGallery()">清空画廊</button>
+    </div>
+</div>
 
-    <footer>© 2025 joe666.dpdns.org • 全球最强免费H漫聚合站 • 仅限18岁以上</footer>
+<div class="container">
+    <div id="loading" class="loading" style="display:none">
+        <div class="spinner"></div>
+        <p>正在从禁漫天堂、HentaiFox、Nhentai、E-Hentai、Hitomi 五大站点疯狂抓取中…</p>
+    </div>
+    <div id="grid" class="grid"></div>
+</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
-    <script>
-        particlesJS("bg",{particles:{number:{value:80},color:{value:"#ff006e"},size:{value:4},opacity:{value:0.5,random:true},line_linked:{enable:true,distance:150,color:"#ff006e",opacity:0.3},move:{enable:true,speed:3}},interactivity:{events:{onhover:{enable:true,mode:"repulse"}}}});
+<footer>© 2025 joe666.dpdns.org • 全球最强禁漫天堂聚合站 • 仅限18岁以上使用</footer>
 
-        const sites = {
-            hentaifox: "https://hentaifox.com",
-            nhentai: "https://nhentai.net",
-            ehentai: "https://e-hentai.org",
-            hitomi: "https://hitomi.la",
-            jmcomic: "https://jmcomic-zzz.one"
-        };
+<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+<script>
+    particlesJS("body",{particles:{number:{value:60},color:{value:"#ff00cc"},size:{value:3},opacity:{value:0.4,random:true},line_linked:{enable:true,distance:180,color:"#ff00cc",opacity:0.2,width:1},move:{enable:true,speed:2}},interactivity:{events:{onhover:{enable:true,mode:"repulse"}}}});
 
-        async function loadSite(name){
-            document.getElementById("loading").style.display = "block";
-            document.getElementById("gallery").innerHTML = "";
-            const url = sites[name] + "/?page=1";
-            const res = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`);
+    let allImages = [];
+
+    async function search(){
+        const kw = document.getElementById("kw").value.trim();
+        if(!kw) return alert("请输入关键词");
+        document.getElementById("loading").style.display = "block";
+        document.getElementById("grid").innerHTML = "";
+        allImages = [];
+
+        const sites = [
+            "https://jmcomic-zzz.one/search/photos?search_query="+kw,
+            "https://hentaifox.com/search/?q="+kw,
+            "https://nhentai.net/search/?q="+kw,
+            "https://e-hentai.org/?f_search="+kw,
+            "https://hitomi.la/search.html? "+kw
+        ];
+
+        await Promise.all(sites.map(url => fetchImages(url)));
+        document.getElementById("loading").style.display = "none";
+    }
+
+    async function fetchImages(url){
+        try{
+            const res = await fetch("https://api.allorigins.win/raw?url="+encodeURIComponent(url));
             const html = await res.text();
-            showGallery(html, name);
-        }
+            const doc = new DOMParser().parseFromString(html, "text/html");
 
-        async function searchAll(){
-            const kw = document.getElementById("kw").value.trim();
-            if(!kw) return alert("请输入关键词或番号");
-            document.getElementById("loading").style.display = "block";
-            document.getElementById("gallery").innerHTML = "";
-            const promises = Object.keys(sites).map(async site => {
-                const url = site === "nhentai" ? `${sites[site]}/search/?q=${kw}` :
-                           site === "jmcomic" ? `${sites[site]}/search/photos?search_query=${kw}` :
-                           `${sites[site]}/?s=${kw}`;
-                try{
-                    const res = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`);
-                    const html = await res.text();
-                    showGallery(html, site);
-                }catch(e){}
+            // 通用抓图逻辑（适配所有站点）
+            const imgs = [...doc.querySelectorAll("img")].map(img => {
+                let src = img.src || img.dataset.src || img.dataset.original || img.getAttribute("data-lazy-src");
+                if(!src) return null;
+                if(src.includes("thumb") || src.includes("t.")) src = src.replace(/t\.|thumb|\.t\./g, ".");
+                if(src.includes("//tn.")) src = src.replace("//tn.", "//a.");
+                return src.includes("http") ? src : null;
+            }).filter(Boolean);
+
+            imgs.slice(0,50).forEach(src => {
+                if(!allImages.includes(src)){
+                    allImages.push(src);
+                    const div = document.createElement("div");
+                    div.className = "item";
+                    div.innerHTML = `
+                        <img src="${src}" loading="lazy">
+                        <div class="dl" onclick="downloadSingle('${src}')">↓</div>
+                        <div class="title">点击查看大图 · 右键或↓下载</div>
+                    `;
+                    div.onclick = () => window.open(src);
+                    document.getElementById("grid").appendChild(div);
+                }
             });
-            await Promise.all(promises);
-            document.getElementById("loading").style.display = "none";
+        }catch(e){}
+    }
+
+    function downloadSingle(url){
+        fetch(url).then(r=>r.blob()).then(blob=>{
+            const a = document.createElement("a");
+            a.href = URL.createObjectURL(blob);
+            a.download = url.split("/").pop().split("?")[0] || "hentai.jpg";
+            a.click();
+        });
+    }
+
+    async function downloadAll(){
+        if(allImages.length===0) return alert("画廊为空！");
+        document.getElementById("loading").innerHTML = "<div class='spinner'></div><p>正在打包成ZIP，请耐心等待…</p>";
+        document.getElementById("loading").style.display = "block";
+
+        const zip = new JSZip();
+        const folder = zip.folder("H漫合集_"+new Date().getTime());
+
+        for(let i=0;i<allImages.length;i++){
+            try{
+                const res = await fetch(allImages[i]);
+                const blob = await res.blob();
+                folder.file(`image_${i+1}.jpg`, blob);
+            }catch(e){}
         }
 
-        function showGallery(html, source){
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(html, "text/html");
-            let imgs = [];
-
-            if(source.includes("hentaifox")) imgs = [...doc.querySelectorAll(".gallery_thumb")].map(x=>x.src.replace("t.","."));
-            if(source.includes("nhentai")) imgs = [...doc.querySelectorAll(".gallery a img")].map(x=>x.getAttribute("data-src") || x.src).map(x=>x.replace("/thumb/","/galleries/"+x.match(/galleries\/(\d+)\//)[1]+"/1."));
-            if(source.includes("e-hentai")) imgs = [...doc.querySelectorAll(".gl1t img, .it5 a img")].map(x=>x.src || x.getAttribute("data-src"));
-            if(source.includes("hitomi")) imgs = [...doc.querySelectorAll(".dj img")].map(x=>x.src.replace("//tn.","//a."));
-            if(source.includes("jmcomic")) imgs = [...doc.querySelectorAll(".video-title+img, .wp-manga-cover img")].map(x=>x.src || x.getAttribute("data-original") || x.getAttribute("data-src"));
-
-            imgs.slice(0,30).forEach(src=>{
-                if(!src) return;
-                const div = document.createElement("div");
-                div.className = "pic";
-                div.innerHTML = `<img src="${src}" loading="lazy" onclick="window.open('${src}')">`;
-                document.getElementById("gallery").appendChild(div);
-            });
+        zip.generateAsync({type:"blob"}).then(content=>{
+            saveAs(content, "H漫合集_"+new Date().getTime()+".zip");
             document.getElementById("loading").style.display = "none";
-        }
-    </script>
+        });
+    }
+
+    function clearGallery(){
+        document.getElementById("grid").innerHTML = "";
+        allImages = [];
+    }
+
+    // 回车搜索
+    document.getElementById("kw").addEventListener("keypress", e=>{if(e.key==="Enter") search();});
+</script>
 </body>
 </html>
