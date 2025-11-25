@@ -3,31 +3,225 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>天堂聚合站</title>
-    <link rel="stylesheet" href="css/style.css">
+    <title>天堂聚合站 × Grok</title>
+    <meta name="description" content="Grok 风格极简漫画阅读器">
     <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js" defer></script>
+    <style>
+        :root {
+            --bg: #ffffff;
+            --surface: #f8f9fa;
+            --text: #0f172a;
+            --text-secondary: #64748b;
+            --primary: #6d28d9;
+            --primary-hover: #5b21b6;
+            --border: #e2e8f0;
+            --radius: 12px;
+            --shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            padding-top: 80px;
+        }
+        header {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            background: var(--bg);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: var(--shadow);
+        }
+        .logo {
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .search-box {
+            max-width: 720px;
+            margin: 40px auto 32px;
+            padding: 0 24px;
+            display: flex;
+            gap: 12px;
+        }
+        #kw {
+            flex: 1;
+            padding: 16px 20px;
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            font-size: 17px;
+            outline: none;
+            transition: all 0.2s;
+        }
+        #kw:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(109,40,217,0.1);
+        }
+        button {
+            padding: 16px 32px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        button:hover { background: var(--primary-hover); transform: translateY(-1px); }
+
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 20px; }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 24px;
+            padding-bottom: 80px;
+        }
+        .card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+        }
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+        }
+        .card img {
+            width: 100%;
+            height: 340px;
+            object-fit: cover;
+            background: #f1f5f9;
+        }
+        .card-title {
+            padding: 16px;
+            font-weight: 600;
+            font-size: 15px;
+            color: var(--text);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 120px 20px;
+            color: var(--text-secondary);
+            font-size: 18px;
+        }
+        .spinner {
+            width: 50px; height: 50px;
+            border: 5px solid #e2e8f0;
+            border-top: 5px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Grok 风格阅读器 */
+        #reader {
+            position: fixed;
+            inset: 0;
+            background: white;
+            z-index: 9999;
+            display: none;
+            flex-direction: column;
+        }
+        #reader-header {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            box-shadow: var(--shadow);
+        }
+        #reader-title {
+            font-size: 20px;
+            font-weight: 700;
+            max-width: 80%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        #close-reader {
+            font-size: 32px;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+        #reader-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px;
+            background: #fafafa;
+        }
+        #reader-content img {
+            max-width: 100%;
+            display: block;
+            margin: 0 auto 24px;
+            border-radius: var(--radius);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            cursor: zoom-in;
+            transition: transform 0.3s;
+        }
+        #reader-content img:hover { transform: scale(1.01); }
+        #progress {
+            height: 4px;
+            background: var(--primary);
+            width: 0%;
+            transition: width 0.3s ease;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            z-index: 10000;
+        }
+
+        footer {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+    </style>
 </head>
 <body>
 
-<div class="header">
-    <div class="logo">天堂聚合站</div>
-</div>
+<header>
+    <div class="logo">Grok 天堂站</div>
+</header>
 
-<div class="search">
-    <input type="text" id="kw" placeholder="输入关键词、作者、标签或番号" autofocus>
+<div class="search-box">
+    <input type="text" id="kw" placeholder="问我任何本子… 直接回车搜索" autofocus>
     <button onclick="search()">搜索</button>
 </div>
 
 <div class="container">
-    <div class="loading" id="loading"><div class="spinner"></div><p>正在加载资源…</p></div>
-    <div class="error" id="error">加载失败？<a href="https://jmcomic.la" target="_blank">访问原站</a></div>
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <p>正在加载最新资源…</p>
+    </div>
     <div class="grid" id="grid"></div>
 </div>
 
 <div id="progress"></div>
 
-<!-- 阅读器 -->
 <div id="reader">
     <div id="reader-header">
         <div id="reader-title">加载中…</div>
@@ -36,8 +230,127 @@
     <div id="reader-content"></div>
 </div>
 
-<footer>© 2025 天堂聚合站 • 极简阅读工具</footer>
+<footer>© 2025 Grok 天堂聚合站 • 极简 • 极速 • 纯净</footer>
 
-<script src="js/main.js" defer></script>
+<script>
+    const PROXIES = [
+        "https://api.allorigins.win/raw?url=",
+        "https://cors.bridged.cc/",
+        "https://corsproxy.io/?",
+        "https://proxy.cors.sh/"
+    ];
+    let currentImages = [];
+
+    async function search() {
+        const kw = document.getElementById("kw").value.trim() || "最新";
+        document.getElementById("loading").style.display = "block";
+        document.getElementById("grid").innerHTML = "";
+
+        const urls = [
+            `https://jmcomic.la/search/photos?search_query=${encodeURIComponent(kw)}`,
+            `https://18comic.vip/search/photos?search_query=${encodeURIComponent(kw)}`
+        ];
+
+        let found = false;
+        for (const url of urls) {
+            for (const proxy of PROXIES) {
+                try {
+                    const res = await fetch(proxy + encodeURIComponent(url), { signal: AbortSignal.timeout(10000) });
+                    if (!res.ok) continue;
+                    const html = await res.text();
+                    const items = parse(html);
+                    if (items.length > 0) {
+                        render(items);
+                        found = true;
+                        break;
+                    }
+                } catch(e) {}
+            }
+            if (found) break;
+        }
+        document.getElementById("loading").style.display = found ? "none" : "block";
+        if (!found) document.getElementById("loading").innerHTML = "<p>未找到结果，建议换个关键词或访问原站</p>";
+    }
+
+    function parse(html) {
+        const doc = new DOMParser().parseFromString(html, "text/html");
+        const items = [];
+        doc.querySelectorAll("a[href*='album']").forEach(a => {
+            const img = a.querySelector("img");
+            const title = a.querySelector("h3,.video-title")?.innerText.trim() || "未知作品";
+            let src = img?.getAttribute("data-original") || img?.src || "";
+            if (src.startsWith("//")) src = "https:" + src;
+            const href = a.href.includes("http") ? a.href : "https://jmcomic.la" + a.href;
+            if (src.includes("media")) items.push({src, title, href});
+        });
+        return items.slice(0, 48);
+    }
+
+    function render(items) {
+        const grid = document.getElementById("grid");
+        grid.innerHTML = "";
+        items.forEach(item => {
+            const card = document.createElement("div");
+            card.className = "card";
+            card.innerHTML = `<img src="${item.src}" loading="lazy"><div class="card-title">${item.title}</div>`;
+            card.onclick = () => openReader(item.href);
+            grid.appendChild(card);
+        });
+    }
+
+    async function openReader(url) {
+        document.getElementById("reader").style.display = "flex";
+        document.getElementById("reader-content").innerHTML = "<div class='loading'>加载图片中…</div>";
+        document.getElementById("reader-title").textContent = "加载中…";
+        currentImages = [];
+
+        for (const proxy of PROXIES) {
+            try {
+                const res = await fetch(proxy + encodeURIComponent(url), { signal: AbortSignal.timeout(15000) });
+                const html = await res.text();
+                const doc = new DOMParser().parseFromString(html, "text/html");
+                document.getElementById("reader-title").textContent = doc.querySelector("h1")?.innerText.trim() || "阅读中";
+
+                let imgs = [];
+                doc.querySelectorAll("script").forEach(s => {
+                    if (s.innerHTML.includes("chapterImages")) {
+                        const m = s.innerHTML.match(/\[(.*?)\]/s);
+                        if (m) imgs = JSON.parse(m[0]);
+                    }
+                });
+                if (imgs.length === 0) {
+                    imgs = [...doc.querySelectorAll("img.lazy, img[src*='media']")].map(i => i.src || i.dataset.src || "").filter(Boolean);
+                }
+
+                currentImages = imgs.map(u => u.startsWith("http") ? u : "https://jmcomic.la" + u);
+
+                const container = document.getElementById("reader-content");
+                container.innerHTML = "";
+                currentImages.forEach((src, i) => {
+                    const img = document.createElement("img");
+                    img.src = src;
+                    img.loading = "lazy";
+                    img.onclick = () => img.requestFullscreen?.();
+                    img.onload = () => document.getElementById("progress").style.width = `${(i+1)/currentImages.length*100}%`;
+                    container.appendChild(img);
+                });
+                return;
+            } catch(e) {}
+        }
+        document.getElementById("reader-content").innerHTML = `<p style="text-align:center;padding:120px;color:#94a3b8">加载失败<br><a href="${url}" target="_blank" style="color:var(--primary)">直接访问原站 →</a></p>`;
+    }
+
+    function closeReader() {
+        document.getElementById("reader").style.display = "none";
+        document.getElementById("progress").style.width = "0";
+    }
+
+    // 回车搜索 + Esc关闭
+    document.getElementById("kw").addEventListener("keypress", e => { if(e.key==="Enter") search(); });
+    document.addEventListener("keydown", e => { if(e.key==="Escape") closeReader(); });
+
+    // 页面加载完自动搜索“最新”
+    window.onload = () => search();
+</script>
 </body>
 </html>
