@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<!-- saved from url=(0070)file:///C:/Users/liaor/Downloads/Projectile%20motion%20simulation.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Projectile Motion Simulation</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to bottom, #1a2980, #26d0ce);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        header {
+            text-align: center;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .simulation-area {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .canvas-container {
+            flex: 2;
+            min-width: 600px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .controls {
+            flex: 1;
+            min-width: 300px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        canvas {
+            width: 100%;
+            height: 500px;
+            background-color: #0d2b4b;
+            border-radius: 8px;
+            display: block;
+        }
+        
+        .control-group {
+            margin-bottom: 15px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        input[type="range"] {
+            width: 100%;
+            margin-bottom: 5px;
+        }
+        
+        .value-display {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        button {
+            flex: 1;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        #pauseBtn {
+            background-color: #ff9800;
+        }
+        
+        #resumeBtn {
+            background-color: #2196F3;
+            display: none;
+        }
+        
+        #resetBtn {
+            background-color: #f44336;
+        }
+        
+        .velocity-display {
+            margin-top: 20px;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+        }
+        
+        .velocity-triangle {
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .velocity-components {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .velocity-component {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .velocity-color {
+            width: 20px;
+            height: 5px;
+            display: inline-block;
+        }
+        
+        .vx { background-color: #ff5252; }
+        .vy { background-color: #4caf50; }
+        .v-total { background-color: #2196f3; }
+        
+        .info-panel {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .info-item {
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        
+        .info-value {
+            font-size: 20px;
+            font-weight: bold;
+            display: block;
+            margin-top: 5px;
+        }
+        
+        @media (max-width: 1000px) {
+            .simulation-area {
+                flex-direction: column;
+            }
+            
+            .canvas-container, .controls {
+                min-width: 100%;
+            }
+        }
+        
+        .instructions {
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+        
+        .instructions h2 {
+            margin-bottom: 10px;
+        }
+        
+        .instructions ul {
+            padding-left: 20px;
+        }
+        
+        .instructions li {
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Projectile Motion Simulation</h1>
+            <p>Adjust parameters and observe the projectile motion with velocity vectors</p>
+        </header>
+        
+        <div class="simulation-area">
+            <div class="canvas-container">
+                <h2>Trajectory</h2>
+                <canvas id="trajectoryCanvas" width="800" height="500"></canvas>
+            </div>
+            
+            <div class="controls">
+                <h2>Controls</h2>
+                
+                <div class="control-group">
+                    <label for="velocity">Initial Velocity (m/s)</label>
+                    <input type="range" id="velocity" min="10" max="100" value="40">
+                    <div class="value-display">
+                        <span>10</span>
+                        <span id="velocity-value">60 m/s</span>
+                        <span>100</span>
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <label for="angle">Launch Angle (degrees)</label>
+                    <input type="range" id="angle" min="0" max="90" value="45">
+                    <div class="value-display">
+                        <span>0°</span>
+                        <span id="angle-value">60°</span>
+                        <span>90°</span>
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <label for="height">Initial Height (m)</label>
+                    <input type="range" id="height" min="0" max="100" value="0">
+                    <div class="value-display">
+                        <span>0</span>
+                        <span id="height-value">2 m</span>
+                        <span>100</span>
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button id="startBtn">Start</button>
+                    <button id="pauseBtn" style="display: block;">Pause</button>
+                    <button id="resumeBtn" style="display: none;">Resume</button>
+                    <button id="resetBtn">Reset</button>
+                </div>
+                
+                <div class="velocity-display">
+                    <h3>Velocity Components</h3>
+                    <div class="velocity-triangle">
+                        <svg id="velocityTriangle" width="200" height="200" viewBox="0 0 200 200"></svg>
+                    </div>
+                    <div class="velocity-components">
+                        <div class="velocity-component">
+                            <span class="velocity-color vx"></span>
+                            <span>Horizontal Velocity (Vx): <span id="vx-value">0.0 m/s</span></span>
+                        </div>
+                        <div class="velocity-component">
+                            <span class="velocity-color vy"></span>
+                            <span>Vertical Velocity (Vy): <span id="vy-value">0.0 m/s</span></span>
+                        </div>
+                        <div class="velocity-component">
+                            <span class="velocity-color v-total"></span>
+                            <span>Resultant Velocity: <span id="v-total-value">0.0 m/s</span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="info-panel">
+            <div class="info-item">
+                <div>Time of Flight</div>
+                <div class="info-value" id="time-of-flight">10.63 s</div>
+            </div>
+            <div class="info-item">
+                <div>Maximum Height</div>
+                <div class="info-value" id="max-height">139.61 m</div>
+            </div>
+            <div class="info-item">
+                <div>Range</div>
+                <div class="info-value" id="range">318.96 m</div>
+            </div>
+            <div class="info-item">
+                <div>Current Position</div>
+                <div class="info-value" id="current-position">(0.00, 0.00) m</div>
+            </div>
+        </div>
+        
+        <div class="instructions">
+            <h2>Instructions</h2>
+            <ul>
+                <li>Adjust the sliders to set initial velocity, launch angle, and initial height</li>
+                <li>Click <strong>Start</strong> to begin the simulation</li>
+                <li>Use <strong>Pause</strong> to pause and <strong>Resume</strong> to continue the simulation</li>
+                <li>Click <strong>Reset</strong> to stop and reset to initial conditions</li>
+                <li>Observe the velocity vectors in the triangle diagram and on the trajectory</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Constants
+        const g = 9.81; // acceleration due to gravity (m/s^2)
+        const TRAIL_LENGTH = 100; // number of points to show in the trail
+        
+        // DOM elements
+        const velocitySlider = document.getElementById('velocity');
+        const angleSlider = document.getElementById('angle');
+        const heightSlider = document.getElementById('height');
+        const velocityValue = document.getElementById('velocity-value');
+        const angleValue = document.getElementById('angle-value');
+        const heightValue = document.getElementById('height-value');
+        const startBtn = document.getElementById('startBtn');
+        const pauseBtn = document.getElementById('pauseBtn');
+        const resumeBtn = document.getElementById('resumeBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const vxValue = document.getElementById('vx-value');
+        const vyValue = document.getElementById('vy-value');
+        const vTotalValue = document.getElementById('v-total-value');
+        const timeOfFlightEl = document.getElementById('time-of-flight');
+        const maxHeightEl = document.getElementById('max-height');
+        const rangeEl = document.getElementById('range');
+        const currentPositionEl = document.getElementById('current-position');
+        const velocityTriangle = document.getElementById('velocityTriangle');
+        
+        // Canvas setup
+        const canvas = document.getElementById('trajectoryCanvas');
+        const ctx = canvas.getContext('2d');
+        const canvasWidth = canvas.width;
+        const canvasHeight = canvas.height;
+        const groundLevel = canvasHeight - 50;
+        
+        // Simulation variables
+        let animationId = null;
+        let isRunning = false;
+        let isPaused = false;
+        let time = 0;
+        let trajectoryPoints = [];
+        
+        // Physics variables
+        let v0, angle, y0, v0x, v0y, timeOfFlight, maxHeight, maxRange;
+        
+        // Initialize with default values
+        updateParameters();
+        drawStaticElements();
+        
+        // Event listeners
+        velocitySlider.addEventListener('input', () => {
+            velocityValue.textContent = `${velocitySlider.value} m/s`;
+            updateParameters();
+            drawStaticElements();
+        });
+        
+        angleSlider.addEventListener('input', () => {
+            angleValue.textContent = `${angleSlider.value}°`;
+            updateParameters();
+            drawStaticElements();
+        });
+        
+        heightSlider.addEventListener('input', () => {
+            heightValue.textContent = `${heightSlider.value} m`;
+            updateParameters();
+            drawStaticElements();
+        });
+        
+        startBtn.addEventListener('click', startSimulation);
+        pauseBtn.addEventListener('click', pauseSimulation);
+        resumeBtn.addEventListener('click', resumeSimulation);
+        resetBtn.addEventListener('click', resetSimulation);
+        
+        // Update physics parameters based on UI controls
+        function updateParameters() {
+            v0 = parseFloat(velocitySlider.value);
+            angle = parseFloat(angleSlider.value) * Math.PI / 180; // Convert to radians
+            y0 = parseFloat(heightSlider.value);
+            
+            // Calculate initial velocity components
+            v0x = v0 * Math.cos(angle);
+            v0y = v0 * Math.sin(angle);
+            
+            // Calculate time of flight (when projectile returns to ground)
+            timeOfFlight = (v0y + Math.sqrt(v0y*v0y + 2*g*y0)) / g;
+            
+            // Calculate maximum height
+            maxHeight = y0 + (v0y*v0y) / (2*g);
+            
+            // Calculate range
+            maxRange = v0x * timeOfFlight;
+            
+            // Update info panel
+            timeOfFlightEl.textContent = timeOfFlight.toFixed(2) + ' s';
+            maxHeightEl.textContent = maxHeight.toFixed(2) + ' m';
+            rangeEl.textContent = maxRange.toFixed(2) + ' m';
+        }
+        
+        // Draw static elements (ground, labels, etc.)
+        function drawStaticElements() {
+            ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+            
+            // Draw sky
+            const skyGradient = ctx.createLinearGradient(0, 0, 0, groundLevel);
+            skyGradient.addColorStop(0, '#1a2980');
+            skyGradient.addColorStop(1, '#26d0ce');
+            ctx.fillStyle = skyGradient;
+            ctx.fillRect(0, 0, canvasWidth, groundLevel);
+            
+            // Draw ground with perspective
+            const groundGradient = ctx.createLinearGradient(0, groundLevel, 0, canvasHeight);
+            groundGradient.addColorStop(0, '#8B4513');
+            groundGradient.addColorStop(0.6, '#5D4037');
+            groundGradient.addColorStop(1, '#4E342E');
+            ctx.fillStyle = groundGradient;
+            ctx.fillRect(0, groundLevel, canvasWidth, canvasHeight - groundLevel);
+            
+            // Draw grass on top of ground
+            ctx.fillStyle = '#2E8B57';
+            ctx.fillRect(0, groundLevel, canvasWidth, 10);
+            
+            // Draw scale indicators
+            ctx.fillStyle = '#FFFFFF';
+            ctx.font = '12px Arial';
+            for (let x = 50; x < canvasWidth; x += 100) {
+                const meters = (x - 50) / 10;
+                if (meters > 0) {
+                    ctx.fillText(meters + 'm', x, groundLevel + 20);
+                    ctx.beginPath();
+                    ctx.moveTo(x, groundLevel);
+                    ctx.lineTo(x, groundLevel - 5);
+                    ctx.strokeStyle = '#FFFFFF';
+                    ctx.stroke();
+                }
+            }
+            
+            // Draw initial position
+            const initialX = 50;
+            const initialY = groundLevel - y0 * 5; // Scale for visibility
+            
+            ctx.beginPath();
+            ctx.arc(initialX, initialY, 8, 0, Math.PI * 2);
+            ctx.fillStyle = '#FF0000';
+            ctx.fill();
+            ctx.strokeStyle = '#FFFFFF';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            
+            // Draw initial velocity vector if not running
+            if (!isRunning && !isPaused) {
+                const vectorScale = 2;
+                ctx.beginPath();
+                ctx.moveTo(initialX, initialY);
+                ctx.lineTo(initialX + v0x * vectorScale, initialY - v0y * vectorScale);
+                ctx.strokeStyle = '#FFFF00';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                
+                // Draw arrowhead
+                drawArrowhead(ctx, initialX + v0x * vectorScale, initialY - v0y * vectorScale, 
+                              Math.atan2(-v0y, v0x), 10);
+            }
+        }
+        
+        // Draw arrowhead for vectors
+        function drawArrowhead(context, x, y, angle, size) {
+            context.save();
+            context.translate(x, y);
+            context.rotate(angle);
+            context.beginPath();
+            context.moveTo(0, 0);
+            context.lineTo(-size, -size/2);
+            context.lineTo(-size, size/2);
+            context.closePath();
+            context.fillStyle = '#FFFF00';
+            context.fill();
+            context.restore();
+        }
+        
+        // Start the simulation
+        function startSimulation() {
+            if (isRunning) return;
+            
+            isRunning = true;
+            isPaused = false;
+            startBtn.disabled = true;
+            pauseBtn.style.display = 'block';
+            resumeBtn.style.display = 'none';
+            velocitySlider.disabled = true;
+            angleSlider.disabled = true;
+            heightSlider.disabled = true;
+            
+            // Reset time and trajectory
+            time = 0;
+            trajectoryPoints = [];
+            
+            // Start animation
+            animate();
+        }
+        
+        // Pause the simulation
+        function pauseSimulation() {
+            if (!isRunning || isPaused) return;
+            
+            isPaused = true;
+            pauseBtn.style.display = 'none';
+            resumeBtn.style.display = 'block';
+            
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+                animationId = null;
+            }
+        }
+        
+        // Resume the simulation
+        function resumeSimulation() {
+            if (!isRunning || !isPaused) return;
+            
+            isPaused = false;
+            pauseBtn.style.display = 'block';
+            resumeBtn.style.display = 'none';
+            
+            animate();
+        }
+        
+        // Reset the simulation
+        function resetSimulation() {
+            isRunning = false;
+            isPaused = false;
+            
+            startBtn.disabled = false;
+            pauseBtn.style.display = 'block';
+            resumeBtn.style.display = 'none';
+            velocitySlider.disabled = false;
+            angleSlider.disabled = false;
+            heightSlider.disabled = false;
+            
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+                animationId = null;
+            }
+            
+            // Reset velocity displays
+            vxValue.textContent = '0.0 m/s';
+            vyValue.textContent = '0.0 m/s';
+            vTotalValue.textContent = '0.0 m/s';
+            currentPositionEl.textContent = '(0.00, 0.00) m';
+            
+            // Clear velocity triangle
+            velocityTriangle.innerHTML = '';
+            
+            updateParameters();
+            drawStaticElements();
+        }
+        
+        // Main animation loop
+        function animate() {
+            if (!isRunning || isPaused) return;
+            
+            // Calculate current position
+            const x = v0x * time;
+            const y = y0 + v0y * time - 0.5 * g * time * time;
+            
+            // Calculate current velocity components
+            const vx = v0x;
+            const vy = v0y - g * time;
+            const vTotal = Math.sqrt(vx*vx + vy*vy);
+            
+            // Update displays
+            vxValue.textContent = vx.toFixed(1) + ' m/s';
+            vyValue.textContent = vy.toFixed(1) + ' m/s';
+            vTotalValue.textContent = vTotal.toFixed(1) + ' m/s';
+            currentPositionEl.textContent = `(${x.toFixed(2)}, ${y.toFixed(2)}) m`;
+            
+            // Update velocity triangle
+            updateVelocityTriangle(vx, vy, vTotal);
+            
+            // Add current point to trajectory
+            trajectoryPoints.push({x, y});
+            if (trajectoryPoints.length > TRAIL_LENGTH) {
+                trajectoryPoints.shift();
+            }
+            
+            // Draw everything
+            drawStaticElements();
+            drawTrajectory();
+            drawProjectile(x, y);
+            drawVelocityVectors(x, y, vx, vy);
+            
+            // Check if projectile has hit the ground
+            if (y <= 0 && time > 0.1) {
+                pauseSimulation();
+                return;
+            }
+            
+            // Increment time (slow down the simulation)
+            time += 0.05;
+            
+            // Continue animation
+            animationId = requestAnimationFrame(animate);
+        }
+        
+        // Draw the trajectory path
+        function drawTrajectory() {
+            if (trajectoryPoints.length < 2) return;
+            
+            ctx.beginPath();
+            ctx.moveTo(50 + trajectoryPoints[0].x * 2, 
+                      groundLevel - trajectoryPoints[0].y * 5);
+            
+            for (let i = 1; i < trajectoryPoints.length; i++) {
+                ctx.lineTo(50 + trajectoryPoints[i].x * 2, 
+                          groundLevel - trajectoryPoints[i].y * 5);
+            }
+            
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            
+            // Draw trail dots
+            for (let i = 0; i < trajectoryPoints.length; i += 5) {
+                const point = trajectoryPoints[i];
+                ctx.beginPath();
+                ctx.arc(50 + point.x * 2, groundLevel - point.y * 5, 2, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+                ctx.fill();
+            }
+        }
+        
+        // Draw the projectile at the current position
+        function drawProjectile(x, y) {
+            const canvasX = 50 + x * 2;
+            const canvasY = groundLevel - y * 5;
+            
+            // Draw glow effect
+            ctx.beginPath();
+            ctx.arc(canvasX, canvasY, 12, 0, Math.PI * 2);
+            const gradient = ctx.createRadialGradient(canvasX, canvasY, 0, canvasX, canvasY, 12);
+            gradient.addColorStop(0, 'rgba(255, 255, 255, 0.8)');
+            gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+            ctx.fillStyle = gradient;
+            ctx.fill();
+            
+            // Draw projectile
+            ctx.beginPath();
+            ctx.arc(canvasX, canvasY, 8, 0, Math.PI * 2);
+            ctx.fillStyle = '#FF0000';
+            ctx.fill();
+            ctx.strokeStyle = '#FFFFFF';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+        }
+        
+        // Draw velocity vectors as a triangle
+        function drawVelocityVectors(x, y, vx, vy) {
+            const canvasX = 50 + x * 2;
+            const canvasY = groundLevel - y * 5;
+            const vectorScale = 0.5; // Scale factor for vectors
+            
+            // Draw horizontal velocity vector (Vx)
+            ctx.beginPath();
+            ctx.moveTo(canvasX, canvasY);
+            ctx.lineTo(canvasX + vx * vectorScale, canvasY);
+            ctx.strokeStyle = '#FF5252';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            
+            // Draw vertical velocity vector (Vy)
+            ctx.beginPath();
+            ctx.moveTo(canvasX, canvasY);
+            ctx.lineTo(canvasX, canvasY - vy * vectorScale);
+            ctx.strokeStyle = '#4CAF50';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            
+            // Draw resultant velocity vector
+            ctx.beginPath();
+            ctx.moveTo(canvasX, canvasY);
+            ctx.lineTo(canvasX + vx * vectorScale, canvasY - vy * vectorScale);
+            ctx.strokeStyle = '#2196F3';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            
+            // Draw triangle completion
+            ctx.beginPath();
+            ctx.moveTo(canvasX + vx * vectorScale, canvasY);
+            ctx.lineTo(canvasX + vx * vectorScale, canvasY - vy * vectorScale);
+            ctx.lineTo(canvasX, canvasY - vy * vectorScale);
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+            
+            // Draw arrowheads
+            drawArrowhead(ctx, canvasX + vx * vectorScale, canvasY, 0, 8);
+            drawArrowhead(ctx, canvasX, canvasY - vy * vectorScale, -Math.PI/2, 8);
+            drawArrowhead(ctx, canvasX + vx * vectorScale, canvasY - vy * vectorScale, 
+                         Math.atan2(-vy, vx), 8);
+        }
+        
+        // Update velocity triangle visualization
+        function updateVelocityTriangle(vx, vy, vTotal) {
+            // Clear previous triangle
+            velocityTriangle.innerHTML = '';
+            
+            // Scale factors for visualization
+            const scale = 2;
+            const centerX = 100;
+            const centerY = 100;
+            
+            // Create SVG elements
+            const svgNS = "http://www.w3.org/2000/svg";
+            
+            // Draw triangle
+            const triangle = document.createElementNS(svgNS, "polygon");
+            const points = `${centerX},${centerY} ${centerX + vx * scale},${centerY} ${centerX + vx * scale},${centerY - vy * scale}`;
+            triangle.setAttribute("points", points);
+            triangle.setAttribute("fill", "rgba(255, 255, 255, 0.1)");
+            triangle.setAttribute("stroke", "white");
+            triangle.setAttribute("stroke-width", "1");
+            velocityTriangle.appendChild(triangle);
+            
+            // Draw Vx vector
+            const vxLine = document.createElementNS(svgNS, "line");
+            vxLine.setAttribute("x1", centerX);
+            vxLine.setAttribute("y1", centerY);
+            vxLine.setAttribute("x2", centerX + vx * scale);
+            vxLine.setAttribute("y2", centerY);
+            vxLine.setAttribute("stroke", "#FF5252");
+            vxLine.setAttribute("stroke-width", "3");
+            velocityTriangle.appendChild(vxLine);
+            
+            // Draw Vy vector
+            const vyLine = document.createElementNS(svgNS, "line");
+            vyLine.setAttribute("x1", centerX);
+            vyLine.setAttribute("y1", centerY);
+            vyLine.setAttribute("x2", centerX);
+            vyLine.setAttribute("y2", centerY - vy * scale);
+            vyLine.setAttribute("stroke", "#4CAF50");
+            vyLine.setAttribute("stroke-width", "3");
+            velocityTriangle.appendChild(vyLine);
+            
+            // Draw resultant vector
+            const vLine = document.createElementNS(svgNS, "line");
+            vLine.setAttribute("x1", centerX);
+            vLine.setAttribute("y1", centerY);
+            vLine.setAttribute("x2", centerX + vx * scale);
+            vLine.setAttribute("y2", centerY - vy * scale);
+            vLine.setAttribute("stroke", "#2196F3");
+            vLine.setAttribute("stroke-width", "3");
+            velocityTriangle.appendChild(vLine);
+            
+            // Draw labels
+            const vxLabel = document.createElementNS(svgNS, "text");
+            vxLabel.setAttribute("x", centerX + vx * scale / 2);
+            vxLabel.setAttribute("y", centerY + 15);
+            vxLabel.setAttribute("fill", "#FF5252");
+            vxLabel.setAttribute("text-anchor", "middle");
+            vxLabel.setAttribute("font-size", "12");
+            vxLabel.textContent = "Vx";
+            velocityTriangle.appendChild(vxLabel);
+            
+            const vyLabel = document.createElementNS(svgNS, "text");
+            vyLabel.setAttribute("x", centerX - 15);
+            vyLabel.setAttribute("y", centerY - vy * scale / 2);
+            vyLabel.setAttribute("fill", "#4CAF50");
+            vyLabel.setAttribute("text-anchor", "middle");
+            vyLabel.setAttribute("font-size", "12");
+            vyLabel.textContent = "Vy";
+            velocityTriangle.appendChild(vyLabel);
+            
+            const vLabel = document.createElementNS(svgNS, "text");
+            vLabel.setAttribute("x", centerX + vx * scale / 2);
+            vLabel.setAttribute("y", centerY - vy * scale / 2 - 10);
+            vLabel.setAttribute("fill", "#2196F3");
+            vLabel.setAttribute("text-anchor", "middle");
+            vLabel.setAttribute("font-size", "12");
+            vLabel.textContent = "V";
+            velocityTriangle.appendChild(vLabel);
+        }
+    </script>
+
+</body></html>
