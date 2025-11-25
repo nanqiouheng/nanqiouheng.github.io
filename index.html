@@ -4,38 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>天堂聚合站</title>
+    <link rel="stylesheet" href="css/style.css">
     <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js" defer></script>
-    <style>
-        :root{--bg:#ffffff;--text:#1a1a1a;--gray:#f0f0f0;--accent:#7c3aed;--border:#e5e7eb}
-        *{margin:0;padding:0;box-sizing:border-box}
-        body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.5}
-        .header{position:fixed;top:0;left:0;right:0;background:var(--bg);border-bottom:1px solid var(--border);z-index:1000;padding:12px 20px;box-shadow:0 2px 10px rgba(0,0,0,0.05)}
-        .logo{font-size:1.9em;font-weight:800;color:var(--accent)}
-        .search{max-width:900px;margin:0 auto;display:flex;align-items:center;gap:12px;padding-top:80px;padding-bottom:20px}
-        #kw{flex:1;padding:16px 24px;border:1px solid var(--border);border-radius:50px;font-size:1.1em;outline:none;transition:.2s}
-        #kw:focus{border-color:var(--accent)}
-        button{padding:16px 36px;background:var(--accent);color:white;border:none;border-radius:50px;font-size:1.1em;cursor:pointer;transition:.3s}
-        button:hover{background:#6d28d9}
-        .container{max-width:1400px;margin:0 auto 100px;padding:0 20px}
-        .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:24px}
-        .card{background:white;border:1px solid var(--border);border-radius:16px;overflow:hidden;cursor:pointer;transition:all .3s;box-shadow:0 4px 12px rgba(0,0,0,0.06)}
-        .card:hover{transform:translateY(-8px);box-shadow:0 20px 40px rgba(124,58,237,0.15)}
-        .card img{width:100%;height:310px;object-fit:cover;background:#f8f9fa}
-        .card-title{padding:16px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-        .loading{text-align:center;padding:100px 0;color:#666;font-size:1.2em}
-        .spinner{width:48px;height:48px;border:5px solid #f3f3f3;border-top:5px solid var(--accent);border-radius:50%;animation:s 1s linear infinite;margin:0 auto 20px}
-        @keyframes s{to{transform:rotate(360deg)}}
-        .error{text-align:center;padding:60px;color:#999;font-size:1.1em}
-        #reader{position:fixed;top:0;left:0;right:0;bottom:0;background:white;z-index:9999;display:none;overflow:hidden;flex-direction:column}
-        #reader-header{padding:16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;background:white;position:sticky;top:0;z-index:10}
-        #reader-title{font-weight:600;font-size:1.3em;max-width:80%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-        #close-reader{font-size:2em;color:#999;cursor:pointer}
-        #reader-content{flex:1;overflow-y:auto;padding:20px;background:#fafafa}
-        #reader-content img{max-width:100%;display:block;margin:20px auto;border-radius:12px;box-shadow:0 8px 25px rgba(0,0,0,0.1);cursor:zoom-in}
-        #progress{height:4px;background:var(--accent);width:0;transition:width .3s;position:fixed;bottom:0;left:0}
-        footer{text-align:center;padding:60px 20px;color:#999;font-size:0.9em}
-    </style>
 </head>
 <body>
 
@@ -50,7 +21,7 @@
 
 <div class="container">
     <div class="loading" id="loading"><div class="spinner"></div><p>正在加载资源…</p></div>
-    <div class="error" id="error" style="display:none"><p>加载失败？<a href="https://jmcomic.la" target="_blank" style="color:var(--accent)">访问原站</a></p></div>
+    <div class="error" id="error">加载失败？<a href="https://jmcomic.la" target="_blank">访问原站</a></div>
     <div class="grid" id="grid"></div>
 </div>
 
@@ -65,156 +36,8 @@
     <div id="reader-content"></div>
 </div>
 
-<footer>© 2025 天堂聚合站 • 极简版阅读工具</footer>
+<footer>© 2025 天堂聚合站 • 极简阅读工具</footer>
 
-<script>
-    // 多代理API轮换（从2025年可用列表选取）
-    const PROXIES = [
-        "https://api.allorigins.win/raw?url=",
-        "https://cors-anywhere.herokuapp.com/",
-        "https://cors-anywhere.codetabs.com/",
-        "https://cloudflare-cors-anywhere.com/"
-    ];
-    let proxyIndex = 0;
-    let currentImages = [];
-
-    async function search(){
-        const kw = document.getElementById("kw").value.trim() || "最新";
-        document.getElementById("loading").style.display = "block";
-        document.getElementById("error").style.display = "none";
-        document.getElementById("grid").innerHTML = "";
-
-        const urls = [
-            `https://jmcomic.la/search/photos?search_query=${encodeURIComponent(kw)}`,
-            `https://18comic.vip/search/photos?search_query=${encodeURIComponent(kw)}`
-        ];
-
-        let success = false;
-        for(let url of urls){
-            for(let i = 0; i < PROXIES.length; i++){
-                const proxy = PROXIES[(proxyIndex + i) % PROXIES.length];
-                try{
-                    const response = await fetch(proxy + encodeURIComponent(url), {signal: AbortSignal.timeout(8000)});
-                    if(!response.ok) throw new Error("Response not OK");
-                    const html = await response.text();
-                    const items = parse(html);
-                    if(items.length > 0){
-                        render(items);
-                        success = true;
-                        proxyIndex = (proxyIndex + i) % PROXIES.length; // 更新首选代理
-                        break;
-                    }
-                }catch(e){
-                    console.warn(`Proxy ${proxy} failed for ${url}`);
-                }
-            }
-            if(success) break;
-        }
-
-        if(success){
-            document.getElementById("loading").style.display = "none";
-        }else{
-            document.getElementById("loading").style.display = "none";
-            document.getElementById("error").style.display = "block";
-        }
-    }
-
-    function parse(html){
-        const doc = new DOMParser().parseFromString(html, "text/html");
-        const items = [];
-        doc.querySelectorAll("a[href*='album'], a.video-title").forEach(a => {
-            const img = a.querySelector("img");
-            const title = a.querySelector("h3, .video-title")?.innerText.trim() || "作品";
-            let src = img?.getAttribute("data-original") || img?.src || "";
-            if(src.startsWith("//")) src = "https:" + src;
-            const href = a.href.includes("http") ? a.href : "https://jmcomic.la" + a.href;
-            if(src.includes("media")) items.push({src, title, href});
-        });
-        return items.slice(0, 48);
-    }
-
-    function render(items){
-        const grid = document.getElementById("grid");
-        const frag = document.createDocumentFragment();
-        items.forEach(item => {
-            const div = document.createElement("div");
-            div.className = "card";
-            div.innerHTML = `<img src="${item.src}" loading="lazy"><div class="card-title">${item.title}</div>`;
-            div.onclick = () => openReader(item.href);
-            frag.appendChild(div);
-        });
-        grid.appendChild(frag);
-    }
-
-    async function openReader(url){
-        document.getElementById("reader").style.display = "flex";
-        const content = document.getElementById("reader-content");
-        content.innerHTML = "<div class='loading'>加载图片中…</div>";
-        currentImages = [];
-
-        let success = false;
-        for(let i = 0; i < PROXIES.length; i++){
-            const proxy = PROXIES[i];
-            try{
-                const response = await fetch(proxy + encodeURIComponent(url), {signal: AbortSignal.timeout(10000)});
-                const html = await response.text();
-                const doc = new DOMParser().parseFromString(html, "text/html");
-                document.getElementById("reader-title").innerText = doc.querySelector("h1")?.innerText.trim() || "阅读中";
-
-                let imgs = [];
-                doc.querySelectorAll("script").forEach(s => {
-                    if(s.innerHTML.includes("chapterImages")){
-                        const m = s.innerHTML.match(/\[(.*?)\]/s);
-                        if(m) imgs = JSON.parse(m[0]);
-                    }
-                });
-
-                if(imgs.length === 0){
-                    imgs = [...doc.querySelectorAll("img.lazy, #comic-page img")].map(i => i.src || i.dataset.src || "").filter(Boolean);
-                }
-
-                currentImages = imgs.map(u => u.startsWith("http") ? u : "https://jmcomic.la" + u);
-
-                content.innerHTML = "";
-                currentImages.forEach((src,i) => {
-                    const img = document.createElement("img");
-                    img.src = src;
-                    img.loading = "lazy";
-                    img.onclick = () => img.requestFullscreen?.();
-                    img.onload = () => document.getElementById("progress").style.width = `${(i+1)/currentImages.length*100}%`;
-                    content.appendChild(img);
-                });
-
-                success = true;
-                break;
-            }catch(e){
-                console.warn(`Proxy ${proxy} failed for reader`);
-            }
-        }
-
-        if(!success){
-            content.innerHTML = "<p style='text-align:center;padding:100px;color:#999'>加载失败，<a href='"+url+"' target='_blank'>直接访问原站</a></p>";
-        }
-    }
-
-    function closeReader(){
-        document.getElementById("reader").style.display = "none";
-        document.getElementById("progress").style.width = "0";
-    }
-
-    function downloadAll(){
-        if(currentImages.length === 0) return alert("请先打开阅读器");
-        const zip = new JSZip();
-        const folder = zip.folder("合集");
-        currentImages.forEach((url,i) => {
-            fetch(url).then(r=>r.blob()).then(b=>folder.file(`${i+1}.jpg`, b));
-        });
-        zip.generateAsync({type:"blob"}).then(c=>saveAs(c, "天堂合集_"+Date.now()+".zip"));
-    }
-
-    // 回车搜索
-    document.getElementById("kw").addEventListener("keypress", e=>{if(e.key==="Enter") search();});
-    document.addEventListener("keydown", e=>{if(e.key==="Escape") closeReader();});
-</script>
+<script src="js/main.js" defer></script>
 </body>
 </html>
