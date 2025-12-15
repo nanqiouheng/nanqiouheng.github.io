@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DeepSeek Chat Interface</title>
+    <title>Local LLM Chat Interface - Uncensored</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -40,9 +40,35 @@
         #input-container {
             display: flex;
             padding: 10px;
+            flex-direction: column;
+        }
+        #model-selector {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        #model-selector select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-left: 10px;
+        }
+        #model-icon {
+            width: 30px;
+            height: 30px;
+            margin-left: 10px;
+        }
+        #input-row {
+            display: flex;
         }
         #user-input {
             flex: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        #file-input {
+            margin-left: 10px;
             padding: 8px;
             border: 1px solid #ddd;
             border-radius: 4px;
@@ -59,46 +85,146 @@
         #send-btn:hover {
             background-color: #45a049;
         }
+        .uploaded-file {
+            margin-top: 5px;
+            font-style: italic;
+            color: #666;
+        }
+        .uploaded-image {
+            max-width: 100%;
+            margin-top: 5px;
+        }
+        #note {
+            margin: 20px auto;
+            max-width: 600px;
+            padding: 10px;
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+            border-radius: 4px;
+        }
     </style>
 </head>
 <body>
+    <div id="note">
+        <p><strong>Note:</strong> This interface requires Ollama installed and running on your computer. Download from <a href="https://ollama.com/">ollama.com</a>. Pull models using commands like <code>ollama pull dolphin-llama3:8b</code>. Models are uncensored for no content restrictions. Ensure Ollama server is running (default: http://localhost:11434).</p>
+    </div>
     <div id="chat-container">
         <div id="chat-history"></div>
         <div id="input-container">
-            <input type="text" id="user-input" placeholder="Type your message...">
-            <button id="send-btn">Send</button>
+            <div id="model-selector">
+                <label for="model-select">Choose AI Model:</label>
+                <select id="model-select">
+                    <option value="dolphin-llama3:8b" data-icon="https://via.placeholder.com/30?text=D">Dolphin 3.0 (8B)</option>
+                    <option value="nous-hermes:llama2-13b" data-icon="https://via.placeholder.com/30?text=H">Nous Hermes 3 (13B)</option>
+                    <option value="wizardlm-uncensored:13b" data-icon="https://via.placeholder.com/30?text=W">WizardLM Uncensored (13B)</option>
+                    <option value="llama2-uncensored:7b" data-icon="https://via.placeholder.com/30?text=L">Llama 2 Uncensored (7B)</option>
+                    <option value="deepseek-coder:6.7b" data-icon="https://via.placeholder.com/30?text=DC">Deepseek Coder V2</option>
+                    <option value="qwen2.5:7b" data-icon="https://via.placeholder.com/30?text=Q">Qwen 2.5</option>
+                    <option value="mistral:7b" data-icon="https://via.placeholder.com/30?text=M">Mistral Small</option>
+                    <!-- Add more uncensored models as needed -->
+                </select>
+                <img id="model-icon" src="https://via.placeholder.com/30?text=D" alt="Model Icon">
+            </div>
+            <div id="input-row">
+                <input type="text" id="user-input" placeholder="Type your message...">
+                <input type="file" id="file-input" accept="image/*, .txt, .pdf, .docx">
+                <button id="send-btn">Send</button>
+            </div>
         </div>
     </div>
 
-    <script src="https://js.puter.com/v2/"></script>
     <script>
         const chatHistory = document.getElementById('chat-history');
         const userInput = document.getElementById('user-input');
+        const fileInput = document.getElementById('file-input');
         const sendBtn = document.getElementById('send-btn');
+        const modelSelect = document.getElementById('model-select');
+        const modelIcon = document.getElementById('model-icon');
 
         // Array to keep track of conversation history
         let conversation = [];
+        let selectedModel = modelSelect.value;
+
+        // Update icon when model changes
+        modelSelect.addEventListener('change', () => {
+            selectedModel = modelSelect.value;
+            const selectedOption = modelSelect.options[modelSelect.selectedIndex];
+            modelIcon.src = selectedOption.dataset.icon;
+            modelIcon.alt = selectedOption.text + ' Icon';
+            // Reset conversation when model changes (optional)
+            // conversation = [];
+            // chatHistory.innerHTML = '';
+        });
 
         async function sendMessage() {
-            const prompt = userInput.value.trim();
-            if (!prompt) return;
+            let prompt = userInput.value.trim();
+            const file = fileInput.files[0];
+            let fileContent = '';
+
+            if (file) {
+                if (file.type.startsWith('image/')) {
+                    // Handle image as base64
+                    const reader = new FileReader();
+                    reader.onload = async function(event) {
+                        fileContent = event.target.result;
+                        await processMessage(prompt, fileContent, file.name, true);
+                    };
+                    reader.readAsDataURL(file);
+                    return; // Wait for async read
+                } else {
+                    // Handle text files
+                    const reader = new FileReader();
+                    reader.onload = async function(event) {
+                        fileContent = event.target.result;
+                        await processMessage(prompt, fileContent, file.name, false);
+                    };
+                    reader.readAsText(file);
+                    return; // Wait for async read
+                }
+            } else {
+                await processMessage(prompt, '', '', false);
+            }
+        }
+
+        async function processMessage(prompt, fileContent, fileName, isImage) {
+            let fullPrompt = prompt;
+            if (fileContent) {
+                fullPrompt += `\nAttached ${isImage ? 'image' : 'file'}: ${fileName}\nContent: ${fileContent}`;
+            }
+
+            if (!fullPrompt) return;
 
             // Add user message to history
             addMessage('user', prompt);
+            if (fileName) {
+                addFileToHistory('user', fileName, fileContent, isImage);
+            }
             userInput.value = '';
+            fileInput.value = '';
 
             // Update conversation history
-            conversation.push({ role: 'user', content: prompt });
+            conversation.push({ role: 'user', content: fullPrompt });
 
             try {
-                // Call DeepSeek API via Puter.js
-                const response = await puter.ai.chat(prompt, {
-                    model: 'deepseek/deepseek-v3.2', // You can change to other models like 'deepseek/deepseek-v3.2-speciale'
-                    messages: conversation, // Pass the full conversation for context
-                    stream: false // Set to true for streaming if desired
+                // Call Ollama API
+                const response = await fetch('http://localhost:11434/api/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        model: selectedModel,
+                        messages: conversation,
+                        stream: false
+                    })
                 });
 
-                const aiResponse = response.message.content;
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const data = await response.json();
+                const aiResponse = data.message.content;
 
                 // Add AI response to history
                 addMessage('ai', aiResponse);
@@ -107,7 +233,7 @@
                 conversation.push({ role: 'assistant', content: aiResponse });
             } catch (error) {
                 console.error('Error:', error);
-                addMessage('ai', 'Sorry, there was an error processing your request.');
+                addMessage('ai', 'Sorry, there was an error processing your request. Ensure Ollama is running and the model is pulled.');
             }
         }
 
@@ -116,6 +242,21 @@
             messageDiv.classList.add('message', sender);
             messageDiv.textContent = text;
             chatHistory.appendChild(messageDiv);
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+        }
+
+        function addFileToHistory(sender, fileName, fileContent, isImage) {
+            const fileDiv = document.createElement('div');
+            fileDiv.classList.add('message', sender, 'uploaded-file');
+            if (isImage) {
+                const img = document.createElement('img');
+                img.src = fileContent;
+                img.classList.add('uploaded-image');
+                fileDiv.appendChild(img);
+            } else {
+                fileDiv.textContent = `Uploaded file: ${fileName}`;
+            }
+            chatHistory.appendChild(fileDiv);
             chatHistory.scrollTop = chatHistory.scrollHeight;
         }
 
