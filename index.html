@@ -1,33 +1,129 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Comic Website</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepSeek Chat Interface</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        #chat-container {
+            max-width: 600px;
+            margin: auto;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: white;
+        }
+        #chat-history {
+            height: 400px;
+            overflow-y: auto;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .message {
+            margin-bottom: 10px;
+            padding: 8px;
+            border-radius: 5px;
+        }
+        .user {
+            background-color: #e1f5fe;
+            text-align: right;
+        }
+        .ai {
+            background-color: #f1f1f1;
+            text-align: left;
+        }
+        #input-container {
+            display: flex;
+            padding: 10px;
+        }
+        #user-input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        #send-btn {
+            margin-left: 10px;
+            padding: 8px 16px;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        #send-btn:hover {
+            background-color: #45a049;
+        }
+    </style>
 </head>
 <body>
-    <h1>Search Comics</h1>
-    <input type="text" id="keyword" placeholder="Enter keyword">
-    <button onclick="search()">Search</button>
-    <div id="results"></div>
+    <div id="chat-container">
+        <div id="chat-history"></div>
+        <div id="input-container">
+            <input type="text" id="user-input" placeholder="Type your message...">
+            <button id="send-btn">Send</button>
+        </div>
+    </div>
 
+    <script src="https://js.puter.com/v2/"></script>
     <script>
-        async function search() {
-            const keyword = document.getElementById('keyword').value;
-            const response = await fetch(`http://localhost:5000/search?keyword=${keyword}`);
-            const data = await response.json();
-            const resultsDiv = document.getElementById('results');
-            resultsDiv.innerHTML = '';
-            data.comics.forEach(comic => {
-                const div = document.createElement('div');
-                div.innerHTML = `<h2>${comic.title}</h2><p>Author: ${comic.author}</p><button onclick="viewComic('${comic.id}')">View</button>`;
-                resultsDiv.appendChild(div);
-            });
+        const chatHistory = document.getElementById('chat-history');
+        const userInput = document.getElementById('user-input');
+        const sendBtn = document.getElementById('send-btn');
+
+        // Array to keep track of conversation history
+        let conversation = [];
+
+        async function sendMessage() {
+            const prompt = userInput.value.trim();
+            if (!prompt) return;
+
+            // Add user message to history
+            addMessage('user', prompt);
+            userInput.value = '';
+
+            // Update conversation history
+            conversation.push({ role: 'user', content: prompt });
+
+            try {
+                // Call DeepSeek API via Puter.js
+                const response = await puter.ai.chat(prompt, {
+                    model: 'deepseek/deepseek-v3.2', // You can change to other models like 'deepseek/deepseek-v3.2-speciale'
+                    messages: conversation, // Pass the full conversation for context
+                    stream: false // Set to true for streaming if desired
+                });
+
+                const aiResponse = response.message.content;
+
+                // Add AI response to history
+                addMessage('ai', aiResponse);
+
+                // Update conversation history
+                conversation.push({ role: 'assistant', content: aiResponse });
+            } catch (error) {
+                console.error('Error:', error);
+                addMessage('ai', 'Sorry, there was an error processing your request.');
+            }
         }
 
-        async function viewComic(id) {
-            const response = await fetch(`http://localhost:5000/comic/${id}`);
-            const data = await response.json();
-            alert(`Title: ${data.title}\nImages: ${data.images.join(', ')}`);  // Display or load images
+        function addMessage(sender, text) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message', sender);
+            messageDiv.textContent = text;
+            chatHistory.appendChild(messageDiv);
+            chatHistory.scrollTop = chatHistory.scrollHeight;
         }
+
+        // Event listeners
+        sendBtn.addEventListener('click', sendMessage);
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
     </script>
 </body>
 </html>
