@@ -3,131 +3,123 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>免费无审核AI聊天（直接调用网络API）</title>
+    <title>免费无审核AI图片生成器（Perchance）</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; background: #f4f4f4; }
-        #chat-container { max-width: 700px; margin: auto; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; background: white; }
-        #chat-history { height: 500px; overflow-y: auto; padding: 15px; border-bottom: 1px solid #ddd; }
-        .message { margin: 10px 0; padding: 10px; border-radius: 8px; max-width: 80%; }
-        .user { background: #e1f5fe; align-self: flex-end; margin-left: auto; }
-        .ai { background: #f1f1f1; align-self: flex-start; }
-        #input-container { padding: 15px; display: flex; flex-direction: column; }
-        #model-selector { margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
-        #model-icon { width: 32px; height: 32px; border-radius: 50%; }
+        #container { max-width: 700px; margin: auto; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; background: white; padding: 20px; }
+        #history { min-height: 300px; margin-bottom: 20px; display: flex; flex-direction: column; gap: 15px; }
+        .generated-image { max-width: 500px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); align-self: center; }
         #input-row { display: flex; gap: 10px; }
-        #user-input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 6px; }
-        #send-btn { padding: 10px 20px; background: #4caf50; color: white; border: none; border-radius: 6px; cursor: pointer; }
-        #send-btn:hover { background: #45a049; }
-        .uploaded-image { max-width: 300px; border-radius: 8px; margin-top: 8px; }
+        #prompt-input { flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 16px; }
+        #num-images { padding: 12px; width: 80px; border: 1px solid #ddd; border-radius: 6px; }
+        #gen-btn { padding: 12px 24px; background: #2196f3; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; }
+        #gen-btn:hover { background: #1e88e5; }
+        #gen-btn:disabled { background: #ccc; cursor: not-allowed; }
+        .loading { color: #666; font-style: italic; align-self: center; }
         #note { max-width: 700px; margin: 20px auto; padding: 15px; background: #e8f5e8; border-radius: 8px; }
+        h1 { text-align: center; }
     </style>
 </head>
 <body>
     <div id="note">
         <strong>使用说明：</strong><br>
-        1. 去 <a href="https://console.groq.com/keys" target="_blank">Groq官网</a> 免费注册并创建一个API Key（完全免费，额度很高）<br>
-        2. 把你的API Key粘贴到下面输入框<br>
-        3. 选择模型即可开始聊天（推荐 llama-3.1-70b-versatile，几乎无内容限制）
+        - 这是一个纯AI图片生成界面，使用 Perchance.org 的免费、无需注册、无限量、无任何内容审核的文本到图片生成器。<br>
+        - 输入任何描述（支持中文、英文，越详细越好），点击生成即可。<br>
+        - 一次可生成1-30张图片（默认6张），生成时间10-40秒（取决于服务器负载）。<br>
+        - 完全免费、无限制、无水印、无审核，能生成任何内容。<br>
+        - 直接保存这个HTML文件到电脑，离线打开也能用（只需联网生成图片）。
     </div>
 
-    <div id="chat-container">
-        <div id="chat-history"></div>
-        <div id="input-container">
-            <div id="model-selector">
-                <label>API Key:</label>
-                <input type="password" id="api-key" placeholder="粘贴你的Groq API Key" style="flex:1; padding:8px;">
-                <select id="model-select">
-                    <option value="llama-3.1-70b-versatile">Llama 3.1 70B (推荐)</option>
-                    <option value="llama-3.1-8b-instant">Llama 3.1 8B (更快)</option>
-                    <option value="mixtral-8x7b-32768">Mixtral 8x7B</option>
-                    <option value="gemma2-9b-it">Gemma 2 9B</option>
-                </select>
-                <img id="model-icon" src="https://groq.com/wp-content/uploads/2024/05/Groq_Logo.png" alt="Groq">
-            </div>
-            <div id="input-row">
-                <input type="text" id="user-input" placeholder="输入消息...（支持上传图片）">
-                <input type="file" id="file-input" accept="image/*">
-                <button id="send-btn">发送</button>
-            </div>
+    <div id="container">
+        <h1>免费无审核AI图片生成器</h1>
+        <div id="history"></div>
+        <div id="input-row">
+            <input type="text" id="prompt-input" placeholder="输入图片描述，例如：一只可爱的猫在太空飞翔，超现实主义风格，高清" autofocus>
+            <input type="number" id="num-images" min="1" max="30" value="6" title="一次生成图片数量">
+            <button id="gen-btn">生成图片</button>
         </div>
     </div>
 
     <script>
-        const chatHistory = document.getElementById('chat-history');
-        const userInput = document.getElementById('user-input');
-        const fileInput = document.getElementById('file-input');
-        const sendBtn = document.getElementById('send-btn');
-        const modelSelect = document.getElementById('model-select');
-        const apiKeyInput = document.getElementById('api-key');
+        const history = document.getElementById('history');
+        const promptInput = document.getElementById('prompt-input');
+        const numImagesInput = document.getElementById('num-images');
+        const genBtn = document.getElementById('gen-btn');
 
-        let messages = [];
-
-        async function sendMessage() {
-            const prompt = userInput.value.trim();
-            const apiKey = apiKeyInput.value.trim();
-            const file = fileInput.files[0];
-
-            if (!apiKey) {
-                alert("请先输入你的Groq API Key！");
+        async function generateImages() {
+            let prompt = promptInput.value.trim();
+            if (!prompt) {
+                alert('请输入图片描述！');
                 return;
             }
-            if (!prompt && !file) return;
 
-            // 显示用户消息
-            addMessage('user', prompt || '[上传了图片]');
-            if (file && file.type.startsWith('image/')) {
-                const img = document.createElement('img');
-                img.src = URL.createObjectURL(file);
-                img.classList.add('uploaded-image');
-                chatHistory.lastChild.appendChild(img);
-            }
+            let num = parseInt(numImagesInput.value) || 6;
+            if (num < 1 || num > 30) num = 6;
 
-            userInput.value = '';
-            fileInput.value = '';
+            // 添加提示和加载
+            const promptDiv = document.createElement('div');
+            promptDiv.textContent = `提示词：${prompt}（生成${num}张）`;
+            promptDiv.style.fontWeight = 'bold';
+            promptDiv.style.alignSelf = 'flex-start';
+            history.appendChild(promptDiv);
 
-            // 准备消息（目前Groq不支持直接上传图片，这里仅文本）
-            // 如果想支持图片，建议换Together.ai或DeepInfra的多模态模型
-            messages.push({ role: 'user', content: prompt || '请描述这张图片' });
+            const loadingDiv = document.createElement('div');
+            loadingDiv.textContent = '正在生成图片，请稍等10-40秒...（服务器负载高时可能更慢）';
+            loadingDiv.classList.add('loading');
+            history.appendChild(loadingDiv);
+
+            genBtn.disabled = true;
+            promptInput.disabled = true;
 
             try {
-                const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+                // 使用 Perchance 专业图像生成器的反向工程API（社区常用，免费无限制）
+                const response = await fetch('https://image-generation.perchance.org/api/generate', {
                     method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${apiKey}`,
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        model: modelSelect.value,
-                        messages: messages,
-                        temperature: 0.7,
-                        max_tokens: 4096
+                        prompt: prompt,
+                        numImages: num,  // 支持批量
+                        advanced: {}     // 可扩展参数
                     })
                 });
 
+                if (!response.ok) throw new Error('服务器响应错误');
+
                 const data = await response.json();
-                if (data.error) {
-                    addMessage('ai', '错误：' + data.error.message);
-                    return;
+
+                // 移除加载提示
+                history.removeChild(loadingDiv);
+
+                if (data.images && data.images.length > 0) {
+                    data.images.forEach(imgUrl => {
+                        const img = document.createElement('img');
+                        img.src = imgUrl;
+                        img.classList.add('generated-image');
+                        img.onclick = () => window.open(imgUrl, '_blank');  // 点击新标签大图
+                        history.appendChild(img);
+                    });
+                } else {
+                    throw new Error('未返回图片');
                 }
 
-                const aiResponse = data.choices[0].message.content;
-                addMessage('ai', aiResponse);
-                messages.push({ role: 'assistant', content: aiResponse });
+                // 滚动到底部
+                history.scrollTop = history.scrollHeight;
+
             } catch (error) {
-                addMessage('ai', '网络错误：' + error.message);
+                history.removeChild(loadingDiv);
+                const errorDiv = document.createElement('div');
+                errorDiv.textContent = '生成失败：' + error.message + '（可重试，或服务器暂时忙碌）';
+                errorDiv.style.color = 'red';
+                history.appendChild(errorDiv);
+            } finally {
+                genBtn.disabled = false;
+                promptInput.disabled = false;
+                promptInput.focus();
             }
         }
 
-        function addMessage(sender, text) {
-            const div = document.createElement('div');
-            div.classList.add('message', sender);
-            div.textContent = text;
-            chatHistory.appendChild(div);
-            chatHistory.scrollTop = chatHistory.scrollHeight;
-        }
-
-        sendBtn.onclick = sendMessage;
-        userInput.onkeypress = (e) => { if (e.key === 'Enter') sendMessage(); };
+        genBtn.onclick = generateImages;
+        promptInput.onkeypress = (e) => { if (e.key === 'Enter') generateImages(); };
     </script>
 </body>
 </html>
