@@ -3,354 +3,678 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>天堂聚合站 × Grok</title>
-    <meta name="description" content="Grok 风格极简漫画阅读器">
-    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js" defer></script>
+    <title>我的第一个HTML页面</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* 基础样式重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
         :root {
-            --bg: #ffffff;
-            --surface: #f8f9fa;
-            --text: #0f172a;
-            --text-secondary: #64748b;
-            --primary: #6d28d9;
-            --primary-hover: #5b21b6;
-            --border: #e2e8f0;
-            --radius: 12px;
-            --shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+            --primary-color: #4a6fa5;
+            --secondary-color: #166088;
+            --accent-color: #ff7e30;
+            --light-color: #f8f9fa;
+            --dark-color: #333;
+            --gray-color: #6c757d;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --border-radius: 8px;
         }
-        * { margin:0; padding:0; box-sizing:border-box; }
+        
         body {
-            font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-            background: var(--bg);
-            color: var(--text);
             line-height: 1.6;
-            padding-top: 80px;
+            color: var(--dark-color);
+            background-color: #f5f7fa;
         }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        /* 头部样式 */
         header {
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            background: var(--bg);
-            border-bottom: 1px solid var(--border);
-            z-index: 1000;
-            padding: 16px 24px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: var(--shadow);
-        }
-        .logo {
-            font-size: 28px;
-            font-weight: 800;
-            background: linear-gradient(135deg, #8b5cf6, #ec4899);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-        .search-box {
-            max-width: 720px;
-            margin: 40px auto 32px;
-            padding: 0 24px;
-            display: flex;
-            gap: 12px;
-        }
-        #kw {
-            flex: 1;
-            padding: 16px 20px;
-            border: 1px solid var(--border);
-            border-radius: 50px;
-            font-size: 17px;
-            outline: none;
-            transition: all 0.2s;
-        }
-        #kw:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(109,40,217,0.1);
-        }
-        button {
-            padding: 16px 32px;
-            background: var(--primary);
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
             color: white;
-            border: none;
-            border-radius: 50px;
-            font-size: 17px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        button:hover { background: var(--primary-hover); transform: translateY(-1px); }
-
-        .container { max-width: 1400px; margin: 0 auto; padding: 0 20px; }
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 24px;
-            padding-bottom: 80px;
-        }
-        .card {
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            overflow: hidden;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            padding: 2rem 0;
             box-shadow: var(--shadow);
-        }
-        .card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
-        }
-        .card img {
-            width: 100%;
-            height: 340px;
-            object-fit: cover;
-            background: #f1f5f9;
-        }
-        .card-title {
-            padding: 16px;
-            font-weight: 600;
-            font-size: 15px;
-            color: var(--text);
+            position: relative;
             overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
         }
-
-        .loading {
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 30px 30px;
+            opacity: 0.3;
+            z-index: 0;
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 1;
             text-align: center;
-            padding: 120px 20px;
-            color: var(--text-secondary);
-            font-size: 18px;
         }
-        .spinner {
-            width: 50px; height: 50px;
-            border: 5px solid #e2e8f0;
-            border-top: 5px solid var(--primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
         }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* Grok 风格阅读器 */
-        #reader {
-            position: fixed;
-            inset: 0;
-            background: white;
-            z-index: 9999;
-            display: none;
-            flex-direction: column;
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto;
         }
-        #reader-header {
-            padding: 16px 24px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: white;
+        
+        /* 导航栏 */
+        nav {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
             position: sticky;
             top: 0;
-            z-index: 10;
-            box-shadow: var(--shadow);
+            z-index: 100;
         }
-        #reader-title {
-            font-size: 20px;
+        
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+        
+        .logo {
             font-weight: 700;
-            max-width: 80%;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            text-decoration: none;
         }
-        #close-reader {
-            font-size: 32px;
-            cursor: pointer;
-            color: var(--text-secondary);
+        
+        .logo span {
+            color: var(--accent-color);
         }
-        #reader-content {
-            flex: 1;
-            overflow-y: auto;
-            padding: 24px;
-            background: #fafafa;
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
         }
-        #reader-content img {
-            max-width: 100%;
-            display: block;
-            margin: 0 auto 24px;
-            border-radius: var(--radius);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            cursor: zoom-in;
-            transition: transform 0.3s;
+        
+        .nav-links li {
+            margin-left: 2rem;
         }
-        #reader-content img:hover { transform: scale(1.01); }
-        #progress {
-            height: 4px;
-            background: var(--primary);
-            width: 0%;
-            transition: width 0.3s ease;
-            position: fixed;
+        
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark-color);
+            font-weight: 500;
+            transition: color 0.3s;
+            padding: 0.5rem 0;
+            position: relative;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
             bottom: 0;
             left: 0;
-            z-index: 10000;
+            width: 0;
+            height: 2px;
+            background-color: var(--accent-color);
+            transition: width 0.3s;
         }
-
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            cursor: pointer;
+        }
+        
+        /* 主要内容区域 */
+        main {
+            padding: 3rem 0;
+        }
+        
+        section {
+            margin-bottom: 3rem;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+        }
+        
+        section h2 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #eee;
+            display: flex;
+            align-items: center;
+        }
+        
+        section h2 i {
+            margin-right: 0.5rem;
+            color: var(--accent-color);
+        }
+        
+        /* 卡片布局 */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+        
+        .card {
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            background-color: white;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .card-img {
+            height: 180px;
+            background-color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+        }
+        
+        .card-content {
+            padding: 1.5rem;
+        }
+        
+        .card h3 {
+            color: var(--secondary-color);
+            margin-bottom: 0.8rem;
+        }
+        
+        /* 表格样式 */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.5rem;
+        }
+        
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        th {
+            background-color: #f8f9fa;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        /* 表单样式 */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--dark-color);
+        }
+        
+        input, textarea, select {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+        
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(74, 111, 165, 0.1);
+        }
+        
+        button, .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.8rem;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            display: inline-block;
+            text-decoration: none;
+        }
+        
+        button:hover, .btn:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+        
+        /* 页脚 */
         footer {
-            text-align: center;
-            padding: 60px 20px;
-            color: var(--text-secondary);
-            font-size: 14px;
+            background-color: var(--dark-color);
+            color: white;
+            padding: 3rem 0 2rem;
+            margin-top: 3rem;
         }
+        
+        .footer-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-section {
+            flex: 1;
+            min-width: 250px;
+            margin-bottom: 1.5rem;
+            padding-right: 2rem;
+        }
+        
+        .footer-section h3 {
+            color: white;
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+        }
+        
+        .footer-section ul {
+            list-style: none;
+        }
+        
+        .footer-section ul li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .footer-section a {
+            color: #ddd;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-section a:hover {
+            color: var(--accent-color);
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transition: background-color 0.3s;
+        }
+        
+        .social-links a:hover {
+            background-color: var(--accent-color);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .nav-links {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                background-color: white;
+                flex-direction: column;
+                align-items: center;
+                padding: 1rem 0;
+                box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+                transform: translateY(-100%);
+                opacity: 0;
+                transition: transform 0.3s, opacity 0.3s;
+                z-index: 99;
+            }
+            
+            .nav-links.active {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            
+            .nav-links li {
+                margin: 0.8rem 0;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-section {
+                padding-right: 0;
+            }
+        }
+        
+        /* 动画效果 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+        
+        .delay-1 { animation-delay: 0.2s; opacity: 0; }
+        .delay-2 { animation-delay: 0.4s; opacity: 0; }
+        .delay-3 { animation-delay: 0.6s; opacity: 0; }
     </style>
 </head>
 <body>
+    <!-- 头部 -->
+    <header>
+        <div class="container header-content">
+            <h1 class="fade-in">欢迎来到我的网站</h1>
+            <p class="subtitle fade-in delay-1">这是一个使用HTML5、CSS3和JavaScript创建的现代化响应式网页示例</p>
+        </div>
+    </header>
 
-<header>
-    <div class="logo">Grok 天堂站</div>
-</header>
+    <!-- 导航栏 -->
+    <nav>
+        <div class="container nav-container">
+            <a href="#" class="logo">Web<span>Site</span></a>
+            <ul class="nav-links">
+                <li><a href="#"><i class="fas fa-home"></i> 首页</a></li>
+                <li><a href="#about"><i class="fas fa-info-circle"></i> 关于</a></li>
+                <li><a href="#services"><i class="fas fa-cogs"></i> 服务</a></li>
+                <li><a href="#contact"><i class="fas fa-envelope"></i> 联系</a></li>
+            </ul>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
 
-<div class="search-box">
-    <input type="text" id="kw" placeholder="问我任何本子… 直接回车搜索" autofocus>
-    <button onclick="search()">搜索</button>
-</div>
+    <!-- 主要内容 -->
+    <main class="container">
+        <!-- 关于部分 -->
+        <section id="about" class="fade-in delay-1">
+            <h2><i class="fas fa-info-circle"></i> 关于我们</h2>
+            <p>这是一个示例HTML页面，展示了现代网页开发的基本元素和最佳实践。我们使用了语义化HTML5标签、响应式CSS布局和一些JavaScript交互功能。</p>
+            <p>这个页面完全由纯HTML、CSS和JavaScript构建，没有使用任何外部框架。它展示了如何创建美观、功能齐全的网页。</p>
+            
+            <div class="card-grid">
+                <div class="card">
+                    <div class="card-img">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>HTML5</h3>
+                        <p>使用最新的HTML5语义化标签，提高页面可访问性和SEO友好性。</p>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-img" style="background-color: #166088;">
+                        <i class="fas fa-paint-brush"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>CSS3</h3>
+                        <p>利用CSS3特性创建现代化的响应式设计，适配各种设备屏幕。</p>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-img" style="background-color: #ff7e30;">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>响应式设计</h3>
+                        <p>确保网站在手机、平板和桌面设备上都能完美显示。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-<div class="container">
-    <div class="loading" id="loading">
-        <div class="spinner"></div>
-        <p>正在加载最新资源…</p>
-    </div>
-    <div class="grid" id="grid"></div>
-</div>
+        <!-- 示例内容部分 -->
+        <section class="fade-in delay-2">
+            <h2><i class="fas fa-table"></i> 示例数据表</h2>
+            <p>下面是一个简单的表格，展示了如何在网页中呈现数据：</p>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>技术</th>
+                        <th>类别</th>
+                        <th>描述</th>
+                        <th>状态</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>HTML5</td>
+                        <td>标记语言</td>
+                        <td>网页内容结构</td>
+                        <td><span style="color: green;">已掌握</span></td>
+                    </tr>
+                    <tr>
+                        <td>CSS3</td>
+                        <td>样式表</td>
+                        <td>网页样式和布局</td>
+                        <td><span style="color: green;">已掌握</span></td>
+                    </tr>
+                    <tr>
+                        <td>JavaScript</td>
+                        <td>脚本语言</td>
+                        <td>网页交互功能</td>
+                        <td><span style="color: orange;">学习中</span></td>
+                    </tr>
+                    <tr>
+                        <td>响应式设计</td>
+                        <td>设计方法</td>
+                        <td>多设备适配</td>
+                        <td><span style="color: green;">已掌握</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
 
-<div id="progress"></div>
+        <!-- 联系表单部分 -->
+        <section id="contact" class="fade-in delay-3">
+            <h2><i class="fas fa-envelope"></i> 联系我们</h2>
+            <p>如果您有任何问题或建议，请填写以下表单与我们联系：</p>
+            
+            <form id="contactForm">
+                <div class="form-group">
+                    <label for="name">姓名：</label>
+                    <input type="text" id="name" name="name" required placeholder="请输入您的姓名">
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">邮箱：</label>
+                    <input type="email" id="email" name="email" required placeholder="请输入您的邮箱地址">
+                </div>
+                
+                <div class="form-group">
+                    <label for="subject">主题：</label>
+                    <select id="subject" name="subject" required>
+                        <option value="" disabled selected>请选择主题</option>
+                        <option value="general">一般咨询</option>
+                        <option value="technical">技术问题</option>
+                        <option value="feedback">反馈建议</option>
+                        <option value="other">其他</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="message">消息：</label>
+                    <textarea id="message" name="message" rows="5" required placeholder="请输入您的消息"></textarea>
+                </div>
+                
+                <button type="submit">发送消息</button>
+            </form>
+        </section>
+    </main>
 
-<div id="reader">
-    <div id="reader-header">
-        <div id="reader-title">加载中…</div>
-        <div id="close-reader" onclick="closeReader()">×</div>
-    </div>
-    <div id="reader-content"></div>
-</div>
+    <!-- 页脚 -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>关于网站</h3>
+                    <p>这是一个用于展示HTML、CSS和JavaScript能力的示例网站。所有代码均为纯前端实现。</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>快速链接</h3>
+                    <ul>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> 首页</a></li>
+                        <li><a href="#about"><i class="fas fa-chevron-right"></i> 关于我们</a></li>
+                        <li><a href="#services"><i class="fas fa-chevron-right"></i> 我们的服务</a></li>
+                        <li><a href="#contact"><i class="fas fa-chevron-right"></i> 联系我们</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>联系方式</h3>
+                    <ul>
+                        <li><i class="fas fa-map-marker-alt"></i> 中国，某省某市</li>
+                        <li><i class="fas fa-phone"></i> +86 123-4567-890</li>
+                        <li><i class="fas fa-envelope"></i> info@example.com</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2023 我的网站. 保留所有权利. | 由纯HTML/CSS/JS构建</p>
+            </div>
+        </div>
+    </footer>
 
-<footer>© 2025 Grok 天堂聚合站 • 极简 • 极速 • 纯净</footer>
-
-<script>
-    const PROXIES = [
-        "https://api.allorigins.win/raw?url=",
-        "https://cors.bridged.cc/",
-        "https://corsproxy.io/?",
-        "https://proxy.cors.sh/"
-    ];
-    let currentImages = [];
-
-    async function search() {
-        const kw = document.getElementById("kw").value.trim() || "最新";
-        document.getElementById("loading").style.display = "block";
-        document.getElementById("grid").innerHTML = "";
-
-        const urls = [
-            `https://jmcomic.la/search/photos?search_query=${encodeURIComponent(kw)}`,
-            `https://18comic.vip/search/photos?search_query=${encodeURIComponent(kw)}`
-        ];
-
-        let found = false;
-        for (const url of urls) {
-            for (const proxy of PROXIES) {
-                try {
-                    const res = await fetch(proxy + encodeURIComponent(url), { signal: AbortSignal.timeout(10000) });
-                    if (!res.ok) continue;
-                    const html = await res.text();
-                    const items = parse(html);
-                    if (items.length > 0) {
-                        render(items);
-                        found = true;
-                        break;
-                    }
-                } catch(e) {}
-            }
-            if (found) break;
-        }
-        document.getElementById("loading").style.display = found ? "none" : "block";
-        if (!found) document.getElementById("loading").innerHTML = "<p>未找到结果，建议换个关键词或访问原站</p>";
-    }
-
-    function parse(html) {
-        const doc = new DOMParser().parseFromString(html, "text/html");
-        const items = [];
-        doc.querySelectorAll("a[href*='album']").forEach(a => {
-            const img = a.querySelector("img");
-            const title = a.querySelector("h3,.video-title")?.innerText.trim() || "未知作品";
-            let src = img?.getAttribute("data-original") || img?.src || "";
-            if (src.startsWith("//")) src = "https:" + src;
-            const href = a.href.includes("http") ? a.href : "https://jmcomic.la" + a.href;
-            if (src.includes("media")) items.push({src, title, href});
+    <script>
+        // 移动端菜单切换
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navLinks = document.querySelector('.nav-links');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            mobileMenuBtn.innerHTML = navLinks.classList.contains('active') 
+                ? '<i class="fas fa-times"></i>' 
+                : '<i class="fas fa-bars"></i>';
         });
-        return items.slice(0, 48);
-    }
-
-    function render(items) {
-        const grid = document.getElementById("grid");
-        grid.innerHTML = "";
-        items.forEach(item => {
-            const card = document.createElement("div");
-            card.className = "card";
-            card.innerHTML = `<img src="${item.src}" loading="lazy"><div class="card-title">${item.title}</div>`;
-            card.onclick = () => openReader(item.href);
-            grid.appendChild(card);
+        
+        // 点击导航链接后关闭移动菜单
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+                mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+            });
         });
-    }
-
-    async function openReader(url) {
-        document.getElementById("reader").style.display = "flex";
-        document.getElementById("reader-content").innerHTML = "<div class='loading'>加载图片中…</div>";
-        document.getElementById("reader-title").textContent = "加载中…";
-        currentImages = [];
-
-        for (const proxy of PROXIES) {
-            try {
-                const res = await fetch(proxy + encodeURIComponent(url), { signal: AbortSignal.timeout(15000) });
-                const html = await res.text();
-                const doc = new DOMParser().parseFromString(html, "text/html");
-                document.getElementById("reader-title").textContent = doc.querySelector("h1")?.innerText.trim() || "阅读中";
-
-                let imgs = [];
-                doc.querySelectorAll("script").forEach(s => {
-                    if (s.innerHTML.includes("chapterImages")) {
-                        const m = s.innerHTML.match(/\[(.*?)\]/s);
-                        if (m) imgs = JSON.parse(m[0]);
-                    }
-                });
-                if (imgs.length === 0) {
-                    imgs = [...doc.querySelectorAll("img.lazy, img[src*='media']")].map(i => i.src || i.dataset.src || "").filter(Boolean);
-                }
-
-                currentImages = imgs.map(u => u.startsWith("http") ? u : "https://jmcomic.la" + u);
-
-                const container = document.getElementById("reader-content");
-                container.innerHTML = "";
-                currentImages.forEach((src, i) => {
-                    const img = document.createElement("img");
-                    img.src = src;
-                    img.loading = "lazy";
-                    img.onclick = () => img.requestFullscreen?.();
-                    img.onload = () => document.getElementById("progress").style.width = `${(i+1)/currentImages.length*100}%`;
-                    container.appendChild(img);
-                });
+        
+        // 表单提交处理
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // 获取表单数据
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const subject = document.getElementById('subject').value;
+            const message = document.getElementById('message').value;
+            
+            // 简单的表单验证
+            if (!name || !email || !subject || !message) {
+                alert('请填写所有必填字段！');
                 return;
-            } catch(e) {}
-        }
-        document.getElementById("reader-content").innerHTML = `<p style="text-align:center;padding:120px;color:#94a3b8">加载失败<br><a href="${url}" target="_blank" style="color:var(--primary)">直接访问原站 →</a></p>`;
-    }
-
-    function closeReader() {
-        document.getElementById("reader").style.display = "none";
-        document.getElementById("progress").style.width = "0";
-    }
-
-    // 回车搜索 + Esc关闭
-    document.getElementById("kw").addEventListener("keypress", e => { if(e.key==="Enter") search(); });
-    document.addEventListener("keydown", e => { if(e.key==="Escape") closeReader(); });
-
-    // 页面加载完自动搜索“最新”
-    window.onload = () => search();
-</script>
+            }
+            
+            // 在实际应用中，这里会发送数据到服务器
+            // 这里我们只显示一个成功消息
+            alert(`感谢您，${name}！您的消息已发送。我们会尽快通过 ${email} 与您联系。`);
+            
+            // 重置表单
+            this.reset();
+        });
+        
+        // 滚动时显示动画效果
+        document.addEventListener('DOMContentLoaded', () => {
+            const fadeElements = document.querySelectorAll('.fade-in');
+            
+            const fadeInOnScroll = () => {
+                fadeElements.forEach(element => {
+                    const elementTop = element.getBoundingClientRect().top;
+                    const elementVisible = 150;
+                    
+                    if (elementTop < window.innerHeight - elementVisible) {
+                        element.classList.add('visible');
+                    }
+                });
+            };
+            
+            // 初始检查
+            fadeInOnScroll();
+            
+            // 滚动时检查
+            window.addEventListener('scroll', fadeInOnScroll);
+        });
+    </script>
 </body>
 </html>
