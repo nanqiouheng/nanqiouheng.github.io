@@ -3,678 +3,172 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的第一个HTML页面</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>漫画阅读站 - 技术演示</title>
     <style>
-        /* 基础样式重置 */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        /* 保持与先前相同的CSS样式 */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Microsoft YaHei', sans-serif; }
+        body { background-color: #222; color: #ddd; }
+        .header { background-color: #111; padding: 15px 5%; display: flex; position: sticky; top: 0; z-index: 100; }
+        .logo { font-size: 24px; color: #e74c3c; font-weight: bold; flex: 1; }
+        .search-box { padding: 8px 15px; border-radius: 20px; background: #333; border: none; color: white; width: 60%; max-width: 400px; }
+        .filter-bar { padding: 15px 5%; background: #1a1a1a; display: flex; gap: 15px; overflow-x: auto; }
+        .filter-tag { padding: 5px 15px; border-radius: 15px; background: #333; cursor: pointer; flex-shrink: 0; }
+        .comic-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 25px; padding: 25px 5%; }
+        .comic-item { text-align: center; transition: transform 0.3s; }
+        .comic-cover { width: 100%; height: 280px; object-fit: cover; border-radius: 8px; }
+        .loading { text-align: center; padding: 50px; font-size: 20px; color: #888; }
+        /* 新增样式 */
+        .hover-info { 
+            position: absolute; 
+            bottom: 0; 
+            background: rgba(0,0,0,0.8); 
+            width: 100%; 
+            padding: 10px; 
+            transform: translateY(100%);
+            transition: 0.3s;
+            opacity: 0;
         }
-        
-        :root {
-            --primary-color: #4a6fa5;
-            --secondary-color: #166088;
-            --accent-color: #ff7e30;
-            --light-color: #f8f9fa;
-            --dark-color: #333;
-            --gray-color: #6c757d;
-            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            --border-radius: 8px;
+        .comic-item:hover .hover-info {
+            opacity: 1;
+            transform: translateY(0);
         }
-        
-        body {
-            line-height: 1.6;
-            color: var(--dark-color);
-            background-color: #f5f7fa;
-        }
-        
-        .container {
-            width: 90%;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 15px;
-        }
-        
-        /* 头部样式 */
-        header {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            padding: 2rem 0;
-            box-shadow: var(--shadow);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
-            background-size: 30px 30px;
-            opacity: 0.3;
-            z-index: 0;
-        }
-        
-        .header-content {
-            position: relative;
-            z-index: 1;
-            text-align: center;
-        }
-        
-        h1 {
-            font-size: 2.8rem;
-            margin-bottom: 0.5rem;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-        }
-        
-        .subtitle {
-            font-size: 1.2rem;
-            opacity: 0.9;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        
-        /* 导航栏 */
-        nav {
-            background-color: white;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        
-        .nav-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 0;
-        }
-        
-        .logo {
-            font-weight: 700;
-            font-size: 1.5rem;
-            color: var(--primary-color);
-            text-decoration: none;
-        }
-        
-        .logo span {
-            color: var(--accent-color);
-        }
-        
-        .nav-links {
-            display: flex;
-            list-style: none;
-        }
-        
-        .nav-links li {
-            margin-left: 2rem;
-        }
-        
-        .nav-links a {
-            text-decoration: none;
-            color: var(--dark-color);
-            font-weight: 500;
-            transition: color 0.3s;
-            padding: 0.5rem 0;
-            position: relative;
-        }
-        
-        .nav-links a:hover {
-            color: var(--primary-color);
-        }
-        
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background-color: var(--accent-color);
-            transition: width 0.3s;
-        }
-        
-        .nav-links a:hover::after {
-            width: 100%;
-        }
-        
-        .mobile-menu-btn {
-            display: none;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            color: var(--primary-color);
-            cursor: pointer;
-        }
-        
-        /* 主要内容区域 */
-        main {
-            padding: 3rem 0;
-        }
-        
-        section {
-            margin-bottom: 3rem;
-            background-color: white;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-            padding: 2rem;
-        }
-        
-        section h2 {
-            color: var(--primary-color);
-            margin-bottom: 1.5rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid #eee;
-            display: flex;
-            align-items: center;
-        }
-        
-        section h2 i {
-            margin-right: 0.5rem;
-            color: var(--accent-color);
-        }
-        
-        /* 卡片布局 */
-        .card-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 1.5rem;
-        }
-        
-        .card {
-            border-radius: var(--border-radius);
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-            transition: transform 0.3s, box-shadow 0.3s;
-            background-color: white;
-        }
-        
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-        }
-        
-        .card-img {
-            height: 180px;
-            background-color: var(--primary-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 3rem;
-        }
-        
-        .card-content {
-            padding: 1.5rem;
-        }
-        
-        .card h3 {
-            color: var(--secondary-color);
-            margin-bottom: 0.8rem;
-        }
-        
-        /* 表格样式 */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1.5rem;
-        }
-        
-        th, td {
-            padding: 1rem;
-            text-align: left;
-            border-bottom: 1px solid #eee;
-        }
-        
-        th {
-            background-color: #f8f9fa;
-            color: var(--primary-color);
-            font-weight: 600;
-        }
-        
-        tr:hover {
-            background-color: #f8f9fa;
-        }
-        
-        /* 表单样式 */
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-            color: var(--dark-color);
-        }
-        
-        input, textarea, select {
-            width: 100%;
-            padding: 0.8rem 1rem;
-            border: 1px solid #ddd;
-            border-radius: var(--border-radius);
-            font-size: 1rem;
-            transition: border 0.3s;
-        }
-        
-        input:focus, textarea:focus, select:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(74, 111, 165, 0.1);
-        }
-        
-        button, .btn {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 0.8rem 1.8rem;
-            border-radius: var(--border-radius);
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.2s;
-            display: inline-block;
-            text-decoration: none;
-        }
-        
-        button:hover, .btn:hover {
-            background-color: var(--secondary-color);
-            transform: translateY(-2px);
-        }
-        
-        /* 页脚 */
-        footer {
-            background-color: var(--dark-color);
-            color: white;
-            padding: 3rem 0 2rem;
-            margin-top: 3rem;
-        }
-        
-        .footer-content {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            margin-bottom: 2rem;
-        }
-        
-        .footer-section {
-            flex: 1;
-            min-width: 250px;
-            margin-bottom: 1.5rem;
-            padding-right: 2rem;
-        }
-        
-        .footer-section h3 {
-            color: white;
-            margin-bottom: 1.5rem;
-            font-size: 1.3rem;
-        }
-        
-        .footer-section ul {
-            list-style: none;
-        }
-        
-        .footer-section ul li {
-            margin-bottom: 0.8rem;
-        }
-        
-        .footer-section a {
-            color: #ddd;
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-        
-        .footer-section a:hover {
-            color: var(--accent-color);
-        }
-        
-        .social-links {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-        
-        .social-links a {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            transition: background-color 0.3s;
-        }
-        
-        .social-links a:hover {
-            background-color: var(--accent-color);
-        }
-        
-        .copyright {
-            text-align: center;
-            padding-top: 2rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            color: #aaa;
-            font-size: 0.9rem;
-        }
-        
-        /* 响应式设计 */
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 2.2rem;
-            }
-            
-            .nav-links {
-                position: fixed;
-                top: 70px;
-                left: 0;
-                width: 100%;
-                background-color: white;
-                flex-direction: column;
-                align-items: center;
-                padding: 1rem 0;
-                box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
-                transform: translateY(-100%);
-                opacity: 0;
-                transition: transform 0.3s, opacity 0.3s;
-                z-index: 99;
-            }
-            
-            .nav-links.active {
-                transform: translateY(0);
-                opacity: 1;
-            }
-            
-            .nav-links li {
-                margin: 0.8rem 0;
-            }
-            
-            .mobile-menu-btn {
-                display: block;
-            }
-            
-            .card-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .footer-section {
-                padding-right: 0;
-            }
-        }
-        
-        /* 动画效果 */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .fade-in {
-            animation: fadeIn 0.8s ease-out forwards;
-        }
-        
-        .delay-1 { animation-delay: 0.2s; opacity: 0; }
-        .delay-2 { animation-delay: 0.4s; opacity: 0; }
-        .delay-3 { animation-delay: 0.6s; opacity: 0; }
     </style>
 </head>
 <body>
-    <!-- 头部 -->
-    <header>
-        <div class="container header-content">
-            <h1 class="fade-in">欢迎来到我的网站</h1>
-            <p class="subtitle fade-in delay-1">这是一个使用HTML5、CSS3和JavaScript创建的现代化响应式网页示例</p>
-        </div>
+    <header class="header">
+        <div class="logo">Comic Demo</div>
+        <input type="text" class="search-box" placeholder="搜索漫画..." id="searchInput">
     </header>
 
-    <!-- 导航栏 -->
-    <nav>
-        <div class="container nav-container">
-            <a href="#" class="logo">Web<span>Site</span></a>
-            <ul class="nav-links">
-                <li><a href="#"><i class="fas fa-home"></i> 首页</a></li>
-                <li><a href="#about"><i class="fas fa-info-circle"></i> 关于</a></li>
-                <li><a href="#services"><i class="fas fa-cogs"></i> 服务</a></li>
-                <li><a href="#contact"><i class="fas fa-envelope"></i> 联系</a></li>
-            </ul>
-            <button class="mobile-menu-btn" id="mobileMenuBtn">
-                <i class="fas fa-bars"></i>
-            </button>
-        </div>
-    </nav>
+    <section class="filter-bar" id="filterBar">
+        <!-- 分类将通过JS动态加载 -->
+    </section>
 
-    <!-- 主要内容 -->
-    <main class="container">
-        <!-- 关于部分 -->
-        <section id="about" class="fade-in delay-1">
-            <h2><i class="fas fa-info-circle"></i> 关于我们</h2>
-            <p>这是一个示例HTML页面，展示了现代网页开发的基本元素和最佳实践。我们使用了语义化HTML5标签、响应式CSS布局和一些JavaScript交互功能。</p>
-            <p>这个页面完全由纯HTML、CSS和JavaScript构建，没有使用任何外部框架。它展示了如何创建美观、功能齐全的网页。</p>
-            
-            <div class="card-grid">
-                <div class="card">
-                    <div class="card-img">
-                        <i class="fas fa-code"></i>
-                    </div>
-                    <div class="card-content">
-                        <h3>HTML5</h3>
-                        <p>使用最新的HTML5语义化标签，提高页面可访问性和SEO友好性。</p>
-                    </div>
-                </div>
-                
-                <div class="card">
-                    <div class="card-img" style="background-color: #166088;">
-                        <i class="fas fa-paint-brush"></i>
-                    </div>
-                    <div class="card-content">
-                        <h3>CSS3</h3>
-                        <p>利用CSS3特性创建现代化的响应式设计，适配各种设备屏幕。</p>
-                    </div>
-                </div>
-                
-                <div class="card">
-                    <div class="card-img" style="background-color: #ff7e30;">
-                        <i class="fas fa-mobile-alt"></i>
-                    </div>
-                    <div class="card-content">
-                        <h3>响应式设计</h3>
-                        <p>确保网站在手机、平板和桌面设备上都能完美显示。</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 示例内容部分 -->
-        <section class="fade-in delay-2">
-            <h2><i class="fas fa-table"></i> 示例数据表</h2>
-            <p>下面是一个简单的表格，展示了如何在网页中呈现数据：</p>
-            
-            <table>
-                <thead>
-                    <tr>
-                        <th>技术</th>
-                        <th>类别</th>
-                        <th>描述</th>
-                        <th>状态</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>HTML5</td>
-                        <td>标记语言</td>
-                        <td>网页内容结构</td>
-                        <td><span style="color: green;">已掌握</span></td>
-                    </tr>
-                    <tr>
-                        <td>CSS3</td>
-                        <td>样式表</td>
-                        <td>网页样式和布局</td>
-                        <td><span style="color: green;">已掌握</span></td>
-                    </tr>
-                    <tr>
-                        <td>JavaScript</td>
-                        <td>脚本语言</td>
-                        <td>网页交互功能</td>
-                        <td><span style="color: orange;">学习中</span></td>
-                    </tr>
-                    <tr>
-                        <td>响应式设计</td>
-                        <td>设计方法</td>
-                        <td>多设备适配</td>
-                        <td><span style="color: green;">已掌握</span></td>
-                    </tr>
-                </tbody>
-            </table>
-        </section>
-
-        <!-- 联系表单部分 -->
-        <section id="contact" class="fade-in delay-3">
-            <h2><i class="fas fa-envelope"></i> 联系我们</h2>
-            <p>如果您有任何问题或建议，请填写以下表单与我们联系：</p>
-            
-            <form id="contactForm">
-                <div class="form-group">
-                    <label for="name">姓名：</label>
-                    <input type="text" id="name" name="name" required placeholder="请输入您的姓名">
-                </div>
-                
-                <div class="form-group">
-                    <label for="email">邮箱：</label>
-                    <input type="email" id="email" name="email" required placeholder="请输入您的邮箱地址">
-                </div>
-                
-                <div class="form-group">
-                    <label for="subject">主题：</label>
-                    <select id="subject" name="subject" required>
-                        <option value="" disabled selected>请选择主题</option>
-                        <option value="general">一般咨询</option>
-                        <option value="technical">技术问题</option>
-                        <option value="feedback">反馈建议</option>
-                        <option value="other">其他</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label for="message">消息：</label>
-                    <textarea id="message" name="message" rows="5" required placeholder="请输入您的消息"></textarea>
-                </div>
-                
-                <button type="submit">发送消息</button>
-            </form>
-        </section>
+    <main class="comic-grid" id="comicGrid">
+        <div class="loading">加载中...</div>
     </main>
 
-    <!-- 页脚 -->
-    <footer>
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h3>关于网站</h3>
-                    <p>这是一个用于展示HTML、CSS和JavaScript能力的示例网站。所有代码均为纯前端实现。</p>
-                    <div class="social-links">
-                        <a href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-github"></i></a>
-                    </div>
-                </div>
-                
-                <div class="footer-section">
-                    <h3>快速链接</h3>
-                    <ul>
-                        <li><a href="#"><i class="fas fa-chevron-right"></i> 首页</a></li>
-                        <li><a href="#about"><i class="fas fa-chevron-right"></i> 关于我们</a></li>
-                        <li><a href="#services"><i class="fas fa-chevron-right"></i> 我们的服务</a></li>
-                        <li><a href="#contact"><i class="fas fa-chevron-right"></i> 联系我们</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-section">
-                    <h3>联系方式</h3>
-                    <ul>
-                        <li><i class="fas fa-map-marker-alt"></i> 中国，某省某市</li>
-                        <li><i class="fas fa-phone"></i> +86 123-4567-890</li>
-                        <li><i class="fas fa-envelope"></i> info@example.com</li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="copyright">
-                <p>&copy; 2023 我的网站. 保留所有权利. | 由纯HTML/CSS/JS构建</p>
-            </div>
-        </div>
-    </footer>
+    <div class="pagination" id="pagination"></div>
 
     <script>
-        // 移动端菜单切换
-        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-        const navLinks = document.querySelector('.nav-links');
-        
-        mobileMenuBtn.addEventListener('click', () => {
-            navLinks.classList.toggle('active');
-            mobileMenuBtn.innerHTML = navLinks.classList.contains('active') 
-                ? '<i class="fas fa-times"></i>' 
-                : '<i class="fas fa-bars"></i>';
+        // 模拟API配置（虚构端点）
+        const API_CONFIG = {
+            baseUrl: "https://api.demo-comic.com",
+            endpoints: {
+                comics: "/comics",
+                categories: "/categories",
+                search: "/search"
+            },
+            pageSize: 20
+        }
+
+        // 状态管理
+        let currentPage = 1;
+        let currentCategory = null;
+
+        // 初始化加载
+        window.addEventListener('DOMContentLoaded', () => {
+            loadCategories();
+            loadComics();
         });
-        
-        // 点击导航链接后关闭移动菜单
-        document.querySelectorAll('.nav-links a').forEach(link => {
-            link.addEventListener('click', () => {
-                navLinks.classList.remove('active');
-                mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
-            });
-        });
-        
-        // 表单提交处理
-        document.getElementById('contactForm').addEventListener('submit', function(e) {
-            e.preventDefault();
+
+        // 获取分类数据
+        async function loadCategories() {
+            try {
+                const response = await fetch(API_CONFIG.baseUrl + API_CONFIG.endpoints.categories);
+                const categories = await response.json();
+                
+                const filterBar = document.getElementById('filterBar');
+                filterBar.innerHTML = [
+                    '<div class="filter-tag active" data-id="all">全部</div>',
+                    ...categories.map(cat => 
+                        `<div class="filter-tag" data-id="${cat.id}">${cat.name}</div>`
+                    )
+                ].join('');
+                
+                // 绑定分类点击事件
+                document.querySelectorAll('.filter-tag').forEach(tag => {
+                    tag.addEventListener('click', () => {
+                        document.querySelector('.filter-tag.active').classList.remove('active');
+                        tag.classList.add('active');
+                        currentCategory = tag.dataset.id === 'all' ? null : tag.dataset.id;
+                        currentPage = 1;
+                        loadComics();
+                    });
+                });
+                
+            } catch (error) {
+                console.error('分类加载失败:', error);
+            }
+        }
+
+        // 获取漫画数据
+        async function loadComics() {
+            const comicGrid = document.getElementById('comicGrid');
+            comicGrid.innerHTML = '<div class="loading">加载中...</div>';
             
-            // 获取表单数据
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const subject = document.getElementById('subject').value;
-            const message = document.getElementById('message').value;
+            try {
+                // 构造请求URL（模拟）
+                let apiUrl = `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.comics}?` + 
+                             `page=${currentPage}&size=${API_CONFIG.pageSize}`;
+                
+                if (currentCategory) apiUrl += `&category=${currentCategory}`;
+                
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+                
+                renderComics(data.items);
+                renderPagination(data.totalPages);
+            } catch (error) {
+                comicGrid.innerHTML = '<div class="loading">数据加载失败</div>';
+            }
+        }
+
+        // 渲染漫画
+        function renderComics(comics) {
+            const comicGrid = document.getElementById('comicGrid');
+            comicGrid.innerHTML = comics.map(comic => `
+                <div class="comic-item">
+                    <img src="${comic.cover}" 
+                         alt="${comic.title}" 
+                         class="comic-cover"
+                         onerror="this.src='https://via.placeholder.com/200x280?text=Cover+Error'">
+                    <div class="comic-title">${comic.title}</div>
+                    <div class="hover-info">
+                        <div>作者: ${comic.author}</div>
+                        <div>更新: ${comic.updateDate}</div>
+                        <div>人气: ${comic.views}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 渲染分页
+        function renderPagination(totalPages) {
+            const pagination = document.getElementById('pagination');
+            let html = '';
             
-            // 简单的表单验证
-            if (!name || !email || !subject || !message) {
-                alert('请填写所有必填字段！');
-                return;
+            if (currentPage > 1) {
+                html += `<button class="page-btn" onclick="changePage(${currentPage-1})">上一页</button>`;
             }
             
-            // 在实际应用中，这里会发送数据到服务器
-            // 这里我们只显示一个成功消息
-            alert(`感谢您，${name}！您的消息已发送。我们会尽快通过 ${email} 与您联系。`);
+            for (let i = 1; i <= totalPages; i++) {
+                html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="changePage(${i})">${i}</button>`;
+            }
             
-            // 重置表单
-            this.reset();
-        });
-        
-        // 滚动时显示动画效果
-        document.addEventListener('DOMContentLoaded', () => {
-            const fadeElements = document.querySelectorAll('.fade-in');
+            if (currentPage < totalPages) {
+                html += `<button class="page-btn" onclick="changePage(${currentPage+1})">下一页</button>`;
+            }
             
-            const fadeInOnScroll = () => {
-                fadeElements.forEach(element => {
-                    const elementTop = element.getBoundingClientRect().top;
-                    const elementVisible = 150;
-                    
-                    if (elementTop < window.innerHeight - elementVisible) {
-                        element.classList.add('visible');
-                    }
-                });
-            };
-            
-            // 初始检查
-            fadeInOnScroll();
-            
-            // 滚动时检查
-            window.addEventListener('scroll', fadeInOnScroll);
-        });
+            pagination.innerHTML = html;
+        }
+
+        // 分页函数
+        function changePage(page) {
+            currentPage = page;
+            loadComics();
+            window.scrollTo(0, 0);
+        }
     </script>
 </body>
 </html>
