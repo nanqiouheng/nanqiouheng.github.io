@@ -1,173 +1,32 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>漫画阅读站 - 技术演示</title>
-    <style>
-        /* 保持与先前相同的CSS样式 */
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Microsoft YaHei', sans-serif; }
-        body { background-color: #222; color: #ddd; }
-        .header { background-color: #111; padding: 15px 5%; display: flex; position: sticky; top: 0; z-index: 100; }
-        .logo { font-size: 24px; color: #e74c3c; font-weight: bold; flex: 1; }
-        .search-box { padding: 8px 15px; border-radius: 20px; background: #333; border: none; color: white; width: 60%; max-width: 400px; }
-        .filter-bar { padding: 15px 5%; background: #1a1a1a; display: flex; gap: 15px; overflow-x: auto; }
-        .filter-tag { padding: 5px 15px; border-radius: 15px; background: #333; cursor: pointer; flex-shrink: 0; }
-        .comic-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 25px; padding: 25px 5%; }
-        .comic-item { text-align: center; transition: transform 0.3s; }
-        .comic-cover { width: 100%; height: 280px; object-fit: cover; border-radius: 8px; }
-        .loading { text-align: center; padding: 50px; font-size: 20px; color: #888; }
-        /* 新增样式 */
-        .hover-info { 
-            position: absolute; 
-            bottom: 0; 
-            background: rgba(0,0,0,0.8); 
-            width: 100%; 
-            padding: 10px; 
-            transform: translateY(100%);
-            transition: 0.3s;
-            opacity: 0;
-        }
-        .comic-item:hover .hover-info {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    </style>
+    <title>Comic Website</title>
 </head>
 <body>
-    <header class="header">
-        <div class="logo">Comic Demo</div>
-        <input type="text" class="search-box" placeholder="搜索漫画..." id="searchInput">
-    </header>
-
-    <section class="filter-bar" id="filterBar">
-        <!-- 分类将通过JS动态加载 -->
-    </section>
-
-    <main class="comic-grid" id="comicGrid">
-        <div class="loading">加载中...</div>
-    </main>
-
-    <div class="pagination" id="pagination"></div>
+    <h1>Search Comics</h1>
+    <input type="text" id="keyword" placeholder="Enter keyword">
+    <button onclick="search()">Search</button>
+    <div id="results"></div>
 
     <script>
-        // 模拟API配置（虚构端点）
-        const API_CONFIG = {
-            baseUrl: "https://api.demo-comic.com",
-            endpoints: {
-                comics: "/comics",
-                categories: "/categories",
-                search: "/search"
-            },
-            pageSize: 20
+        async function search() {
+            const keyword = document.getElementById('keyword').value;
+            const response = await fetch(`http://localhost:5000/search?keyword=${keyword}`);
+            const data = await response.json();
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '';
+            data.comics.forEach(comic => {
+                const div = document.createElement('div');
+                div.innerHTML = `<h2>${comic.title}</h2><p>Author: ${comic.author}</p><button onclick="viewComic('${comic.id}')">View</button>`;
+                resultsDiv.appendChild(div);
+            });
         }
 
-        // 状态管理
-        let currentPage = 1;
-        let currentCategory = null;
-
-        // 初始化加载
-        window.addEventListener('DOMContentLoaded', () => {
-            loadCategories();
-            loadComics();
-        });
-
-        // 获取分类数据
-        async function loadCategories() {
-            try {
-                const response = await fetch(API_CONFIG.baseUrl + API_CONFIG.endpoints.categories);
-                const categories = await response.json();
-                
-                const filterBar = document.getElementById('filterBar');
-                filterBar.innerHTML = [
-                    '<div class="filter-tag active" data-id="all">全部</div>',
-                    ...categories.map(cat => 
-                        `<div class="filter-tag" data-id="${cat.id}">${cat.name}</div>`
-                    )
-                ].join('');
-                
-                // 绑定分类点击事件
-                document.querySelectorAll('.filter-tag').forEach(tag => {
-                    tag.addEventListener('click', () => {
-                        document.querySelector('.filter-tag.active').classList.remove('active');
-                        tag.classList.add('active');
-                        currentCategory = tag.dataset.id === 'all' ? null : tag.dataset.id;
-                        currentPage = 1;
-                        loadComics();
-                    });
-                });
-                
-            } catch (error) {
-                console.error('分类加载失败:', error);
-            }
-        }
-
-        // 获取漫画数据
-        async function loadComics() {
-            const comicGrid = document.getElementById('comicGrid');
-            comicGrid.innerHTML = '<div class="loading">加载中...</div>';
-            
-            try {
-                // 构造请求URL（模拟）
-                let apiUrl = `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.comics}?` + 
-                             `page=${currentPage}&size=${API_CONFIG.pageSize}`;
-                
-                if (currentCategory) apiUrl += `&category=${currentCategory}`;
-                
-                const response = await fetch(apiUrl);
-                const data = await response.json();
-                
-                renderComics(data.items);
-                renderPagination(data.totalPages);
-            } catch (error) {
-                comicGrid.innerHTML = '<div class="loading">数据加载失败</div>';
-            }
-        }
-
-        // 渲染漫画
-        function renderComics(comics) {
-            const comicGrid = document.getElementById('comicGrid');
-            comicGrid.innerHTML = comics.map(comic => `
-                <div class="comic-item">
-                    <img src="${comic.cover}" 
-                         alt="${comic.title}" 
-                         class="comic-cover"
-                         onerror="this.src='https://via.placeholder.com/200x280?text=Cover+Error'">
-                    <div class="comic-title">${comic.title}</div>
-                    <div class="hover-info">
-                        <div>作者: ${comic.author}</div>
-                        <div>更新: ${comic.updateDate}</div>
-                        <div>人气: ${comic.views}</div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // 渲染分页
-        function renderPagination(totalPages) {
-            const pagination = document.getElementById('pagination');
-            let html = '';
-            
-            if (currentPage > 1) {
-                html += `<button class="page-btn" onclick="changePage(${currentPage-1})">上一页</button>`;
-            }
-            
-            for (let i = 1; i <= totalPages; i++) {
-                html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="changePage(${i})">${i}</button>`;
-            }
-            
-            if (currentPage < totalPages) {
-                html += `<button class="page-btn" onclick="changePage(${currentPage+1})">下一页</button>`;
-            }
-            
-            pagination.innerHTML = html;
-        }
-
-        // 分页函数
-        function changePage(page) {
-            currentPage = page;
-            loadComics();
-            window.scrollTo(0, 0);
+        async function viewComic(id) {
+            const response = await fetch(`http://localhost:5000/comic/${id}`);
+            const data = await response.json();
+            alert(`Title: ${data.title}\nImages: ${data.images.join(', ')}`);  // Display or load images
         }
     </script>
 </body>
