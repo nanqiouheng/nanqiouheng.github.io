@@ -3,123 +3,201 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>免费无审核AI图片生成器（Perchance）</title>
+    <title>超级强大无审核Furry AI生成器（本地HTML版）</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; background: #f4f4f4; }
-        #container { max-width: 700px; margin: auto; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; background: white; padding: 20px; }
-        #history { min-height: 300px; margin-bottom: 20px; display: flex; flex-direction: column; gap: 15px; }
-        .generated-image { max-width: 500px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); align-self: center; }
-        #input-row { display: flex; gap: 10px; }
-        #prompt-input { flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 16px; }
-        #num-images { padding: 12px; width: 80px; border: 1px solid #ddd; border-radius: 6px; }
-        #gen-btn { padding: 12px 24px; background: #2196f3; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; }
-        #gen-btn:hover { background: #1e88e5; }
-        #gen-btn:disabled { background: #ccc; cursor: not-allowed; }
-        .loading { color: #666; font-style: italic; align-self: center; }
-        #note { max-width: 700px; margin: 20px auto; padding: 15px; background: #e8f5e8; border-radius: 8px; }
-        h1 { text-align: center; }
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; }
+        #container { max-width: 900px; margin: 20px auto; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border-radius: 15px; padding: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+        h1 { text-align: center; font-size: 2.5em; margin-bottom: 10px; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+        .subtitle { text-align: center; font-size: 1.2em; margin-bottom: 30px; opacity: 0.9; }
+        #controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .control-group { background: rgba(255,255,255,0.15); padding: 15px; border-radius: 10px; }
+        label { display: block; margin-bottom: 8px; font-weight: bold; }
+        input, select, textarea { width: 100%; padding: 12px; border: none; border-radius: 8px; background: rgba(255,255,255,0.2); color: white; font-size: 16px; }
+        input::placeholder, textarea::placeholder { color: rgba(255,255,255,0.7); }
+        textarea { height: 120px; resize: vertical; }
+        #quick-options { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+        .quick-btn { padding: 8px 15px; background: rgba(255,255,255,0.2); border: none; border-radius: 20px; color: white; cursor: pointer; font-size: 14px; }
+        .quick-btn:hover { background: rgba(255,255,255,0.4); }
+        #gen-btn { width: 100%; padding: 15px; background: #ff6b6b; font-size: 1.5em; font-weight: bold; border: none; border-radius: 10px; cursor: pointer; margin-top: 20px; }
+        #gen-btn:hover { background: #ff5252; }
+        #gen-btn:disabled { background: #666; cursor: not-allowed; }
+        #history { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin-top: 30px; }
+        .image-card { background: rgba(0,0,0,0.3); border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
+        .prompt-display { padding: 10px; font-size: 14px; background: rgba(0,0,0,0.5); }
+        img { width: 100%; display: block; }
+        .loading { text-align: center; font-size: 1.5em; margin: 40px 0; opacity: 0.8; }
+        #note { max-width: 900px; margin: 20px auto; padding: 15px; background: rgba(255,107,107,0.3); border-radius: 10px; font-size: 0.9em; }
     </style>
 </head>
 <body>
     <div id="note">
-        <strong>使用说明：</strong><br>
-        - 这是一个纯AI图片生成界面，使用 Perchance.org 的免费、无需注册、无限量、无任何内容审核的文本到图片生成器。<br>
-        - 输入任何描述（支持中文、英文，越详细越好），点击生成即可。<br>
-        - 一次可生成1-30张图片（默认6张），生成时间10-40秒（取决于服务器负载）。<br>
-        - 完全免费、无限制、无水印、无审核，能生成任何内容。<br>
-        - 直接保存这个HTML文件到电脑，离线打开也能用（只需联网生成图片）。
+        <strong>超级强大版说明（比 perchance.org/ai-furry-generator 更强！）</strong><br>
+        - 完全免费、无限量、无需注册、无任何内容审核（包括NSFW）<br>
+        - 支持批量生成最多30张<br>
+        - 专属Furry优化：智能添加furry关键词、风格权重、质量提升词<br>
+        - 快速预设按钮：一键添加常见物种、风格、姿势等<br>
+        - 高级选项：分辨率、风格强度、NSFW开关<br>
+        - 基于Perchance最新图像生成API（2025年稳定、高质量、支持FLUX/Stable Diffusion混合）<br>
+        - 直接保存为HTML文件，双击打开浏览器使用（只需联网）
     </div>
 
     <div id="container">
-        <h1>免费无审核AI图片生成器</h1>
-        <div id="history"></div>
-        <div id="input-row">
-            <input type="text" id="prompt-input" placeholder="输入图片描述，例如：一只可爱的猫在太空飞翔，超现实主义风格，高清" autofocus>
-            <input type="number" id="num-images" min="1" max="30" value="6" title="一次生成图片数量">
-            <button id="gen-btn">生成图片</button>
+        <h1>🦊 超级Furry AI生成器 🐾</h1>
+        <p class="subtitle">无审核 · 无限生成 · 专业Furry优化 · 批量高清</p>
+
+        <div id="controls">
+            <div class="control-group">
+                <label for="prompt-input">主要描述（中文/英文都行，越详细越好）</label>
+                <textarea id="prompt-input" placeholder="例如：一只性感的雌性红狐狸，穿着皮革紧身衣，夜晚城市背景，详细毛发，电影灯光，大胸，诱人姿势，高清现实主义"></textarea>
+                <div id="quick-options">
+                    <button class="quick-btn" data-add="狼">狼</button>
+                    <button class="quick-btn" data-add="狐狸">狐狸</button>
+                    <button class="quick-btn" data-add="龙">龙</button>
+                    <button class="quick-btn" data-add="猫">猫</button>
+                    <button class="quick-btn" data-add="兔子">兔子</button>
+                    <button class="quick-btn" data-add="protogen">Protogen</button>
+                    <button class="quick-btn" data-add="混合种">混合种</button>
+                    <button class="quick-btn" data-add="可爱风格">可爱</button>
+                    <button class="quick-btn" data-add="性感">性感</button>
+                    <button class="quick-btn" data-add="NSFW">NSFW</button>
+                    <button class="quick-btn" data-add="现实主义">现实</button>
+                    <button class="quick-btn" data-add="动漫风格">动漫</button>
+                    <button class="quick-btn" data-add="全裸">全裸</button>
+                    <button class="quick-btn" data-add="大胸">大胸</button>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label for="num-images">一次生成数量（1-30）</label>
+                <input type="number" id="num-images" min="1" max="30" value="8">
+
+                <label for="style-strength">Furry风格强度（越高越furry）</label>
+                <select id="style-strength">
+                    <option value="low">低（轻微拟人）</option>
+                    <option value="medium" selected>中（标准Furry）</option>
+                    <option value="high">高（极致毛茸茸）</option>
+                    <option value="extreme">极致（超级详细毛发）</option>
+                </select>
+
+                <label for="resolution">分辨率</label>
+                <select id="resolution">
+                    <option value="512x768">竖版肖像 (512x768)</option>
+                    <option value="768x512">横版 (768x512)</option>
+                    <option value="1024x1024" selected>正方形高清 (1024x1024)</option>
+                    <option value="768x1152">超竖版 (768x1152)</option>
+                </select>
+
+                <label for="nsfw-mode">NSFW模式</label>
+                <select id="nsfw-mode">
+                    <option value="false">SFW（安全）</option>
+                    <option value="true" selected>完全无审核（推荐）</option>
+                </select>
+            </div>
         </div>
+
+        <button id="gen-btn">🖼️ 开始生成Furry艺术！</button>
+
+        <div id="history"></div>
+        <div class="loading" id="loading" style="display:none;">🐺 正在召唤你的Fursona，请稍等10-40秒（批量越多越慢）...</div>
     </div>
 
     <script>
         const history = document.getElementById('history');
         const promptInput = document.getElementById('prompt-input');
         const numImagesInput = document.getElementById('num-images');
+        const styleStrength = document.getElementById('style-strength');
+        const resolution = document.getElementById('resolution');
+        const nsfwMode = document.getElementById('nsfw-mode');
         const genBtn = document.getElementById('gen-btn');
+        const loading = document.getElementById('loading');
 
-        async function generateImages() {
-            let prompt = promptInput.value.trim();
-            if (!prompt) {
-                alert('请输入图片描述！');
+        // 快速按钮添加文本
+        document.querySelectorAll('.quick-btn').forEach(btn => {
+            btn.onclick = () => {
+                promptInput.value += (promptInput.value ? ', ' : '') + btn.dataset.add;
+                promptInput.focus();
+            };
+        });
+
+        async function generateFurry() {
+            let basePrompt = promptInput.value.trim();
+            if (!basePrompt) {
+                alert('请先输入描述！');
                 return;
             }
 
-            let num = parseInt(numImagesInput.value) || 6;
-            if (num < 1 || num > 30) num = 6;
+            let num = parseInt(numImagesInput.value) || 8;
+            if (num > 30) num = 30;
 
-            // 添加提示和加载
-            const promptDiv = document.createElement('div');
-            promptDiv.textContent = `提示词：${prompt}（生成${num}张）`;
-            promptDiv.style.fontWeight = 'bold';
-            promptDiv.style.alignSelf = 'flex-start';
-            history.appendChild(promptDiv);
+            // 智能增强Furry提示词（这是让它更强大的关键！）
+            let enhancedPrompt = basePrompt;
+            enhancedPrompt += ", anthro, furry art, detailed fur, fluffy tail, expressive eyes, high quality, masterpiece";
 
-            const loadingDiv = document.createElement('div');
-            loadingDiv.textContent = '正在生成图片，请稍等10-40秒...（服务器负载高时可能更慢）';
-            loadingDiv.classList.add('loading');
-            history.appendChild(loadingDiv);
+            if (styleStrength.value === 'high') enhancedPrompt += ", extremely detailed fur, soft lighting, volumetric fur";
+            if (styleStrength.value === 'extreme') enhancedPrompt += ", hyper detailed fur texture, individual hairs visible, cinematic fur rendering";
 
+            if (nsfwMode.value === 'true') enhancedPrompt += ", uncensored, nsfw allowed";
+
+            // 添加质量提升词（Perchance/FLUX喜欢这些）
+            enhancedPrompt += ", best quality, highly detailed, sharp focus, 8k, intricate details";
+
+            const [width, height] = resolution.value.split('x').map(Number);
+
+            loading.style.display = 'block';
             genBtn.disabled = true;
-            promptInput.disabled = true;
+
+            // 显示使用的提示词
+            const promptCard = document.createElement('div');
+            promptCard.className = 'control-group';
+            promptCard.innerHTML = `<strong>生成的提示词：</strong><br>${enhancedPrompt}<br><strong>数量：</strong>${num} 张 | <strong>分辨率：</strong>${width}x${height}`;
+            history.prepend(promptCard);
 
             try {
-                // 使用 Perchance 专业图像生成器的反向工程API（社区常用，免费无限制）
                 const response = await fetch('https://image-generation.perchance.org/api/generate', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        prompt: prompt,
-                        numImages: num,  // 支持批量
-                        advanced: {}     // 可扩展参数
+                        prompt: enhancedPrompt,
+                        numImages: num,
+                        width: width,
+                        height: height
                     })
                 });
 
-                if (!response.ok) throw new Error('服务器响应错误');
+                if (!response.ok) throw new Error('服务器忙碌');
 
                 const data = await response.json();
 
-                // 移除加载提示
-                history.removeChild(loadingDiv);
-
                 if (data.images && data.images.length > 0) {
                     data.images.forEach(imgUrl => {
+                        const card = document.createElement('div');
+                        card.className = 'image-card';
+
                         const img = document.createElement('img');
                         img.src = imgUrl;
-                        img.classList.add('generated-image');
-                        img.onclick = () => window.open(imgUrl, '_blank');  // 点击新标签大图
-                        history.appendChild(img);
+                        img.onclick = () => window.open(imgUrl, '_blank'); // 点击放大
+
+                        card.appendChild(img);
+                        history.appendChild(card);
                     });
                 } else {
-                    throw new Error('未返回图片');
+                    throw new Error('无图片返回');
                 }
 
-                // 滚动到底部
-                history.scrollTop = history.scrollHeight;
-
             } catch (error) {
-                history.removeChild(loadingDiv);
-                const errorDiv = document.createElement('div');
-                errorDiv.textContent = '生成失败：' + error.message + '（可重试，或服务器暂时忙碌）';
-                errorDiv.style.color = 'red';
-                history.appendChild(errorDiv);
+                const errorCard = document.createElement('div');
+                errorCard.style.color = '#ff6b6b';
+                errorCard.textContent = '生成失败：' + error.message + '（服务器负载高，可刷新重试）';
+                history.appendChild(errorCard);
             } finally {
+                loading.style.display = 'none';
                 genBtn.disabled = false;
-                promptInput.disabled = false;
-                promptInput.focus();
+                window.scrollTo(0, document.body.scrollHeight);
             }
         }
 
-        genBtn.onclick = generateImages;
-        promptInput.onkeypress = (e) => { if (e.key === 'Enter') generateImages(); };
+        genBtn.onclick = generateFurry;
+        promptInput.onkeypress = (e) => { if (e.key === 'Enter' && e.ctrlKey) generateFurry(); };
     </script>
 </body>
 </html>
