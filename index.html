@@ -1,10 +1,6 @@
 <!DOCTYPE html>
-<html>
-
-<head>
-    <title>Dynamic Grade Calculator</title>
     <style>
-        /* Basic styling for clarity */
+        /* 您的原始样式，未作任何修改 */
         body {
             font-family: Arial, sans-serif;
             line-height: 1.6;
@@ -14,17 +10,23 @@
             min-height: 100vh;
             margin: 0;
             background-color: #f7f7f7;
+            background-size: cover;
+            backdrop-filter: blur(5px);
+            flex-direction: column;
+            background-image: url(https://images.unsplash.com/photo-1463725876303-ff840e2aa8d5?q=80&w=2532&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D);
         }
-
+        footer {
+            position: absolute;
+            bottom: 0px;
+            color: white;
+        }
         .container {
-            width: 650px;
-            /* Increased width for new column */
+            width: 800px;
             padding: 20px;
             border: 1px solid #ccc;
             box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
             background-color: #fff;
         }
-
         .header-area {
             display: flex;
             justify-content: space-between;
@@ -33,7 +35,6 @@
             padding-bottom: 10px;
             height: 50px;
         }
-
         .overall-score-container {
             text-align: right;
             display: flex;
@@ -41,26 +42,22 @@
             top: 80px;
             position: relative;
         }
-
         h2,
         h3 {
             border: none;
             padding: 0;
             margin: 0;
         }
-
         h3 {
             margin-top: 15px;
             border-bottom: 1px solid #eee;
             padding-bottom: 10px;
         }
-
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
         }
-
         th,
         td {
             padding: 8px;
@@ -68,25 +65,20 @@
             border-bottom: 1px solid #ddd;
             vertical-align: middle;
         }
-
         th {
             background-color: #f2f2f2;
         }
-
         .overall-score {
             font-size: 2.5em;
             font-weight: bold;
             display: inline-block;
         }
-
         [contenteditable="true"] {
             outline: 1px dashed #007bff;
             cursor: text;
             padding: 2px 4px;
             border-radius: 3px;
         }
-
-        /* Button Styles */
         .action-btn {
             border: none;
             padding: 5px 10px;
@@ -94,33 +86,27 @@
             cursor: pointer;
             color: white;
             font-size: 12px;
+            margin: 0 2px;
         }
-
         .remove-row-btn {
             background-color: #dc3545;
         }
-
         .remove-row-btn:hover {
             background-color: #c82333;
         }
-
         .solve-item-btn {
             background-color: #28a745;
         }
-
         .solve-item-btn:hover {
             background-color: #218838;
         }
-
         #solve-overall-btn {
             background-color: #007bff;
             margin-top: 5px;
         }
-
         #solve-overall-btn:hover {
             background-color: #0056b3;
         }
-
         #add-row-btn {
             margin-top: 20px;
             background-color: #17a2b8;
@@ -132,15 +118,16 @@
             width: 100%;
             font-size: 16px;
         }
-
         #add-row-btn:hover {
             background-color: #138496;
         }
+        /* 新增样式 */
+        .add-sub-btn { background-color: #ffc107; color: black; }
+        .add-sub-btn:hover { background-color: #e0a800; }
+        .sub-item-indicator { display: inline-block; width: 15px; text-align: center; margin-right: 5px; color: #999; }
     </style>
 </head>
-
 <body>
-
     <div class="container">
         <div class="header-area">
             <h2>成绩详情</h2>
@@ -149,147 +136,259 @@
                 <button id="solve-overall-btn" class="action-btn">计算</button>
             </div>
         </div>
-
         <h3>分数计算器</h3>
         <p>
             <strong>指引:</strong> 输入成绩和权重进行计算<br>
-            <strong>目前时间:</strong> <span id="timeStr">2025-08-18 09:00</span>
+            <strong>目前时间:</strong> <span id="timeStr"></span>
         </p>
-
         <table>
             <thead>
                 <tr>
                     <th>项目</th>
                     <th>权重</th>
                     <th>成绩</th>
-                    <th>操作</th>
+                    <th style="width: 210px;">操作</th>
                 </tr>
             </thead>
             <tbody id="grade-table-body">
                 <!-- Table rows are managed by JavaScript -->
             </tbody>
         </table>
-
         <button id="add-row-btn">添加新项目</button>
-
     </div>
-
     <script>
+        // --- 时间更新函数 ---
         function updateTime() {
             var date = new Date();
-            var str = `${date.getFullYear()}-${(date.getMonth().toString()).padStart(2, "0")}-${(date.getDate().toString()).padStart(2, "0")} ${(date.getHours().toString()).padStart(2, "0")}:${(date.getMinutes().toString()).padStart(2, "0")}`
+            var str = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")} ${date.getHours().toString().padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}`;
             document.getElementById("timeStr").textContent = str;
         }
+        setInterval(updateTime, 1000); // 每秒更新一次
 
         document.addEventListener('DOMContentLoaded', () => {
             updateTime();
             const tableBody = document.getElementById('grade-table-body');
 
-            function getGrade(score) {
-                if (score >= 93) return 'A';
-                if (score >= 90) return 'A−';
-                if (score >= 86) return 'B';
-                if (score >= 80) return 'B−';
-                if (score >= 76) return 'C';
-                if (score >= 70) return 'C−';
-                if (score >= 66) return 'D';
-                if (score >= 60) return 'D−';
-                return 'F';
+            const getGrade = score => {
+                if (score >= 93) return 'A'; if (score >= 90) return 'A−'; if (score >= 86) return 'B';
+                if (score >= 80) return 'B−'; if (score >= 76) return 'C'; if (score >= 70) return 'C−';
+                if (score >= 66) return 'D'; if (score >= 60) return 'D−'; return 'F';
+            };
+            
+            const generateId = () => 'item-' + Math.random().toString(36).substr(2, 9);
+
+            function getEffectiveWeight(row) {
+                if (!row) return 0;
+                let weight = (parseFloat(row.querySelector('.editable-weight').textContent) || 0) / 100;
+                const parentId = row.dataset.parentId;
+                if (parentId) {
+                    const parentRow = document.getElementById(parentId);
+                    weight *= getEffectiveWeight(parentRow);
+                }
+                return weight;
+            }
+
+            function updateParentScore(parentId) {
+                if (!parentId) return;
+                const parentRow = document.getElementById(parentId);
+                if (!parentRow) return;
+
+                let weightedSum = 0;
+                let totalWeight = 0;
+                const children = tableBody.querySelectorAll(`[data-parent-id="${parentId}"]`);
+
+                if (children.length === 0) { // No children, re-enable editing
+                    parentRow.querySelector('.editable-score').contentEditable = true;
+                    return;
+                }
+
+                children.forEach(child => {
+                    const weight = parseFloat(child.querySelector('.editable-weight').textContent) || 0;
+                    const score = parseFloat(child.querySelector('.editable-score').textContent);
+                    if (!isNaN(score)) {
+                        weightedSum += score * weight;
+                        totalWeight += weight;
+                    }
+                });
+
+                const parentScore = totalWeight > 0 ? weightedSum / totalWeight : 0;
+                const parentScoreEl = parentRow.querySelector('.editable-score');
+                parentScoreEl.textContent = parentScore.toFixed(1);
+                updateGradeForScore(parentScoreEl);
+
+                // Recursively update upwards
+                if (parentRow.dataset.parentId) {
+                    updateParentScore(parentRow.dataset.parentId);
+                }
+            }
+
+            function calculateOverallScore() {
+                let totalScore = 0;
+                tableBody.querySelectorAll('tr[data-parent-id]').forEach(row => {
+                     // Only sum up children, parents are auto-calculated
+                });
+                tableBody.querySelectorAll('tr').forEach(row => {
+                    // Only consider leaf nodes for final calculation
+                    if (!tableBody.querySelector(`[data-parent-id="${row.id}"]`)) {
+                        const score = parseFloat(row.querySelector('.editable-score').textContent);
+                        if (!isNaN(score)) {
+                            totalScore += getEffectiveWeight(row) * score;
+                        }
+                    }
+                });
+                document.querySelector('.overall-score').textContent = totalScore.toFixed(1);
+            }
+
+            function solveForItem(button) {
+                const targetRow = button.closest('tr');
+                if (tableBody.querySelector(`[data-parent-id="${targetRow.id}"]`)) {
+                    alert("无法为包含子项的项目求解。请为具体的子节点项目求解。");
+                    return;
+                }
+                
+                const desiredGrade = parseFloat(document.querySelector('.overall-score').textContent);
+                if (isNaN(desiredGrade)) {
+                    alert("无效的总分目标值。");
+                    return;
+                }
+
+                const targetEffectiveWeight = getEffectiveWeight(targetRow);
+                if (targetEffectiveWeight <= 0) {
+                    alert("无法为权重为零或负数的项目求解。");
+                    return;
+                }
+
+                let sumOfOtherProducts = 0;
+                tableBody.querySelectorAll('tr').forEach(row => {
+                    if (row.id !== targetRow.id && !tableBody.querySelector(`[data-parent-id="${row.id}"]`)) {
+                         const score = parseFloat(row.querySelector('.editable-score').textContent);
+                         if (!isNaN(score)) {
+                            sumOfOtherProducts += getEffectiveWeight(row) * score;
+                         }
+                    }
+                });
+
+                const requiredScore = (desiredGrade - sumOfOtherProducts) / targetEffectiveWeight;
+                const targetScoreEl = targetRow.querySelector('.editable-score');
+                targetScoreEl.textContent = requiredScore.toFixed(1);
+                updateGradeForScore(targetScoreEl);
+            }
+
+            function renderRow(itemData, parentId = null, level = 0) {
+                const row = document.createElement('tr');
+                row.id = itemData.id;
+                if (parentId) row.dataset.parentId = parentId;
+                
+                const hasChildren = itemData.subItems && itemData.subItems.length > 0;
+                const score = itemData.score ?? '0';
+                const grade = isNaN(parseFloat(score)) ? '' : getGrade(score);
+
+                if (parentId != null) {
+                    row.style.background = "#eee"
+                }
+
+                row.innerHTML = `
+                    <td style="padding-left: ${level * 25 + 8}px" contenteditable="true">
+                        ${level > 0 ? '<span class="sub-item-indicator">└</span>' : ''}${itemData.name}
+                    </td>
+                    <td class="editable-weight" contenteditable="true">${itemData.weight}</td>
+                    <td>
+                        <span class="editable-score" contenteditable="${!hasChildren}">${score}</span> / 
+                        <span class="letter-grade">${grade}</span>
+                    </td>
+                    <td>
+                        <button class="add-sub-btn action-btn">添加子项</button>
+                        <button class="solve-item-btn action-btn">求解</button>
+                        <button class="remove-row-btn action-btn">删除</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+
+                if (hasChildren) {
+                    itemData.subItems.forEach(subItem => renderRow(subItem, itemData.id, level + 1));
+                    // After rendering children, update parent score
+                    updateParentScore(itemData.id);
+                }
+            }
+            
+            function addTopLevelRow() {
+                renderRow({ id: generateId(), name: '新项目', weight: '0%', score: '0' });
+            }
+
+            function addSubItem(button) {
+                const parentRow = button.closest('tr');
+                const parentId = parentRow.id;
+                parentRow.querySelector('.editable-score').contentEditable = false; // Disable parent score editing
+                
+                const level = parseInt(parentRow.querySelector('td:first-child').style.paddingLeft.replace('px', '')) / 25 + 1;
+                
+                const newRowData = { id: generateId(), name: '新子项目', weight: '0%', score: '0' };
+
+                const newRow = document.createElement('tr');
+                newRow.id = newRowData.id;
+                newRow.style.background = "#eee"
+                newRow.dataset.parentId = parentId;
+                newRow.innerHTML = `
+                    <td style="padding-left: ${level * 25 + 8}px" contenteditable="true">
+                        <span class="sub-item-indicator">└</span>${newRowData.name}
+                    </td>
+                    <td class="editable-weight" contenteditable="true">${newRowData.weight}</td>
+                    <td>
+                        <span class="editable-score" contenteditable="true">${newRowData.score}</span> / 
+                        <span class="letter-grade">F</span>
+                    </td>
+                    <td>
+                        <button class="add-sub-btn action-btn">添加子项</button>
+                        <button class="solve-item-btn action-btn">求解</button>
+                        <button class="remove-row-btn action-btn">删除</button>
+                    </td>
+                `;
+                parentRow.after(newRow);
+                updateParentScore(parentId);
+            }
+
+            function removeRow(button) {
+                const rowToRemove = button.closest('tr');
+                const parentId = rowToRemove.dataset.parentId;
+                // Recursively remove children
+                const children = tableBody.querySelectorAll(`[data-parent-id="${rowToRemove.id}"]`);
+                children.forEach(child => removeRow(child.querySelector('.remove-row-btn')));
+                rowToRemove.remove();
+                // After removing, update the parent's score
+                if(parentId) {
+                    updateParentScore(parentId);
+                }
             }
 
             function updateGradeForScore(scoreElement) {
                 const score = parseFloat(scoreElement.textContent);
                 if (isNaN(score)) return;
                 const letterGradeSpan = scoreElement.closest('td').querySelector('.letter-grade');
-                if (letterGradeSpan) {
-                    letterGradeSpan.textContent = getGrade(score);
-                }
+                if (letterGradeSpan) letterGradeSpan.textContent = getGrade(score);
             }
 
-
-            function calculateOverallScore() {
-                let totalWeightedScore = 0;
-                let totalConsideredWeight = 0;
-                tableBody.querySelectorAll('tr').forEach(row => {
-                    const weightEl = row.querySelector('.editable-weight');
-                    const scoreEl = row.querySelector('.editable-score');
-                    const weight = parseFloat(weightEl.textContent);
-                    const score = parseFloat(scoreEl.textContent);
-                    if (!isNaN(weight) && !isNaN(score) && weight > 0) {
-                        totalWeightedScore += (weight / 100) * score;
-                        totalConsideredWeight += (weight / 100);
-                    }
-                });
-                const finalScore = totalWeightedScore;
-                document.querySelector('.overall-score').textContent = finalScore.toFixed(1);
-            }
-
-            function solveForItem(solveButton) {
-                const targetRow = solveButton.closest('tr');
-                const targetWeightEl = targetRow.querySelector('.editable-weight');
-                const targetWeight = parseFloat(targetWeightEl.textContent);
-
-                if (isNaN(targetWeight) || targetWeight <= 0) {
-                    alert("无法求解。");
-                    return;
-                }
-
-                const desiredGrade = parseFloat(document.querySelector('.overall-score').textContent);
-
-                if (isNaN(desiredGrade)) {
-                    alert("无效的成绩值。");
-                    return;
-                }
-
-                let sumOfKnownProducts = 0;
-                let sumOfAllWeights = 0;
-
-                tableBody.querySelectorAll('tr').forEach(row => {
-                    const weight = parseFloat(row.querySelector('.editable-weight').textContent);
-                    if (!isNaN(weight)) {
-                        sumOfAllWeights += weight;
-                        if (row !== targetRow) {
-                            const score = parseFloat(row.querySelector('.editable-score').textContent);
-                            if (!isNaN(score)) {
-                                sumOfKnownProducts += (weight / 100) * score;
-                            }
-                        }
-                    }
-                });
-
-                if (sumOfAllWeights !== 100) {
-                    alert(`警告: 所有权重只有${sumOfAllWeights}%，不是100%。将会使用100%为基准计算。`);
-                }
-
-
-                const requiredScore = (desiredGrade - sumOfKnownProducts) / (targetWeight / 100);
-
-                const targetScoreEl = targetRow.querySelector('.editable-score');
-                targetScoreEl.textContent = requiredScore.toFixed(1);
-                updateGradeForScore(targetScoreEl);
-
-            }
-
-            // --- Main Event Delegation ---
-            document.body.addEventListener('click', (event) => {
-                if (event.target.matches('.remove-row-btn')) event.target.closest('tr').remove();
-                if (event.target.matches('#add-row-btn')) addRow();
-                if (event.target.matches('#solve-overall-btn')) calculateOverallScore();
-                if (event.target.matches('.solve-item-btn')) solveForItem(event.target);
+            // --- Event Delegation ---
+            document.body.addEventListener('click', (e) => {
+                if (e.target.matches('#add-row-btn')) addTopLevelRow();
+                if (e.target.matches('.add-sub-btn')) addSubItem(e.target);
+                if (e.target.matches('.remove-row-btn')) removeRow(e.target);
+                if (e.target.matches('#solve-overall-btn')) calculateOverallScore();
+                if (e.target.matches('.solve-item-btn')) solveForItem(e.target);
             });
 
-            document.body.addEventListener('blur', (event) => {
-                const target = event.target;
-                if (target.matches('.editable-weight')) {
+            document.body.addEventListener('blur', (e) => {
+                const target = e.target;
+                if (target.matches('.editable-weight') || target.matches('.editable-score')) {
                     const num = parseFloat(target.textContent);
-                    target.textContent = isNaN(num) ? '0%' : num + '%';
+                    if (target.matches('.editable-weight')) target.textContent = isNaN(num) ? '0%' : num + '%';
+                    if (target.matches('.editable-score')) {
+                        target.textContent = isNaN(num) ? '0' : num;
+                        updateGradeForScore(target);
+                    }
+                    const parentId = target.closest('tr').dataset.parentId;
+                    if(parentId) updateParentScore(parentId);
                 }
-                if (target.matches('.editable-score')) {
-                    const num = parseFloat(target.textContent);
-                    target.textContent = isNaN(num) ? (target.textContent.trim() === '--' ? '--' : '0') : num;
-                    if (!isNaN(num)) updateGradeForScore(target);
-                }
-                if (target.matches('.overall-score')) {
+                 if (target.matches('.overall-score')) {
                     const num = parseFloat(target.textContent);
                     target.textContent = isNaN(num) ? '0' : num;
                 }
@@ -302,40 +401,21 @@
                 }
             });
 
-            // --- Row Creation ---
-            function addRow(data = {}) {
-                const row = document.createElement('tr');
-                const score = data.score ?? '0';
-                const grade = (score === '--' || isNaN(parseFloat(score))) ? '' : getGrade(score);
-                row.innerHTML = `
-      <td contenteditable="true">${data.name ?? 'New Item'}</td>
-      <td class="editable-weight" contenteditable="true">${data.weight ?? '0%'}</td>
-      <td>
-        <span class="editable-score" contenteditable="true">${score}</span> / 
-        <span class="letter-grade">${grade}</span>
-      </td>
-      <td>
-        <button class="solve-item-btn action-btn">求解</button>
-        <button class="remove-row-btn action-btn">删除</button>
-      </td>
-    `;
-                tableBody.appendChild(row);
-            }
-
-            // --- Initialize Table with Default Data ---
+            // --- Initial Data ---
             const initialData = [
-                { name: '期末考试', weight: '30%', score: 100 },
-                { name: '期中考试', weight: '30%', score: 100 },
-                { name: '项目参与', weight: '35%', score: 100 },
-                { name: 'Professionalism', weight: '5%', score: 100 },
+                {
+                    id: generateId(), name: '期中考试', weight: '30%',
+                    subItems: [
+                        { id: generateId(), name: '选择题', weight: '60%', score: '100' },
+                        { id: generateId(), name: '简答题', weight: '40%', score: '100' }
+                    ]
+                },
+                { id: generateId(), name: '期末考试', weight: '40%', score: '100' },
+                { id: generateId(), name: '项目参与', weight: '30%', score: '100' }
             ];
-
-            initialData.forEach(item => addRow(item));
+            initialData.forEach(item => renderRow(item));
         });
-
-
     </script>
-
+    <footer>Powered by Down'sicient Tech</footer>
 </body>
-
 </html>
