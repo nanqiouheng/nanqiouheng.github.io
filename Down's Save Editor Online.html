@@ -1,2 +1,409 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Down's Save Editor Online</title>
+    <style>
+        :root {
+            --bg: #0d1117;
+            --surface: #161b22;
+            --text: #c9d1d9;
+            --accent: #58a6ff;
+            --accent-dark: #238636;
+            --border: #30363d;
+            --success: #238636;
+            --error: #f85149;
+        }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h1 {
+            text-align: center;
+            color: var(--accent);
+            margin: 0 0 30px;
+            font-size: 2.2rem;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        .upload-zone {
+            border: 3px dashed var(--border);
+            border-radius: 12px;
+            padding: 60px 20px;
+            text-align: center;
+            background: var(--surface);
+            transition: all 0.3s;
+            cursor: pointer;
+            user-select: none;
+        }
+        .upload-zone:hover, .upload-zone.dragover {
+            border-color: var(--accent);
+            background: #1c2330;
+        }
+        .upload-zone.dragover {
+            border-color: var(--success);
+        }
+        #editor, #hex-view {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 25px;
+            min-height: 200px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        th {
+            background: #0d1117;
+            color: #8b949e;
+        }
+        input[type="text"], input[type="number"] {
+            background: #0d1117;
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 6px 10px;
+            border-radius: 6px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        button {
+            background: var(--success);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background: #2ea043;
+        }
+        .btn-save {
+            display: block;
+            margin: 20px auto 0;
+        }
+        #status {
+            margin-top: 20px;
+            padding: 12px 18px;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+        .success { background: #12211e; color: #58a6ff; }
+        .error   { background: #1e1114; color: var(--error); }
+        .info    { background: #1c2330; color: #8b949e; }
+        .hex-table {
+            font-family: 'Consolas', monospace;
+            font-size: 14px;
+            white-space: pre;
+        }
+        .return-home {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 1.1rem;
+            padding: 8px 16px;
+            background: var(--surface);
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            transition: all 0.2s;
+        }
+        .return-home:hover {
+            background: var(--accent);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="return-home">← 返回主页</a>
 
-<a href="index.html" style="position:fixed; top:15px; left:15px; color:#a78bfa; text-decoration:none;">← 返回主页</a>
+    <div class="container">
+        <h1>Down's Save Editor Online</h1>
+
+        <div class="upload-zone" id="dropZone">
+            <p>拖放或点击上传存档文件<br>支持 .json, .ini, .sav, .dat, .zip 等</p>
+            <input type="file" id="fileInput" accept=".json,.ini,.sav,.dat,.bin,.zip" style="display:none;">
+            <button type="button" onclick="document.getElementById('fileInput').click()">选择文件</button>
+        </div>
+
+        <div id="editor"></div>
+        <div id="hex-view"></div>
+
+        <div id="status"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+
+    <script>
+        let currentData = null;
+        let originalFileName = "";
+        let fileExtension = "";
+        let isBinary = false;
+
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const editor = document.getElementById('editor');
+        const hexView = document.getElementById('hex-view');
+        const status = document.getElementById('status');
+
+        // 拖放事件
+        dropZone.addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', e => handleFile(e.target.files[0]));
+
+        dropZone.addEventListener('dragover', e => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+        dropZone.addEventListener('drop', e => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            handleFile(e.dataTransfer.files[0]);
+        });
+
+        async function handleFile(file) {
+            if (!file) return;
+            originalFileName = file.name;
+            fileExtension = file.name.split('.').pop().toLowerCase();
+
+            showStatus(`正在读取文件：${file.name}`, 'info');
+
+            const arrayBuffer = await file.arrayBuffer();
+            const dataView = new DataView(arrayBuffer);
+
+            if (fileExtension === 'zip') {
+                try {
+                    const zip = await JSZip.loadAsync(arrayBuffer);
+                    const files = Object.keys(zip.files);
+                    if (files.length === 0) throw new Error("ZIP 文件为空");
+                    const firstFile = zip.files[files[0]];
+                    const content = await firstFile.async("arraybuffer");
+                    parseContent(content, files[0]);
+                } catch (err) {
+                    showStatus("ZIP 解压失败：" + err.message, 'error');
+                }
+            } else {
+                parseContent(arrayBuffer, file.name);
+            }
+        }
+
+        function parseContent(buffer, name) {
+            const ext = name.split('.').pop().toLowerCase();
+            try {
+                if (ext === 'json') {
+                    const text = new TextDecoder().decode(buffer);
+                    currentData = JSON.parse(text);
+                    isBinary = false;
+                    renderJsonEditor();
+                } else if (ext === 'ini') {
+                    currentData = parseINI(new TextDecoder().decode(buffer));
+                    isBinary = false;
+                    renderIniEditor();
+                } else {
+                    // 二进制/未知格式 → 十六进制编辑
+                    isBinary = true;
+                    renderHexEditor(buffer);
+                }
+                showStatus(`文件加载成功：${name}`, 'success');
+            } catch (err) {
+                showStatus(`解析失败：${err.message}`, 'error');
+                renderHexEditor(buffer);
+            }
+        }
+
+        // JSON 编辑器
+        function renderJsonEditor() {
+            editor.innerHTML = '<h3>JSON 编辑器</h3>';
+            const table = document.createElement('table');
+            table.innerHTML = `<thead><tr><th>键</th><th>值</th></tr></thead><tbody></tbody>`;
+            const tbody = table.querySelector('tbody');
+
+            function createRow(key, value, path = key) {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${escapeHtml(key)}</td>
+                    <td><input type="text" value="${escapeHtml(JSON.stringify(value))}" 
+                               data-path="${path}" onchange="updateJsonValue(this)"></td>
+                `;
+                tbody.appendChild(tr);
+            }
+
+            function recurse(obj, prefix = '') {
+                for (const [key, val] of Object.entries(obj)) {
+                    const path = prefix ? `${prefix}.${key}` : key;
+                    if (typeof val === 'object' && val !== null) {
+                        createRow(key, '[对象]');
+                        recurse(val, path);
+                    } else {
+                        createRow(key, val, path);
+                    }
+                }
+            }
+            recurse(currentData);
+
+            editor.appendChild(table);
+
+            const saveBtn = document.createElement('button');
+            saveBtn.textContent = '保存修改';
+            saveBtn.className = 'btn-save';
+            saveBtn.onclick = saveJson;
+            editor.appendChild(saveBtn);
+        }
+
+        window.updateJsonValue = function(input) {
+            const path = input.dataset.path.split('.');
+            let obj = currentData;
+            for (let i = 0; i < path.length - 1; i++) {
+                obj = obj[path[i]];
+            }
+            try {
+                obj[path[path.length-1]] = JSON.parse(input.value);
+            } catch {
+                obj[path[path.length-1]] = input.value;
+            }
+        };
+
+        function saveJson() {
+            const blob = new Blob([JSON.stringify(currentData, null, 2)], {type: 'application/json'});
+            saveAs(blob, `edited_${originalFileName}`);
+            showStatus('文件已保存！', 'success');
+        }
+
+        // INI 编辑器
+        function renderIniEditor() {
+            editor.innerHTML = '<h3>INI 编辑器</h3>';
+            const table = document.createElement('table');
+            table.innerHTML = `<thead><tr><th>Section</th><th>键</th><th>值</th></tr></thead><tbody></tbody>`;
+            const tbody = table.querySelector('tbody');
+
+            for (const section in currentData) {
+                const sectionRow = document.createElement('tr');
+                sectionRow.innerHTML = `<td colspan="3"><strong>[${section}]</strong></td>`;
+                tbody.appendChild(sectionRow);
+
+                for (const key in currentData[section]) {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td></td>
+                        <td>${escapeHtml(key)}</td>
+                        <td><input type="text" value="${escapeHtml(currentData[section][key])}"
+                                   data-section="${section}" data-key="${key}" onchange="updateIniValue(this)"></td>
+                    `;
+                    tbody.appendChild(tr);
+                }
+            }
+
+            editor.appendChild(table);
+
+            const saveBtn = document.createElement('button');
+            saveBtn.textContent = '保存修改';
+            saveBtn.className = 'btn-save';
+            saveBtn.onclick = saveIni;
+            editor.appendChild(saveBtn);
+        }
+
+        window.updateIniValue = function(input) {
+            const section = input.dataset.section;
+            const key = input.dataset.key;
+            currentData[section][key] = input.value;
+        };
+
+        function saveIni() {
+            let content = '';
+            for (const section in currentData) {
+                content += `[${section}]\n`;
+                for (const key in currentData[section]) {
+                    content += `${key}=${currentData[section][key]}\n`;
+                }
+                content += '\n';
+            }
+            const blob = new Blob([content], {type: 'text/plain'});
+            saveAs(blob, `edited_${originalFileName}`);
+            showStatus('文件已保存！', 'success');
+        }
+
+        // 十六进制编辑器（只读查看 + 提示）
+        function renderHexEditor(buffer) {
+            editor.innerHTML = '<h3>二进制/未知格式 - 十六进制查看</h3><p>暂不支持直接编辑此格式。如需编辑，请提供具体存档结构，我可以帮你添加支持。</p>';
+            hexView.innerHTML = '<h3>十六进制预览（前 512 字节）</h3>';
+
+            const view = new Uint8Array(buffer.slice(0, 512));
+            let hex = '';
+            for (let i = 0; i < view.length; i += 16) {
+                let line = `${i.toString(16).padStart(8,'0')}  `;
+                for (let j = 0; j < 16; j++) {
+                    const byte = view[i+j] || 0;
+                    line += byte.toString(16).padStart(2,'0') + ' ';
+                    if (j === 7) line += ' ';
+                }
+                line += ' | ';
+                for (let j = 0; j < 16; j++) {
+                    const byte = view[i+j] || 32;
+                    line += (byte >= 32 && byte <= 126) ? String.fromCharCode(byte) : '.';
+                }
+                hex += line + '\n';
+            }
+            const pre = document.createElement('pre');
+            pre.className = 'hex-table';
+            pre.textContent = hex;
+            hexView.appendChild(pre);
+        }
+
+        // 工具函数
+        function parseINI(text) {
+            const result = {};
+            let section = result;
+            text.split(/\r?\n/).forEach(line => {
+                line = line.trim();
+                if (!line || line.startsWith(';') || line.startsWith('#')) return;
+                if (line.startsWith('[') && line.endsWith(']')) {
+                    section = result[line.slice(1,-1).trim()] = {};
+                } else {
+                    const eq = line.indexOf('=');
+                    if (eq !== -1) {
+                        const key = line.slice(0, eq).trim();
+                        const val = line.slice(eq+1).trim();
+                        section[key] = val;
+                    }
+                }
+            });
+            return result;
+        }
+
+        function escapeHtml(unsafe) {
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        function showStatus(msg, type = 'info') {
+            status.textContent = msg;
+            status.className = type;
+            if (type !== 'info') {
+                setTimeout(() => status.textContent = '', 5000);
+            }
+        }
+    </script>
+</body>
+</html>
