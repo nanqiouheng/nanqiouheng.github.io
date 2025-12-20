@@ -129,18 +129,21 @@
         .solve-item-btn:hover { background: var(--hover); }
         .add-sub-btn { background: var(--warning); color: #000; }
         .add-sub-btn:hover { background: #e0a800; }
-        #add-row-btn, #scan-image-btn {
+        #add-row-btn, #scan-image-btn, #save-custom-btn {
             width: 100%;
             padding: 12px;
-            margin-top: 20px;
+            margin-top: 15px;
             font-size: 1.1rem;
             border-radius: 8px;
             cursor: pointer;
+            color: white;
         }
         #add-row-btn { background: var(--accent); }
         #add-row-btn:hover { background: #4d9dff; }
         #scan-image-btn { background: var(--success); }
         #scan-image-btn:hover { background: var(--hover); }
+        #save-custom-btn { background: #6f42c1; }
+        #save-custom-btn:hover { background: #5a32a3; }
         #ocr-status {
             margin-top: 15px;
             text-align: center;
@@ -172,7 +175,7 @@
 
     <div class="header">
         <h1>Down's Score Calculator</h1>
-        <div class="subtitle">快速计算 Down 相关游戏的分数/评级</div>
+        <div class="subtitle">快速计算 Down 相关游戏的分数/评级 - 支持子项目</div>
     </div>
 
     <div class="container">
@@ -187,7 +190,7 @@
 
             <h3>分数计算器</h3>
             <p>
-                <strong>指引:</strong> 输入成绩和权重进行计算<br>
+                <strong>指引:</strong> 输入成绩和权重，支持多级子项目<br>
                 <strong>当前时间:</strong> <span id="timeStr"></span>
             </p>
 
@@ -197,7 +200,7 @@
                         <th>项目</th>
                         <th>权重</th>
                         <th>成绩</th>
-                        <th style="width: 260px;">操作</th>
+                        <th style="width: 280px;">操作</th>
                     </tr>
                 </thead>
                 <tbody id="grade-table-body"></tbody>
@@ -205,6 +208,7 @@
 
             <button id="add-row-btn">添加新项目</button>
             <button id="scan-image-btn">从图片扫描</button>
+            <button id="save-custom-btn">保存自定义模板</button>
             <input type="file" id="image-upload" accept="image/*" style="display: none;">
             <div id="ocr-status"></div>
             <div id="result"></div>
@@ -417,6 +421,46 @@
                 if (letterGradeSpan) letterGradeSpan.textContent = getGrade(score);
             }
 
+            // 保存自定义模板（使用 localStorage）
+            function saveCustomTemplate() {
+                const data = [];
+                tableBody.querySelectorAll('tr').forEach(row => {
+                    if (!row.dataset.parentId) { // 只保存顶级项目及其子项目
+                        const item = {
+                            id: row.id,
+                            name: row.querySelector('td:first-child').textContent.trim().replace(/^└\s*/, ''),
+                            weight: row.querySelector('.editable-weight').textContent.trim(),
+                            score: row.querySelector('.editable-score').textContent.trim(),
+                            subItems: []
+                        };
+                        const children = tableBody.querySelectorAll(`[data-parent-id="${row.id}"]`);
+                        children.forEach(child => {
+                            item.subItems.push({
+                                id: child.id,
+                                name: child.querySelector('td:first-child').textContent.trim().replace(/^└\s*/, ''),
+                                weight: child.querySelector('.editable-weight').textContent.trim(),
+                                score: child.querySelector('.editable-score').textContent.trim()
+                            });
+                        });
+                        data.push(item);
+                    }
+                });
+                localStorage.setItem('down_score_template', JSON.stringify(data));
+                alert('自定义模板已保存！下次打开页面可自动加载。');
+            }
+
+            // 加载自定义模板
+            function loadCustomTemplate() {
+                const saved = localStorage.getItem('down_score_template');
+                if (saved) {
+                    const data = JSON.parse(saved);
+                    tableBody.innerHTML = '';
+                    data.forEach(item => renderRow(item));
+                    calculateOverallScore();
+                    ocrStatus.textContent = '已加载保存的自定义模板';
+                }
+            }
+
             // OCR 功能
             const imageUpload = document.getElementById('image-upload');
             document.getElementById('scan-image-btn').addEventListener('click', () => imageUpload.click());
@@ -473,6 +517,7 @@
                 if (e.target.matches('.remove-row-btn')) removeRow(e.target);
                 if (e.target.matches('#solve-overall-btn')) calculateOverallScore();
                 if (e.target.matches('.solve-item-btn')) solveForItem(e.target);
+                if (e.target.matches('#save-custom-btn')) saveCustomTemplate();
             });
 
             document.body.addEventListener('blur', e => {
@@ -495,7 +540,7 @@
                 }
             }, true);
 
-            // 初始化示例数据
+            // 初始化示例数据 + 加载保存的模板
             const initialData = [
                 {
                     id: generateId(), name: '期中考试', weight: '30%',
@@ -509,9 +554,10 @@
             ];
             initialData.forEach(item => renderRow(item));
             calculateOverallScore();
+
+            // 页面加载时自动加载保存的自定义模板（如果有）
+            loadCustomTemplate();
         });
     </script>
 </body>
 </html>
-
-
