@@ -134,7 +134,7 @@
         .solve-item-btn:hover { background: var(--hover); }
         .add-sub-btn { background: var(--warning); color: #000; }
         .add-sub-btn:hover { background: #e0a800; }
-        #add-row-btn, #scan-image-btn, #save-custom-btn {
+        #add-row-btn, #scan-image-btn, #save-custom-btn, #load-custom-btn {
             width: 100%;
             padding: 14px;
             margin-top: 15px;
@@ -150,6 +150,18 @@
         #scan-image-btn:hover { background: var(--hover); }
         #save-custom-btn { background: #6f42c1; }
         #save-custom-btn:hover { background: #5a32a3; }
+        #load-custom-btn { background: #6f42c1; }
+        #load-custom-btn:hover { background: #5a32a3; }
+        #custom-name {
+            margin-top: 15px;
+            padding: 12px;
+            background: #0d1117;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text);
+            font-size: 1.1rem;
+            width: 100%;
+        }
         #ocr-status {
             margin-top: 15px;
             text-align: center;
@@ -181,7 +193,7 @@
 
     <div class="header">
         <h1>Down's Score Calculator</h1>
-        <div class="subtitle">支持多级子项目、保存模板、OCR扫描</div>
+        <div class="subtitle">支持多级子项目 · 保存/加载自定义模板 · 自定义模板名称</div>
     </div>
 
     <div class="container">
@@ -214,7 +226,9 @@
 
             <button id="add-row-btn">添加新项目</button>
             <button id="scan-image-btn">从图片扫描</button>
+            <input type="text" id="custom-name" placeholder="输入模板名称（例如：2025期中考试）">
             <button id="save-custom-btn">保存自定义模板</button>
+            <button id="load-custom-btn">加载上次保存的模板</button>
             <input type="file" id="image-upload" accept="image/*" style="display: none;">
             <div id="ocr-status"></div>
             <div id="result"></div>
@@ -240,6 +254,7 @@
             const tableBody = document.getElementById('grade-table-body');
             const ocrStatus = document.getElementById('ocr-status');
             const resultDiv = document.getElementById('result');
+            const customNameInput = document.getElementById('custom-name');
 
             const getGrade = score => {
                 if (score >= 93) return 'A';
@@ -426,8 +441,9 @@
                 if (letterGradeSpan) letterGradeSpan.textContent = getGrade(score);
             }
 
-            // 保存自定义模板（localStorage）
+            // 保存自定义模板（带名称）
             function saveCustomTemplate() {
+                const templateName = customNameInput.value.trim() || '未命名模板';
                 const data = [];
                 tableBody.querySelectorAll('tr').forEach(row => {
                     if (!row.dataset.parentId) {
@@ -450,19 +466,29 @@
                         data.push(item);
                     }
                 });
-                localStorage.setItem('down_score_template', JSON.stringify(data));
-                alert('自定义模板已保存！下次打开页面可自动加载。');
+                const templates = JSON.parse(localStorage.getItem('down_score_templates') || '{}');
+                templates[templateName] = data;
+                localStorage.setItem('down_score_templates', JSON.stringify(templates));
+                alert(`模板 "${templateName}" 已保存！`);
+                customNameInput.value = ''; // 清空输入框
             }
 
-            // 加载自定义模板
+            // 加载保存的模板（显示所有可用模板）
             function loadCustomTemplate() {
-                const saved = localStorage.getItem('down_score_template');
-                if (saved) {
-                    const data = JSON.parse(saved);
+                const templates = JSON.parse(localStorage.getItem('down_score_templates') || '{}');
+                if (Object.keys(templates).length === 0) {
+                    alert('没有保存的自定义模板！');
+                    return;
+                }
+                const templateNames = Object.keys(templates);
+                const selected = prompt(`可用模板：\n${templateNames.join('\n')}\n\n请输入要加载的模板名称：`, templateNames[0]);
+                if (selected && templates[selected]) {
                     tableBody.innerHTML = '';
-                    data.forEach(item => renderRow(item));
+                    templates[selected].forEach(item => renderRow(item));
                     calculateOverallScore();
-                    ocrStatus.textContent = '已加载保存的自定义模板';
+                    ocrStatus.textContent = `已加载模板：${selected}`;
+                } else {
+                    alert('未找到该模板！');
                 }
             }
 
@@ -523,6 +549,7 @@
                 if (e.target.matches('#solve-overall-btn')) calculateOverallScore();
                 if (e.target.matches('.solve-item-btn')) solveForItem(e.target);
                 if (e.target.matches('#save-custom-btn')) saveCustomTemplate();
+                if (e.target.matches('#load-custom-btn')) loadCustomTemplate();
             });
 
             document.body.addEventListener('blur', e => {
@@ -545,7 +572,7 @@
                 }
             }, true);
 
-            // 初始化示例数据 + 自动加载保存模板
+            // 初始化示例数据
             const initialData = [
                 {
                     id: generateId(), name: '期中考试', weight: '30%',
@@ -559,8 +586,6 @@
             ];
             initialData.forEach(item => renderRow(item));
             calculateOverallScore();
-
-            loadCustomTemplate();
         });
     </script>
 </body>
