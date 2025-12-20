@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Down's Tools - 主页</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacOS, "Segoe UI", Roboto, sans-serif;
+            background: #0f0f1a;
+            color: #e0e0ff;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 0.8rem;
+            color: #a78bfa;
+            text-shadow: 0 0 15px rgba(167,139,250,0.5);
+        }
+        .subtitle {
+            font-size: 1.2rem;
+            color: #a0a0c0;
+            margin-bottom: 3rem;
+        }
+        .cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            justify-content: center;
+            padding: 0 1rem;
+        }
+        .card {
+            background: #1a1a2e;
+            border: 1px solid #333366;
+            border-radius: 12px;
+            width: 320px;
+            padding: 2.5rem 1.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+        }
+        .card:hover {
+            transform: translateY(-8px);
+            border-color: #7c3aed;
+            box-shadow: 0 15px 35px rgba(124,58,237,0.3);
+        }
+        .card h2 {
+            color: #c4b5fd;
+            margin: 0 0 1rem 0;
+            font-size: 1.6rem;
+        }
+        .card p {
+            color: #b0b0d0;
+            margin: 0;
+            font-size: 1.05rem;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Down's Tools</h1>
+    <div class="subtitle">选择你要使用的工具</div>
+
+    <div class="cards">
+        <a href="Down's Save Editor Online.html" class="card" style="text-decoration: none;">
+            <h2>Down's Save Editor</h2>
+            <p>在线存档编辑器<br>修改、查看、备份 Down 相关游戏存档</p>
+        </a>
+
+        <a href="Down's Score Calculator.html" class="card" style="text-decoration: none;">
+            <h2>Down's Score Calculator</h2>
+            <p>分数计算器<br>快速计算 Down 相关游戏的分数/评级</p>
+        </a>
+    </div>
+
+</body>
+</html>
