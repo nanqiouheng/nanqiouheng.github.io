@@ -1,10 +1,9 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <link rel="icon" href="DownsicientLoge.ico" >
+    <link rel="icon" href="DownsicientLoge.ico">
     <title>唐氏分数计算器</title>
     <style>
-        /* 您的原始样式，未作修改 */
         body {
             font-family: Arial, sans-serif;
             line-height: 1.6;
@@ -14,31 +13,49 @@
             min-height: 100vh;
             margin: 0;
             background-color: #f7f7f7;
+            background-image: url('https://joe666.dpdns.org/background.jpg'); /* 假设主页背景图，或替换为实际URL */
             background-size: cover;
-            backdrop-filter: blur(5px);
+            background-position: center;
+            background-attachment: fixed;
+            backdrop-filter: blur(10px); /* 增强模糊效果，与主页同步 */
             flex-direction: column;
-            background-image: url(https://images.unsplash.com/photo-1463725876303-ff840e2aa8d5?q=80&w=2532&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D);
+            animation: backgroundMove 30s linear infinite alternate; /* 添加主页常见的背景缓慢移动动画 */
+        }
+
+        @keyframes backgroundMove {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
         }
 
         footer {
             position: absolute;
-            bottom: 0px;
+            bottom: 10px;
             color: white;
+            text-shadow: 0 0 5px rgba(0,0,0,0.8);
+            font-size: 14px;
         }
 
         .container {
             width: 800px;
-            padding: 20px;
-            border: 1px solid #ccc;
-            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
-            background-color: #fff;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            background-color: rgba(255, 255, 255, 0.15); /* 半透明玻璃形态，与主页毛玻璃风格同步 */
+            border-radius: 15px;
+            backdrop-filter: blur(15px); /* 容器内模糊 */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
         }
 
         .header-area {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.4);
             padding-bottom: 10px;
             height: 50px;
         }
@@ -47,20 +64,16 @@
             text-align: right;
             display: flex;
             flex-direction: column;
-            top: 80px;
-            position: relative;
         }
 
-        h2,
-        h3 {
-            border: none;
-            padding: 0;
-            margin: 0;
+        h2, h3 {
+            color: #fff;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
         }
 
         h3 {
             margin-top: 15px;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.4);
             padding-bottom: 10px;
         }
 
@@ -68,135 +81,123 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
         }
 
-        th,
-        td {
-            padding: 8px;
+        th, td {
+            padding: 10px;
             text-align: left;
-            border-bottom: 1px solid #ddd;
-            vertical-align: middle;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
         }
 
         th {
-            background-color: #f2f2f2;
+            background-color: rgba(0, 0, 0, 0.3);
         }
 
         .overall-score {
-            font-size: 2.5em;
+            font-size: 2.8em;
             font-weight: bold;
-            display: inline-block;
+            color: #ffd700;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
         }
 
         [contenteditable="true"] {
             outline: 1px dashed #007bff;
             cursor: text;
-            padding: 2px 4px;
-            border-radius: 3px;
+            padding: 4px;
+            border-radius: 5px;
+            background-color: rgba(255, 255, 255, 0.2);
         }
 
         .action-btn {
             border: none;
-            padding: 5px 10px;
-            border-radius: 3px;
+            padding: 6px 12px;
+            border-radius: 5px;
             cursor: pointer;
             color: white;
-            font-size: 12px;
-            margin: 0 2px;
+            font-size: 13px;
+            margin: 0 3px;
+            transition: all 0.3s ease;
         }
 
-        .remove-row-btn {
-            background-color: #dc3545;
-        }
+        .remove-row-btn { background-color: #dc3545; }
+        .remove-row-btn:hover { background-color: #c82333; transform: scale(1.05); }
 
-        .remove-row-btn:hover {
-            background-color: #c82333;
-        }
+        .solve-item-btn { background-color: #28a745; }
+        .solve-item-btn:hover { background-color: #218838; transform: scale(1.05); }
 
-        .solve-item-btn {
-            background-color: #28a745;
-        }
+        #solve-overall-btn { background-color: #007bff; margin-top: 8px; }
+        #solve-overall-btn:hover { background-color: #0056b3; transform: scale(1.05); }
 
-        .solve-item-btn:hover {
-            background-color: #218838;
-        }
-
-        #solve-overall-btn {
-            background-color: #007bff;
-            margin-top: 5px;
-        }
-
-        #solve-overall-btn:hover {
-            background-color: #0056b3;
-        }
-
-        #add-row-btn,
-        #scan-image-btn {
+        #add-row-btn, #scan-image-btn {
             margin-top: 20px;
             color: white;
             border: none;
-            padding: 10px 15px;
-            border-radius: 3px;
+            padding: 12px;
+            border-radius: 8px;
             cursor: pointer;
             width: 100%;
             font-size: 16px;
+            transition: all 0.3s ease;
         }
 
-        #add-row-btn {
-            background-color: #17a2b8;
-        }
+        #add-row-btn { background-color: #17a2b8; }
+        #add-row-btn:hover { background-color: #138496; transform: translateY(-2px); }
 
-        #add-row-btn:hover {
-            background-color: #138496;
-        }
+        #scan-image-btn { background-color: #fd7e14; margin-top: 10px; }
+        #scan-image-btn:hover { background-color: #e6690b; transform: translateY(-2px); }
 
-        /* --- 新增和修改的样式 --- */
-        #scan-image-btn {
-            background-color: #fd7e14;
-            margin-top: 10px;
-        }
+        .add-sub-btn { background-color: #ffc107; color: black; }
+        .add-sub-btn:hover { background-color: #e0a800; transform: scale(1.05); }
 
-        #scan-image-btn:hover {
-            background-color: #e6690b;
-        }
-
-        .add-sub-btn {
-            background-color: #ffc107;
-            color: black;
-        }
-
-        .add-sub-btn:hover {
-            background-color: #e0a800;
-        }
-
-        /* 根据图片要求，为子项目行添加灰色背景 */
         tr.sub-item {
-            background-color: #f2f2f2;
+            background-color: rgba(0, 0, 0, 0.15);
         }
 
-        /* 根据图片要求，为子项目指示符添加蓝色 */
         .sub-item-indicator {
             display: inline-block;
             width: 15px;
             text-align: center;
             margin-right: 5px;
-            color: #007bff;
-            /* Blue L-indicator */
+            color: #00bfff;
             font-weight: bold;
         }
 
         #ocr-status {
-            margin-top: 10px;
+            margin-top: 15px;
             text-align: center;
-            color: #007bff;
+            color: #a0ff;
             font-weight: bold;
         }
+
+        /* 返回主页按钮 */
+        .home-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background-color: rgba(0, 123, 255, 0.8);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .home-btn:hover {
+            background-color: #0056b3;
+            transform: scale(1.1);
+        }
     </style>
-    <!-- 引入 Tesseract.js 库 -->
     <script src='https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js'></script>
 </head>
-
 <body>
+    <a href="https://joe666.dpdns.org/" class="home-btn">返回主页</a>
+
     <div class="container">
         <div class="header-area">
             <h2>成绩详情</h2>
@@ -206,7 +207,7 @@
             </div>
         </div>
         <h3>分数计算器</h3>
-        <p>
+        <p style="color: #ddd;">
             <strong>指引:</strong> 输入成绩和权重进行计算<br>
             <strong>目前时间:</strong> <span id="timeStr"></span>
         </p>
@@ -220,36 +221,35 @@
                 </tr>
             </thead>
             <tbody id="grade-table-body">
-                <!-- Rows are managed by JS -->
             </tbody>
         </table>
         <button id="add-row-btn">添加新项目</button>
-        <!-- 新增扫描按钮 -->
         <button id="scan-image-btn">从图片扫描</button>
         <input type="file" id="image-upload" accept="image/*" style="display: none;">
         <div id="ocr-status"></div>
     </div>
+
+    <footer>Powered by Down'sicient Tech</footer>
+
+    <!-- 原有 JavaScript 保持不变 -->
     <script>
+        // ... (您提供的完整 script 内容，直接复制粘贴在这里，不做任何修改)
         function updateTime() {
             var date = new Date();
             var str = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")} ${date.getHours().toString().padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}`;
             document.getElementById("timeStr").textContent = str;
         }
         setInterval(updateTime, 1000);
-
         document.addEventListener('DOMContentLoaded', () => {
             updateTime();
             const tableBody = document.getElementById('grade-table-body');
             const ocrStatus = document.getElementById('ocr-status');
-
             const getGrade = score => {
                 if (score >= 93) return 'A'; if (score >= 90) return 'A−'; if (score >= 86) return 'B';
                 if (score >= 80) return 'B−'; if (score >= 76) return 'C'; if (score >= 70) return 'C−';
                 if (score >= 66) return 'D'; if (score >= 60) return 'D−'; return 'F';
             };
-
             const generateId = () => 'item-' + Math.random().toString(36).substr(2, 9);
-
             function getEffectiveWeight(row) {
                 if (!row) return 0;
                 let weight = (parseFloat(row.querySelector('.editable-weight').textContent) || 0) / 100;
@@ -260,21 +260,17 @@
                 }
                 return weight;
             }
-
             function updateParentScore(parentId) {
                 if (!parentId) return;
                 const parentRow = document.getElementById(parentId);
                 if (!parentRow) return;
-
                 let weightedSum = 0;
                 let totalWeight = 0;
                 const children = tableBody.querySelectorAll(`[data-parent-id="${parentId}"]`);
-
                 if (children.length === 0) {
                     parentRow.querySelector('.editable-score').contentEditable = true;
                     return;
                 }
-
                 children.forEach(child => {
                     const weight = parseFloat(child.querySelector('.editable-weight').textContent) || 0;
                     const score = parseFloat(child.querySelector('.editable-score').textContent);
@@ -283,17 +279,14 @@
                         totalWeight += weight;
                     }
                 });
-
                 const parentScore = totalWeight > 0 ? weightedSum / totalWeight : 0;
                 const parentScoreEl = parentRow.querySelector('.editable-score');
                 parentScoreEl.textContent = parentScore.toFixed(1);
                 updateGradeForScore(parentScoreEl);
-
                 if (parentRow.dataset.parentId) {
                     updateParentScore(parentRow.dataset.parentId);
                 }
             }
-
             function calculateOverallScore() {
                 let totalScore = 0;
                 tableBody.querySelectorAll('tr').forEach(row => {
@@ -306,26 +299,22 @@
                 });
                 document.querySelector('.overall-score').textContent = totalScore.toFixed(1);
             }
-
             function solveForItem(button) {
                 const targetRow = button.closest('tr');
                 if (tableBody.querySelector(`[data-parent-id="${targetRow.id}"]`)) {
                     alert("无法为包含子项的项目求解。请为具体的叶节点项目求解。");
                     return;
                 }
-
                 const desiredGrade = parseFloat(document.querySelector('.overall-score').textContent);
                 if (isNaN(desiredGrade)) {
                     alert("无效的总分目标值。");
                     return;
                 }
-
                 const targetEffectiveWeight = getEffectiveWeight(targetRow);
                 if (targetEffectiveWeight <= 0) {
                     alert("无法为权重为零或负数的项目求解。");
                     return;
                 }
-
                 let sumOfOtherProducts = 0;
                 tableBody.querySelectorAll('tr').forEach(row => {
                     if (row.id !== targetRow.id && !tableBody.querySelector(`[data-parent-id="${row.id}"]`)) {
@@ -335,32 +324,28 @@
                         }
                     }
                 });
-
                 const requiredScore = (desiredGrade - sumOfOtherProducts) / targetEffectiveWeight;
                 const targetScoreEl = targetRow.querySelector('.editable-score');
                 targetScoreEl.textContent = requiredScore.toFixed(1);
                 updateGradeForScore(targetScoreEl);
             }
-
             function renderRow(itemData, parentId = null, level = 0) {
                 const row = document.createElement('tr');
                 row.id = itemData.id;
                 if (parentId) {
                     row.dataset.parentId = parentId;
-                    row.classList.add('sub-item'); // 为子项目行添加样式类
+                    row.classList.add('sub-item');
                 }
-
                 const hasChildren = itemData.subItems && itemData.subItems.length > 0;
                 const score = itemData.score ?? '0';
                 const grade = isNaN(parseFloat(score)) ? '' : getGrade(score);
-
                 row.innerHTML = `
                     <td style="padding-left: ${level * 25 + 8}px" contenteditable="true">
                         ${level > 0 ? '<span class="sub-item-indicator">└</span>' : ''}${itemData.name}
                     </td>
                     <td class="editable-weight" contenteditable="true">${itemData.weight}</td>
                     <td>
-                        <span class="editable-score" contenteditable="${!hasChildren}">${score}</span> / 
+                        <span class="editable-score" contenteditable="${!hasChildren}">${score}</span> /
                         <span class="letter-grade">${grade}</span>
                     </td>
                     <td>
@@ -370,25 +355,20 @@
                     </td>
                 `;
                 tableBody.appendChild(row);
-
                 if (hasChildren) {
                     itemData.subItems.forEach(subItem => renderRow(subItem, itemData.id, level + 1));
                     updateParentScore(itemData.id);
                 }
             }
-
             function addTopLevelRow() {
                 renderRow({ id: generateId(), name: '新项目', weight: '0%', score: '0' });
             }
-
             function addSubItem(button) {
                 const parentRow = button.closest('tr');
-                parentRow.classList.remove('sub-item'); // Parent is no longer a leaf node
+                parentRow.classList.remove('sub-item');
                 const parentId = parentRow.id;
                 parentRow.querySelector('.editable-score').contentEditable = false;
-
                 const level = (parseInt(parentRow.querySelector('td:first-child').style.paddingLeft.replace('px', '')) - 8) / 25 + 1;
-
                 const newRowData = { id: generateId(), name: '新子项目', weight: '0%', score: '0' };
                 const newRow = document.createElement('tr');
                 newRow.id = newRowData.id;
@@ -400,7 +380,7 @@
                     </td>
                     <td class="editable-weight" contenteditable="true">${newRowData.weight}</td>
                     <td>
-                        <span class="editable-score" contenteditable="true">${newRowData.score}</span> / 
+                        <span class="editable-score" contenteditable="true">${newRowData.score}</span> /
                         <span class="letter-grade">F</span>
                     </td>
                     <td>
@@ -409,18 +389,14 @@
                         <button class="remove-row-btn action-btn">删除</button>
                     </td>
                 `;
-
-                // Insert after parent and all its existing children
                 let lastChild = parentRow;
                 while (tableBody.querySelector(`[data-parent-id="${lastChild.id}"]`)) {
                     const children = tableBody.querySelectorAll(`[data-parent-id="${lastChild.id}"]`);
                     lastChild = children[children.length - 1];
                 }
                 lastChild.after(newRow);
-
                 updateParentScore(parentId);
             }
-
             function removeRow(button) {
                 const rowToRemove = button.closest('tr');
                 const parentId = rowToRemove.dataset.parentId;
@@ -431,24 +407,19 @@
                     updateParentScore(parentId);
                 }
             }
-
             function updateGradeForScore(scoreElement) {
                 const score = parseFloat(scoreElement.textContent);
                 if (isNaN(score)) return;
                 const letterGradeSpan = scoreElement.closest('td').querySelector('.letter-grade');
                 if (letterGradeSpan) letterGradeSpan.textContent = getGrade(score);
             }
-
-            // --- OCR 功能 ---
             const imageUpload = document.getElementById('image-upload');
             document.getElementById('scan-image-btn').addEventListener('click', () => {
                 imageUpload.click();
             });
-
             imageUpload.addEventListener('change', async (event) => {
                 const file = event.target.files[0];
                 if (!file) return;
-
                 ocrStatus.textContent = '正在识别图片，请稍候...';
                 try {
                     const { data: { text } } = await Tesseract.recognize(file, 'eng+chi_sim');
@@ -458,31 +429,25 @@
                     console.error(error);
                     ocrStatus.textContent = '识别失败，请检查浏览器控制台错误。';
                 } finally {
-                    imageUpload.value = ''; // Reset file input
+                    imageUpload.value = '';
                 }
             });
-
             function parseAndFillData(text) {
                 console.log(text)
                 const lines = text.split('\n');
                 let structuredData = [];
                 let lastTopLevelItem = null;
-
                 const isChinese = (input) => {
                     const match = input.replaceAll(" ", "").match(/[\u3131-\uD79D]/g);
                     return match ? match.length === input.replaceAll(" ", "").length : false;
                 }
-
                 lines.forEach(line => {
                     const match = line.match(/^(\s*)([^\s].*?)\s+(\d+\.?\d*%)\s+([\d.-]+)/);
-
                     if (match) {
-                        const isSubItem = match[2].substr(0, 2) == "L "; // Use indentation to detect sub-items
+                        const isSubItem = match[2].substr(0, 2) == "L "; 
                         if (isSubItem) match[2] = match[2].substr(2)
-
                         if (isChinese(match[2]))
                             match[2] = match[2].replaceAll(" ", "")
-
                         const itemData = {
                             id: generateId(),
                             name: match[2].trim(),
@@ -490,7 +455,6 @@
                             score: match[4].trim(),
                             subItems: []
                         };
-
                         if (isSubItem && lastTopLevelItem) {
                             lastTopLevelItem.subItems.push(itemData);
                         } else {
@@ -499,9 +463,8 @@
                         }
                     }
                 });
-
                 if (structuredData.length > 0) {
-                    tableBody.innerHTML = ''; // Clear table
+                    tableBody.innerHTML = '';
                     structuredData.forEach(item => renderRow(item));
                     calculateOverallScore();
                     ocrStatus.textContent = `成功导入 ${structuredData.length} 个项目！`;
@@ -509,7 +472,6 @@
                     ocrStatus.textContent = '未能在图片中解析出有效数据。';
                 }
             }
-
             document.body.addEventListener('click', (e) => {
                 if (e.target.matches('#add-row-btn')) addTopLevelRow();
                 if (e.target.matches('.add-sub-btn')) addSubItem(e.target);
@@ -517,7 +479,6 @@
                 if (e.target.matches('#solve-overall-btn')) calculateOverallScore();
                 if (e.target.matches('.solve-item-btn')) solveForItem(e.target);
             });
-
             document.body.addEventListener('blur', (e) => {
                 const target = e.target;
                 if (target.matches('.editable-weight') || target.matches('.editable-score')) {
@@ -535,7 +496,6 @@
                     target.textContent = isNaN(num) ? '0' : num;
                 }
             }, true);
-
             const initialData = [
                 {
                     id: generateId(), name: '期中考试', weight: '30%',
@@ -551,9 +511,5 @@
             calculateOverallScore();
         });
     </script>
-    <footer>Powered by Down'sicient Tech</footer>
 </body>
-
 </html>
-
-
