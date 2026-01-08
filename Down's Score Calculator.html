@@ -3,238 +3,309 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Down's 分数计算器</title>
+    </style><script src="chrome-extension://jlpcnoohcpfgpbalhlggdhjocgnlgafn/assets/main-world.ts-4ed993c7.js" type="module"></script>
+    <title>Down's Calculator</title>
     <link rel="icon" href="DownsicientLoge.ico" >
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src='https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js'></script>
+  
     <style>
-        /* 使用主页完整的 CSS 变量和基础样式 */
-        :root {
-            --primary: #0a0e17;
-            --secondary: #121826;
-            --accent: #7c3aed;
-            --accent-glow: rgba(124, 58, 237, 0.5);
-            --accent-light: #a78bfa;
-            --text-primary: #f8fafc;
-            --text-secondary: #cbd5e1;
-            --text-muted: #94a3b8;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --card-bg: rgba(30, 41, 59, 0.5);
-            --card-border: rgba(124, 58, 237, 0.2);
-            --glass-bg: rgba(15, 23, 42, 0.7);
-            --glass-border: rgba(124, 58, 237, 0.1);
-            --shadow-color: rgba(0, 0, 0, 0.3);
-            --gradient-1: linear-gradient(135deg, #7c3aed 0%, #3b82f6 100%);
-            --gradient-2: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
-            --gradient-3: linear-gradient(135deg, #06b6d4 0%, #10b981 100%);
-            --spacing-xs: 0.5rem;
-            --spacing-sm: 1rem;
-            --spacing-md: 1.5rem;
-            --spacing-lg: 2.5rem;
-            --spacing-xl: 4rem;
-            --spacing-xxl: 6rem;
-            --border-radius-sm: 8px;
-            --border-radius-md: 12px;
-            --border-radius-lg: 20px;
-            --border-radius-xl: 30px;
-            --font-size-xs: 0.75rem;
-            --font-size-sm: 0.875rem;
-            --font-size-md: 1rem;
-            --font-size-lg: 1.25rem;
-            --font-size-xl: 1.5rem;
-            --font-size-xxl: 2rem;
-            --font-size-xxxl: 3rem;
-            --transition-fast: 0.2s ease;
-            --transition-normal: 0.3s ease;
-            --transition-slow: 0.5s ease;
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        /* 您的原始样式，未作修改 */
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-            background-color: var(--primary);
-            color: var(--text-primary);
+            font-family: Arial, sans-serif;
             line-height: 1.6;
-            overflow-x: hidden;
-            background-image:
-                radial-gradient(circle at 10% 20%, rgba(124, 58, 237, 0.05) 0%, transparent 20%),
-                radial-gradient(circle at 90% 80%, rgba(59, 130, 246, 0.05) 0%, transparent 20%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
             min-height: 100vh;
+            margin: 0;
+            background-color: #f7f7f7;
+            background-size: cover;
+            backdrop-filter: blur(5px);
+            flex-direction: column;
+            background-image: url(https://gd-hbimg-edge.huaban.com/5f4885265b7c864b6b50450cfeed814c971060e920f7d-ab4YvP_fw658webp?auth_key=1767067200-055d3db5321d49afb9578802212d90e4-0-914dc216700d2a68c24a4bdc8e87a9cd);
         }
+
+        footer {
+            position: absolute;
+            bottom: 0px;
+            color: white;
+        }
+
         .container {
-            width: 100%;
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: var(--spacing-lg);
+            width: 800px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
         }
-        /* 导航栏与主页一致 */
-        .navbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 999;
-            padding: var(--spacing-md) var(--spacing-lg);
+
+        .header-area {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: var(--glass-bg);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--glass-border);
-            transition: all var(--transition-normal);
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            height: 50px;
         }
-        .navbar.scrolled { padding: var(--spacing-sm) var(--spacing-lg); box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2); }
-        .logo { display: flex; align-items: center; gap: var(--spacing-sm); font-size: var(--font-size-xl); font-weight: 700; color: var(--text-primary); text-decoration: none; }
-        .logo-icon { color: var(--accent); font-size: var(--font-size-xxl); }
-        .logo-text { background: var(--gradient-1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-        .back-home { color: var(--text-secondary); text-decoration: none; font-weight: 500; transition: all var(--transition-fast); }
-        .back-home:hover { color: var(--accent-light); }
-        /* 主内容卡片 - 毛玻璃风格 */
-        .calculator-card {
-            background: var(--card-bg);
-            border-radius: var(--border-radius-lg);
-            overflow: hidden;
-            border: 1px solid var(--card-border);
-            transition: all var(--transition-normal);
-            margin-top: 100px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 15px 40px var(--accent-glow);
-        }
-        .calculator-card:hover { transform: translateY(-10px); box-shadow: 0 20px 50px var(--accent-glow); }
-        .card-header {
-            padding: var(--spacing-lg);
-            background: rgba(15, 23, 42, 0.5);
-            border-bottom: 1px solid var(--card-border);
+
+        .overall-score-container {
+            text-align: right;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column;
+            top: 80px;
+            position: relative;
         }
-        .overall-score {
-            font-size: 3.5rem;
-            font-weight: 800;
-            background: var(--gradient-1);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+
+        h2,
+        h3 {
+            border: none;
+            padding: 0;
+            margin: 0;
         }
-        .guidance {
-            padding: var(--spacing-lg);
-            color: var(--text-secondary);
+
+        h3 {
+            margin-top: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
         }
+
         table {
             width: 100%;
             border-collapse: collapse;
-            margin: var(--spacing-lg) 0;
+            margin-top: 20px;
         }
-        th, td {
-            padding: var(--spacing-md);
+
+        th,
+        td {
+            padding: 8px;
             text-align: left;
-            border-bottom: 1px solid var(--glass-border);
-            color: var(--text-primary);
+            border-bottom: 1px solid #ddd;
+            vertical-align: middle;
         }
-        th { background: rgba(15, 23, 42, 0.5); }
-        tr.sub-item { background: rgba(15, 23, 42, 0.3); }
-        .sub-item-indicator { color: var(--accent-light); font-weight: bold; }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .overall-score {
+            font-size: 2.5em;
+            font-weight: bold;
+            display: inline-block;
+        }
+
         [contenteditable="true"] {
-            background: rgba(255,255,255,0.05);
-            padding: var(--spacing-xs);
-            border-radius: var(--border-radius-sm);
-            outline: none;
+            outline: 1px dashed #007bff;
+            cursor: text;
+            padding: 2px 4px;
+            border-radius: 3px;
         }
+
         .action-btn {
-            background: transparent;
             border: none;
-            color: var(--text-secondary);
+            padding: 5px 10px;
+            border-radius: 3px;
             cursor: pointer;
-            padding: var(--spacing-xs) var(--spacing-sm);
-            border-radius: var(--border-radius-sm);
-            transition: all var(--transition-fast);
+            color: white;
+            font-size: 12px;
+            margin: 0 2px;
         }
-        .action-btn:hover { color: var(--accent-light); transform: scale(1.1); }
-        .add-sub-btn { color: var(--warning); }
-        .solve-item-btn { color: var(--success); }
-        .remove-row-btn { color: #ef4444; }
-        #solve-overall-btn { background: var(--gradient-1); color: white; padding: var(--spacing-sm) var(--spacing-md); border-radius: var(--border-radius-md); }
-        #add-row-btn, #scan-image-btn {
+
+        .remove-row-btn {
+            background-color: #dc3545;
+        }
+
+        .remove-row-btn:hover {
+            background-color: #c82333;
+        }
+
+        .solve-item-btn {
+            background-color: #28a745;
+        }
+
+        .solve-item-btn:hover {
+            background-color: #218838;
+        }
+
+        #solve-overall-btn {
+            background-color: #007bff;
+            margin-top: 5px;
+        }
+
+        #solve-overall-btn:hover {
+            background-color: #0056b3;
+        }
+
+        #add-row-btn,
+        #scan-image-btn {
+            margin-top: 20px;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 3px;
+            cursor: pointer;
             width: 100%;
-            padding: var(--spacing-md);
-            border: none;
-            border-radius: var(--border-radius-md);
-            font-size: var(--font-size-lg);
-            cursor: pointer;
-            margin-bottom: var(--spacing-sm);
-            transition: all var(--transition-normal);
+            font-size: 16px;
         }
-        #add-row-btn { background: var(--gradient-2); color: white; }
-        #add-row-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 25px var(--accent-glow); }
-        #scan-image-btn { background: var(--gradient-3); color: white; }
-        #scan-image-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 25px var(--accent-glow); }
-        #ocr-status {
+
+        #add-row-btn {
+            background-color: #17a2b8;
+        }
+
+        #add-row-btn:hover {
+            background-color: #138496;
+        }
+
+        /* --- 新增和修改的样式 --- */
+        #scan-image-btn {
+            background-color: #fd7e14;
+            margin-top: 10px;
+        }
+
+        #scan-image-btn:hover {
+            background-color: #e6690b;
+        }
+
+        .add-sub-btn {
+            background-color: #ffc107;
+            color: black;
+        }
+
+        .add-sub-btn:hover {
+            background-color: #e0a800;
+        }
+
+        /* 根据图片要求，为子项目行添加灰色背景 */
+        tr.sub-item {
+            background-color: #f2f2f2;
+        }
+
+        /* 根据图片要求，为子项目指示符添加蓝色 */
+        .sub-item-indicator {
+            display: inline-block;
+            width: 15px;
             text-align: center;
-            padding: var(--spacing-md);
-            color: var(--accent-light);
+            margin-right: 5px;
+            color: #007bff;
+            /* Blue L-indicator */
             font-weight: bold;
         }
-        footer {
+
+        #ocr-status {
+            margin-top: 10px;
             text-align: center;
-            padding: var(--spacing-xl);
-            color: var(--text-muted);
+            color: #007bff;
+            font-weight: bold;
         }
-        /* 滚动与动画效果 */
-        .fade-in { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease, transform 0.8s ease; }
-        .fade-in.visible { opacity: 1; transform: translateY(0); }
     </style>
+    <!-- 引入 Tesseract.js 库 -->
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 </head>
+
 <body>
-    <!-- 导航栏 -->
-    <nav class="navbar" id="navbar">
-        <div class="container">
-            <a href="https://joe666.dpdns.org/" class="logo">
-                <i class="fas fa-calculator logo-icon"></i>
-                <span class="logo-text">Down's Tools</span>
-            </a>
-            <a href="https://joe666.dpdns.org/" class="back-home">
-                <i class="fas fa-arrow-left"></i> 返回主页
-            </a>
-        </div>
-    </nav>
-
-    <!-- 主计算器卡片 -->
     <div class="container">
-        <div class="calculator-card fade-in">
-            <div class="card-header">
-                <h2>成绩详情</h2>
-                <div>
-                    <div class="overall-score" contenteditable="true">100</div>
-                    <button id="solve-overall-btn" class="action-btn">计算总分</button>
-                </div>
+        <div class="header-area">
+            <h2>成绩详情</h2>
+            <div class="overall-score-container">
+                <div class="overall-score" contenteditable="true">92.2</div>
+                <button id="solve-overall-btn" class="action-btn">计算</button>
             </div>
-            <div class="guidance">
-                <strong>指引:</strong> 输入成绩和权重进行计算（权重支持子项嵌套）<br>
-                <strong>目前时间:</strong> <span id="timeStr"></span>
-            </div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>项目</th>
-                        <th>权重</th>
-                        <th>成绩 / 字母分</th>
-                        <th>操作</th>
-                    </tr>
-                </thead>
-                <tbody id="grade-table-body"></tbody>
-            </table>
-            <button id="add-row-btn">添加新项目</button>
-            <button id="scan-image-btn">从图片扫描成绩单</button>
-            <input type="file" id="image-upload" accept="image/*" style="display: none;">
-            <div id="ocr-status"></div>
         </div>
+        <h3>分数计算器</h3>
+        <p>
+            <strong>指引:</strong> 输入成绩和权重进行计算<br>
+            <strong>目前时间:</strong> <span id="timeStr">2025-12-28 10:40</span>
+        </p>
+        <table>
+            <thead>
+                <tr>
+                    <th>项目</th>
+                    <th>权重</th>
+                    <th>成绩</th>
+                    <th style="width: 210px;">操作</th>
+                </tr>
+            </thead>
+            <tbody id="grade-table-body">
+                <!-- Rows are managed by JS -->
+            <tr id="item-wbu0szbb5">
+                    <td style="padding-left: 8px" contenteditable="true">
+                        期中考试
+                    </td>
+                    <td class="editable-weight" contenteditable="true">30%</td>
+                    <td>
+                        <span class="editable-score" contenteditable="false">98.0</span> / 
+                        <span class="letter-grade">A</span>
+                    </td>
+                    <td>
+                        <button class="add-sub-btn action-btn">添加子项</button>
+                        <button class="solve-item-btn action-btn">求解</button>
+                        <button class="remove-row-btn action-btn">删除</button>
+                    </td>
+                </tr><tr id="item-e3n33xepq" data-parent-id="item-wbu0szbb5" class="sub-item">
+                    <td style="padding-left: 33px" contenteditable="true">
+                        <span class="sub-item-indicator">└</span>选择题
+                    </td>
+                    <td class="editable-weight" contenteditable="true">60%</td>
+                    <td>
+                        <span class="editable-score" contenteditable="true">100</span> / 
+                        <span class="letter-grade">A</span>
+                    </td>
+                    <td>
+                        <button class="add-sub-btn action-btn">添加子项</button>
+                        <button class="solve-item-btn action-btn">求解</button>
+                        <button class="remove-row-btn action-btn">删除</button>
+                    </td>
+                </tr><tr id="item-t07et2vqo" data-parent-id="item-wbu0szbb5" class="sub-item">
+                    <td style="padding-left: 33px" contenteditable="true">
+                        <span class="sub-item-indicator">└</span>简答题
+                    </td>
+                    <td class="editable-weight" contenteditable="true">40%</td>
+                    <td>
+                        <span class="editable-score" contenteditable="true">95</span> / 
+                        <span class="letter-grade">A</span>
+                    </td>
+                    <td>
+                        <button class="add-sub-btn action-btn">添加子项</button>
+                        <button class="solve-item-btn action-btn">求解</button>
+                        <button class="remove-row-btn action-btn">删除</button>
+                    </td>
+                </tr><tr id="item-ghi6bf8wh">
+                    <td style="padding-left: 8px" contenteditable="true">
+                        期末考试
+                    </td>
+                    <td class="editable-weight" contenteditable="true">40%</td>
+                    <td>
+                        <span class="editable-score" contenteditable="true">88</span> / 
+                        <span class="letter-grade">B</span>
+                    </td>
+                    <td>
+                        <button class="add-sub-btn action-btn">添加子项</button>
+                        <button class="solve-item-btn action-btn">求解</button>
+                        <button class="remove-row-btn action-btn">删除</button>
+                    </td>
+                </tr><tr id="item-y3mybvdt0">
+                    <td style="padding-left: 8px" contenteditable="true">
+                        项目参与
+                    </td>
+                    <td class="editable-weight" contenteditable="true">30%</td>
+                    <td>
+                        <span class="editable-score" contenteditable="true">92</span> / 
+                        <span class="letter-grade">A−</span>
+                    </td>
+                    <td>
+                        <button class="add-sub-btn action-btn">添加子项</button>
+                        <button class="solve-item-btn action-btn">求解</button>
+                        <button class="remove-row-btn action-btn">删除</button>
+                    </td>
+                </tr></tbody>
+        </table>
+        <button id="add-row-btn">添加新项目</button>
+        <!-- 新增扫描按钮 -->
+        <button id="scan-image-btn">从图片扫描</button>
+        <input type="file" id="image-upload" accept="image/*" style="display: none;">
+        <div id="ocr-status"></div>
     </div>
-
-    <footer>Powered by Down'sicient Tech</footer>
-
     <script>
-        // 原有完整功能脚本（未修改逻辑，仅微调按钮文本以匹配新风格）
         function updateTime() {
             var date = new Date();
             var str = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")} ${date.getHours().toString().padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}`;
@@ -270,13 +341,16 @@
                 if (!parentId) return;
                 const parentRow = document.getElementById(parentId);
                 if (!parentRow) return;
+
                 let weightedSum = 0;
                 let totalWeight = 0;
                 const children = tableBody.querySelectorAll(`[data-parent-id="${parentId}"]`);
+
                 if (children.length === 0) {
                     parentRow.querySelector('.editable-score').contentEditable = true;
                     return;
                 }
+
                 children.forEach(child => {
                     const weight = parseFloat(child.querySelector('.editable-weight').textContent) || 0;
                     const score = parseFloat(child.querySelector('.editable-score').textContent);
@@ -285,10 +359,12 @@
                         totalWeight += weight;
                     }
                 });
+
                 const parentScore = totalWeight > 0 ? weightedSum / totalWeight : 0;
                 const parentScoreEl = parentRow.querySelector('.editable-score');
                 parentScoreEl.textContent = parentScore.toFixed(1);
                 updateGradeForScore(parentScoreEl);
+
                 if (parentRow.dataset.parentId) {
                     updateParentScore(parentRow.dataset.parentId);
                 }
@@ -313,16 +389,19 @@
                     alert("无法为包含子项的项目求解。请为具体的叶节点项目求解。");
                     return;
                 }
+
                 const desiredGrade = parseFloat(document.querySelector('.overall-score').textContent);
                 if (isNaN(desiredGrade)) {
                     alert("无效的总分目标值。");
                     return;
                 }
+
                 const targetEffectiveWeight = getEffectiveWeight(targetRow);
                 if (targetEffectiveWeight <= 0) {
                     alert("无法为权重为零或负数的项目求解。");
                     return;
                 }
+
                 let sumOfOtherProducts = 0;
                 tableBody.querySelectorAll('tr').forEach(row => {
                     if (row.id !== targetRow.id && !tableBody.querySelector(`[data-parent-id="${row.id}"]`)) {
@@ -332,6 +411,7 @@
                         }
                     }
                 });
+
                 const requiredScore = (desiredGrade - sumOfOtherProducts) / targetEffectiveWeight;
                 const targetScoreEl = targetRow.querySelector('.editable-score');
                 targetScoreEl.textContent = requiredScore.toFixed(1);
@@ -343,54 +423,660 @@
                 row.id = itemData.id;
                 if (parentId) {
                     row.dataset.parentId = parentId;
-                    row.classList.add('sub-item');
+                    row.classList.add('sub-item'); // 为子项目行添加样式类
                 }
+
                 const hasChildren = itemData.subItems && itemData.subItems.length > 0;
                 const score = itemData.score ?? '0';
                 const grade = isNaN(parseFloat(score)) ? '' : getGrade(score);
+
                 row.innerHTML = `
-                    <td style="padding-left: ${level * 30 + 16}px" contenteditable="true">
+                    <td style="padding-left: ${level * 25 + 8}px" contenteditable="true">
                         ${level > 0 ? '<span class="sub-item-indicator">└</span>' : ''}${itemData.name}
                     </td>
                     <td class="editable-weight" contenteditable="true">${itemData.weight}</td>
                     <td>
-                        <span class="editable-score" contenteditable="${!hasChildren}">${score}</span> /
+                        <span class="editable-score" contenteditable="${!hasChildren}">${score}</span> / 
                         <span class="letter-grade">${grade}</span>
                     </td>
                     <td>
-                        <button class="add-sub-btn action-btn" title="添加子项"><i class="fas fa-plus"></i></button>
-                        <button class="solve-item-btn action-btn" title="求解所需分数"><i class="fas fa-calculator"></i></button>
-                        <button class="remove-row-btn action-btn" title="删除"><i class="fas fa-trash"></i></button>
+                        <button class="add-sub-btn action-btn">添加子项</button>
+                        <button class="solve-item-btn action-btn">求解</button>
+                        <button class="remove-row-btn action-btn">删除</button>
                     </td>
                 `;
                 tableBody.appendChild(row);
+
                 if (hasChildren) {
                     itemData.subItems.forEach(subItem => renderRow(subItem, itemData.id, level + 1));
                     updateParentScore(itemData.id);
                 }
             }
 
-            // 其余函数（addTopLevelRow, addSubItem, removeRow, updateGradeForScore, OCR 等）保持原样不变...
-            // （为节省空间，这里省略完全相同的代码，但实际使用时请完整复制您原来的 script 内容）
+            function addTopLevelRow() {
+                renderRow({ id: generateId(), name: '新项目', weight: '0%', score: '0' });
+            }
 
-            // 示例初始数据与事件绑定同原代码
-            const initialData = [ /* 同原代码 */ ];
-            initialData.forEach(item => renderRow(item));
+            function addSubItem(button) {
+                const parentRow = button.closest('tr');
+                parentRow.classList.remove('sub-item'); // Parent is no longer a leaf node
+                const parentId = parentRow.id;
+                parentRow.querySelector('.editable-score').contentEditable = false;
+
+                const level = (parseInt(parentRow.querySelector('td:first-child').style.paddingLeft.replace('px', '')) - 8) / 25 + 1;
+
+                const newRowData = { id: generateId(), name: '新子项目', weight: '0%', score: '0' };
+                const newRow = document.createElement('tr');
+                newRow.id = newRowData.id;
+                newRow.dataset.parentId = parentId;
+                newRow.classList.add('sub-item');
+                newRow.innerHTML = `
+                    <td style="padding-left: ${level * 25 + 8}px" contenteditable="true">
+                        <span class="sub-item-indicator">└</span>${newRowData.name}
+                    </td>
+                    <td class="editable-weight" contenteditable="true">${newRowData.weight}</td>
+                    <td>
+                        <span class="editable-score" contenteditable="true">${newRowData.score}</span> / 
+                        <span class="letter-grade">F</span>
+                    </td>
+                    <td>
+                        <button class="add-sub-btn action-btn">添加子项</button>
+                        <button class="solve-item-btn action-btn">求解</button>
+                        <button class="remove-row-btn action-btn">删除</button>
+                    </td>
+                `;
+
+                // Insert after parent and all its existing children
+                let lastChild = parentRow;
+                while (tableBody.querySelector(`[data-parent-id="${lastChild.id}"]`)) {
+                    const children = tableBody.querySelectorAll(`[data-parent-id="${lastChild.id}"]`);
+                    lastChild = children[children.length - 1];
+                }
+                lastChild.after(newRow);
+
+                updateParentScore(parentId);
+            }
+
+            function removeRow(button) {
+                const rowToRemove = button.closest('tr');
+                const parentId = rowToRemove.dataset.parentId;
+                const children = tableBody.querySelectorAll(`[data-parent-id="${rowToRemove.id}"]`);
+                children.forEach(child => removeRow(child.querySelector('.remove-row-btn')));
+                rowToRemove.remove();
+                if (parentId) {
+                    updateParentScore(parentId);
+                }
+            }
+
+            function updateGradeForScore(scoreElement) {
+                const score = parseFloat(scoreElement.textContent);
+                if (isNaN(score)) return;
+                const letterGradeSpan = scoreElement.closest('td').querySelector('.letter-grade');
+                if (letterGradeSpan) letterGradeSpan.textContent = getGrade(score);
+            }
+
+            // --- OCR 功能 ---
+            const imageUpload = document.getElementById('image-upload');
+            document.getElementById('scan-image-btn').addEventListener('click', () => {
+                imageUpload.click();
+            });
+
+            imageUpload.addEventListener('change', async (event) => {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                ocrStatus.textContent = '正在识别图片，请稍候...';
+                try {
+                    const { data: { text } } = await Tesseract.recognize(file, 'eng+chi_sim');
+                    ocrStatus.textContent = '识别完成，正在解析数据...';
+                    parseAndFillData(text);
+                } catch (error) {
+                    console.error(error);
+                    ocrStatus.textContent = '识别失败，请检查浏览器控制台错误。';
+                } finally {
+                    imageUpload.value = ''; // Reset file input
+                }
+            });
+
+            function parseAndFillData(text) {
+                console.log(text)
+                const lines = text.split('\n');
+                let structuredData = [];
+                let lastTopLevelItem = null;
+
+                const isChinese = (input) => {
+                    const match = input.replaceAll(" ", "").match(/[\u3131-\uD79D]/g);
+                    return match ? match.length === input.replaceAll(" ", "").length : false;
+                }
+
+                lines.forEach(line => {
+                    const match = line.match(/^(\s*)([^\s].*?)\s+(\d+\.?\d*%)\s+([\d.-]+)/);
+
+                    if (match) {
+                        const isSubItem = match[2].substr(0, 2) == "L "; // Use indentation to detect sub-items
+                        if (isSubItem) match[2] = match[2].substr(2)
+
+                        if (isChinese(match[2]))
+                            match[2] = match[2].replaceAll(" ", "")
+
+                        const itemData = {
+                            id: generateId(),
+                            name: match[2].trim(),
+                            weight: match[3].trim(),
+                            score: match[4].trim(),
+                            subItems: []
+                        };
+
+                        if (isSubItem && lastTopLevelItem) {
+                            lastTopLevelItem.subItems.push(itemData);
+                        } else {
+                            structuredData.push(itemData);
+                            lastTopLevelItem = itemData;
+                        }
+                    }
+                });
+
+                if (structuredData.length > 0) {
+                    tableBody.innerHTML = ''; // Clear table
+                    structuredData.forEach(item => renderRow(item));
+                    calculateOverallScore();
+                    ocrStatus.textContent = `成功导入 ${structuredData.length} 个项目！`;
+                } else {
+                    ocrStatus.textContent = '未能在图片中解析出有效数据。';
+                }
+            }
+
+            document.body.addEventListener('click', (e) => {
+                if (e.target.matches('#add-row-btn')) addTopLevelRow();
+                if (e.target.matches('.add-sub-btn')) addSubItem(e.target);
+                if (e.target.matches('.remove-row-btn')) removeRow(e.target);
+                if (e.target.matches('#solve-overall-btn')) calculateOverallScore();
+                if (e.target.matches('.solve-item-btn')) solveForItem(e.target);
+            });
+
+            document.body.addEventListener('blur', (e) => {
+                const target = e.target;
+                if (target.matches('.editable-weight') || target.matches('.editable-score')) {
+                    const num = parseFloat(target.textContent);
+                    if (target.matches('.editable-weight')) target.textContent = isNaN(num) ? '0%' : num + '%';
+                    if (target.matches('.editable-score')) {
+                        target.textContent = isNaN(num) ? '0' : num;
+                        updateGradeForScore(target);
+                    }
+                    const parentId = target.closest('tr').dataset.parentId;
+                    if (parentId) updateParentScore(parentId);
+                }
+                if (target.matches('.overall-score')) {
+                    const num = parseFloat(target.textContent);
+                    target.textContent = isNaN(num) ? '0' : num;
+                }
+            }, true);
+
+            const initialData = [
+                {
+                    id: generateId(), name: '期中考试', weight: '30%',
+                    subItems: [
+                        { id: generateId(), name: '选择题', weight: '60%', score: '100' },
+                        { id: generateId(), name: '简答题', weight: '40%', score: '95' }
+                    ]
+                },
+                { id: generateId(), name: '期末考试', weight: '40%', score: '88' },
+                { id: generateId(), name: '项目参与', weight: '30%', score: '92' }
+            ];
+            //initialData.forEach(item => renderRow(item));
+            //calculateOverallScore();
+            if (document.querySelectorAll('#grade-table-body tr').length === 0) {
+                initialData.forEach(item => renderRow(item));
+            }
             calculateOverallScore();
 
-            // 滚动动画（与主页一致）
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) entry.target.classList.add('visible');
-                });
-            }, { threshold: 0.1 });
-            document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
-
-            // 导航滚动效果
-            window.addEventListener('scroll', () => {
-                navbar.classList.toggle('scrolled', window.scrollY > 50);
-            });
         });
     </script>
-</body>
-</html>
+    <footer>Powered by JasonCracked</footer>
+
+
+
+
+<yd-mg-icon style="position: fixed; z-index: 2147483647;"><template shadowrootmode="open"><style>
+.item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.all {
+    direction: ltr;
+}
+.all > * {
+    direction: rtl;
+}
+.hidden {
+    display: none;
+    transition: width 0.3s linear;
+}
+.container:hover .hidden {
+    width: var(--131b0bc3);
+    height: var(--367772ca);
+    display: flex;
+}
+.container {
+    position: fixed;
+    top:var(--8b7ed71a);
+    right:var(--2c4e45ba);
+    width: var(--b2ad46e2);
+    height: var(--14b33b7e);
+    background-color: #fff;
+    border-radius: var(--e55f886a);
+    box-shadow: 0 0 10px #b3b5b8;
+    transition: width 0.3s linear;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.container:hover {
+    width: var(--301156d1);
+    border-radius: var(--e55f886a);
+    justify-content: space-around;
+}
+.icon {
+    width: var(--131b0bc3);
+    height: var(--367772ca);
+    cursor: pointer;
+    user-select: none;
+}
+.icon:hover {
+}
+.yd-translate-loader {
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #3498db;
+    border-radius: 50%;
+    height: var(--367772ca);
+    width:  var(--131b0bc3);
+    animation: spin 0.5s linear infinite;
+}
+@keyframes spin {
+0% { transform: rotate(0deg);
+}
+100% { transform: rotate(360deg);
+}
+}
+@keyframes append-animate {
+from {
+        opacity: 0;
+}
+to {
+        opacity: 1;
+}
+}
+.popup {
+  animation: popup 0.3s forwards;
+}
+@keyframes popup {
+0% {
+    opacity: 0;
+    transform: scale(0);
+}
+100% {
+    opacity: 1;
+    transform: scale(1);
+}
+}
+</style><div class="all" style="position: fixed; z-index: 2147483647; --131b0bc3: 22px; --367772ca: 22px; --8b7ed71a: 0px; --2c4e45ba: 0px; --b2ad46e2: 26px; --14b33b7e: 26px; --e55f886a: 13px; --301156d1: 78px;"><!----></div></template></yd-mg-icon><yd-mg-block-icon><template shadowrootmode="open"><style>@charset "UTF-8";
+.disabled-element[data-v-d3135d60] {
+  cursor: not-allowed;
+}
+.all[data-v-d3135d60] {
+  position: absolute;
+  z-index: 1;
+}
+.all .container[data-v-d3135d60] {
+  width: var(--5a3ced10);
+  height: var(--58dc89c6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.all .container .yd-line[data-v-d3135d60] {
+  display: block;
+  position: absolute;
+  height: var(--c03ec7f0);
+  top: var(--7808ebd8);
+  left: var(--891c21b0);
+}
+.all .container .yd-line .orignal[data-v-d3135d60] {
+  padding: 1px;
+  background-color: #E4E7F3;
+  height: var(--5934d8d6);
+}
+.all .container .yd-line .yd[data-v-d3135d60] {
+  padding: 1px;
+  background-color: #FF939E;
+  height: var(--4d327ada);
+}
+.all .container .yd-line .llm[data-v-d3135d60] {
+  padding: 1px;
+  background-color: #2485FF;
+  height: var(--18678bd3);
+}
+.all .container .tooltip-container[data-v-d3135d60] {
+  display: inline-block;
+  position: absolute;
+  top: var(--147b79a2);
+  left: var(--7afb4d26);
+}
+.all .container .tooltip-container .icon[data-v-d3135d60] {
+  width: var(--5a3ced10);
+  height: var(--58dc89c6);
+  background-image: var(--4a440a69);
+  border-radius: 5px;
+  cursor: pointer;
+}
+.all .container .tooltip-container .icon[data-v-d3135d60]::before {
+  content: var(--4809e853);
+  display: none;
+}
+.all .container .tooltip-container .icon[data-v-d3135d60]:hover {
+  box-shadow: 0px 4px 10px rgba(56, 112, 200, 0.16);
+  transition: width 0.3s linear;
+  background-image: var(--4809e853);
+  cursor: pointer;
+}
+.all .container .tooltip-container .llmIcon[data-v-d3135d60] {
+  width: var(--5a3ced10);
+  height: var(--58dc89c6);
+  background-image: var(--4a440a69);
+  border-radius: 5px;
+}
+.all .container .tooltip-container .llmIcon[data-v-d3135d60]:hover {
+  width: var(--5a3ced10);
+  height: 48px;
+  background-image: var(--11da4116);
+  border-radius: 5px;
+}
+.all .container .tooltip-container .tooltip[data-v-d3135d60] {
+  position: absolute;
+  top: var(--523390c5);
+  /* 放在元素的上方 */
+  left: var(--178a82d2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  background-color: #F9FBFF;
+  padding: 8px;
+  width: 150px;
+  height: 40px;
+  border-radius: 8px;
+  box-sizing: border-box;
+  border: 1px solid rgba(216, 217, 219, 0.5);
+  box-shadow: 0px 1.2px 3.6px 0px rgba(0, 0, 0, 0.1), 0px 2px 20px 0px rgba(27, 19, 98, 0.08);
+  font-family: PingFang SC;
+  font-size: 16px;
+  font-weight: normal;
+  line-height: 150%;
+  text-align: center;
+  letter-spacing: 0em;
+  user-select: none;
+  color: #2A2B2E;
+}
+.all .container .tooltip-container .llmTooltip[data-v-d3135d60] {
+  position: absolute;
+  top: var(--523390c5);
+  /* 放在元素的上方 */
+  left: var(--178a82d2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  background-color: #F9FBFF;
+  padding: 8px;
+  width: 200px;
+  height: 40px;
+  border-radius: 8px;
+  box-sizing: border-box;
+  border: 1px solid rgba(216, 217, 219, 0.5);
+  box-shadow: 0px 1.2px 3.6px 0px rgba(0, 0, 0, 0.1), 0px 2px 20px 0px rgba(27, 19, 98, 0.08);
+  font-family: PingFang SC;
+  font-size: 16px;
+  font-weight: normal;
+  line-height: 150%;
+  text-align: center;
+  letter-spacing: 0em;
+  user-select: none;
+  color: #2A2B2E;
+}
+.all .container .yd-translate-loader-block[data-v-d3135d60] {
+  position: absolute;
+  top: var(--147b79a2);
+  left: var(--7afb4d26);
+  width: var(--5a3ced10);
+  height: var(--5a3ced10);
+  background-image: var(--3fa19693);
+  /* 确保这里是正确的图片路径 */
+  background-repeat: no-repeat;
+  background-size: cover;
+  box-shadow: 0px 4px 10px rgba(56, 112, 200, 0.16);
+  overflow: hidden;
+  /* 保持子元素的圆角效果 */
+}
+.all .container .yd-translate-loader-block[data-v-d3135d60]::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  border-radius: 5px;
+  border: 1px solid transparent;
+  background: linear-gradient(to left bottom, rgba(38, 132, 255, 0.6), rgba(120, 85, 250, 0.6));
+  -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+.all .container .tip[data-v-d3135d60] {
+  background-color: #F9FBFF;
+  padding: 8px;
+  border-radius: 8px;
+  height: 400px;
+  border: 1px solid #D8D9DB;
+}</style><div data-v-d3135d60="" class="all notranslate" style="--5a3ced10: 24px; --58dc89c6: 24px; --c03ec7f0: 0px; --7808ebd8: 0px; --891c21b0: 0px; --5934d8d6: 0px; --4d327ada: 0px; --18678bd3: 0px; --147b79a2: -16px; --7afb4d26: -44px; --4a440a69: url(chrome-extension://jlpcnoohcpfgpbalhlggdhjocgnlgafn/block.svg); --4809e853: url(chrome-extension://jlpcnoohcpfgpbalhlggdhjocgnlgafn/block-h.svg); --11da4116: url(chrome-extension://jlpcnoohcpfgpbalhlggdhjocgnlgafn/block-h-llm.svg); --523390c5: undefined; --178a82d2: undefined; --3fa19693: url(chrome-extension://jlpcnoohcpfgpbalhlggdhjocgnlgafn/block-l.gif);"><!----></div></template></yd-mg-block-icon><yd-image-ocr style="z-index: 2147483647;"><template shadowrootmode="open"><style>@charset "UTF-8";
+.modal-overlay[data-v-04ce0a75] {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.modal-content[data-v-04ce0a75] {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  display: flex;
+  gap: 20px;
+  width: 800px;
+  height: 500px;
+  flex-direction: column;
+  position: relative;
+}
+.modal-header[data-v-04ce0a75] {
+  display: flex;
+  justify-content: flex-end;
+  height: 24px;
+}
+.modal-body[data-v-04ce0a75] {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: row;
+}
+.modal-body .imageContainer[data-v-04ce0a75] {
+  flex: 2;
+  justify-content: center;
+}
+.modal-body .img[data-v-04ce0a75] {
+  position: relative;
+  background-size: contain;
+  background-position: center;
+  height: 600px;
+  background-repeat: no-repeat;
+}
+.modal-body .img .box[data-v-04ce0a75] {
+  position: absolute;
+  border: #333 3px solid;
+}
+.modal-body .text-content[data-v-04ce0a75] {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  /* 根据需要调整文本内容的样式 */
+}
+.modal-body .text-content .text[data-v-04ce0a75] {
+  overflow-y: auto;
+  height: 450px;
+}
+.modal-body .text-content .toolbar[data-v-04ce0a75] {
+  height: 36px;
+  display: flex;
+  justify-content: space-around;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+.close-button[data-v-04ce0a75] {
+  background-color: transparent;
+  /* 透明背景 */
+  border: none;
+  /* 去除边框 */
+  cursor: pointer;
+  /* 鼠标悬停时显示指针 */
+  outline: none;
+  /* 去除焦点轮廓 */
+  position: absolute;
+  /* 绝对定位 */
+  top: 10px;
+  /* 距顶部的距离 */
+  right: 10px;
+  /* 距右边的距离 */
+  font-size: 24px;
+  /* 字体大小 */
+  line-height: 24px;
+  /* 行高，以确保垂直居中 */
+  color: #333;
+  /* 字体颜色 */
+  font-weight: bold;
+  /* 字体加粗 */
+}
+.close-button[data-v-04ce0a75]:hover {
+  color: #666;
+  /* 鼠标悬停时的颜色变化 */
+}
+.line[data-v-04ce0a75], .redline[data-v-04ce0a75] {
+  font-family: Arial, Helvetica, sans-serif;
+  /* 使用无衬线字体 */
+  font-size: 16px;
+  /* 设置合适的字体大小 */
+  line-height: 24px;
+  color: #333;
+  /* 文字颜色 */
+  padding: 3px 3px 3px 6px;
+  /* 内边距 */
+  margin-top: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, border-left-color 0.3s;
+  /* 背景色和边框颜色变化的过渡效果 */
+  border-left: 3px solid #ddd;
+  /* 设置灰色的左边框 */
+}
+.redline[data-v-04ce0a75] {
+  border-left-color: #e53935;
+  /* 鼠标悬停时边框颜色变为红色 */
+  background-color: #f5f5f5;
+}
+.button[data-v-04ce0a75] {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background-color: #FB4A3E;
+  /* 一个明亮但不饱和的红色 */
+  color: white;
+  /* 文本颜色为白色 */
+  padding: 5px 10px;
+  /* 按钮内边距 */
+  border: none;
+  /* 无边框 */
+  border-radius: 5px;
+  /* 轻微的圆角 */
+  font-size: 10px;
+  text-transform: uppercase;
+  /* 文本大写 */
+  cursor: pointer;
+  /* 鼠标悬停时的指针样式 */
+  transition: background-color 0.3s;
+  /* 背景颜色变化的过渡效果 */
+}
+.button[data-v-04ce0a75]:hover {
+  background-color: #d32f2f;
+  /* 鼠标悬停时的背景颜色稍暗 */
+}
+.button[data-v-04ce0a75]:active {
+  background-color: #c62828;
+  /* 鼠标点击时的背景颜色更暗 */
+}
+.button[data-v-04ce0a75]:disabled {
+  background-color: #ef9a9a;
+  /* 禁用状态的按钮颜色更亮，更少饱和度 */
+  cursor: default;
+  /* 禁用状态的鼠标样式 */
+}
+.loading-indicator[data-v-04ce0a75] {
+  /* 添加你的样式，比如居中显示、动画等 */
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.5em;
+  /* ...其他样式 */
+}
+.message[data-v-04ce0a75] {
+  position: absolute;
+  top: 50%;
+  /* 定位到父元素的中间 */
+  left: 50%;
+  /* 定位到父元素的中间 */
+  transform: translate(-50%, -50%);
+  /* 使用 transform 实现精确居中 */
+  padding: 10px;
+  background-color: white;
+  /* 设置背景颜色为白色 */
+  border: 1px solid blue;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  /* 添加阴影效果 */
+  text-align: center;
+  z-index: 100;
+  /* 确保提示信息在其他元素上方 */
+}
+.loader[data-v-04ce0a75] {
+  border: 5px solid #f3f3f3;
+  /* 浅灰色边框 */
+  border-top: 5px solid #3498db;
+  /* 蓝色边框 */
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin-04ce0a75 2s linear infinite;
+  margin-bottom: 20px;
+}
+@keyframes spin-04ce0a75 {
+0% {
+    transform: rotate(0deg);
+}
+100% {
+    transform: rotate(360deg);
+}
+}</style><!----></template></yd-image-ocr></body></html>
