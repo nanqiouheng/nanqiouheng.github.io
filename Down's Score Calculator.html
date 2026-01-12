@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>唐氏分数计算器 | Grade Calculator</title>
+    <title>Down's Score Calculator | 唐氏分数计算器</title>
     <!-- 使用指定网站的图标 -->
     <link rel="icon" href="https://joe666.dpdns.org/favicon.ico" >
     <style>
@@ -41,6 +41,95 @@
             text-align: center;
         }
         
+        /* 语言切换动画样式 */
+        .language-switch-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(30, 30, 46, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9998;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+        
+        .language-animation-content {
+            text-align: center;
+            color: white;
+        }
+        
+        .language-animation-text {
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #7289da, #43b581);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            opacity: 0;
+            transform: scale(0.8);
+            animation: languageFadeInOut 1.5s ease-in-out;
+        }
+        
+        @keyframes languageFadeInOut {
+            0% { opacity: 0; transform: scale(0.8); }
+            30% { opacity: 1; transform: scale(1.1); }
+            70% { opacity: 1; transform: scale(1.1); }
+            100% { opacity: 0; transform: scale(1.5); }
+        }
+        
+        /* 语言切换器样式 */
+        .language-switcher {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            position: relative;
+        }
+        
+        .lang-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid #4f545c;
+            color: #b9bbbe;
+            padding: 4px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .lang-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .lang-btn.active {
+            background: linear-gradient(135deg, #7289da 0%, #5865f2 100%);
+            color: white;
+            border-color: #7289da;
+        }
+        
+        /* 按钮切换动画 */
+        .lang-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .lang-btn:hover::before {
+            left: 100%;
+        }
+        
         /* 模态框样式 */
         .modal {
             display: none;
@@ -63,6 +152,12 @@
             max-width: 500px;
             border: 1px solid #4f545c;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            animation: modalFadeIn 0.3s ease-out;
+        }
+        
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         .modal-header {
@@ -115,6 +210,7 @@
             font-size: 16px;
             margin-bottom: 15px;
             box-sizing: border-box;
+            transition: all 0.3s;
         }
         
         .modal-input:focus {
@@ -132,11 +228,12 @@
             border: 1px solid #4f545c;
             border-radius: 5px;
             margin-bottom: 10px;
-            transition: background-color 0.3s;
+            transition: all 0.3s;
         }
         
         .save-item:hover {
             background-color: rgba(255, 255, 255, 0.08);
+            transform: translateX(5px);
         }
         
         .save-item-name {
@@ -176,34 +273,6 @@
         .btn-delete {
             background: linear-gradient(135deg, #f04747 0%, #d84040 100%);
             color: white;
-        }
-        
-        /* 语言切换器样式 */
-        .language-switcher {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        
-        .lang-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid #4f545c;
-            color: #b9bbbe;
-            padding: 4px 10px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-            transition: all 0.2s;
-        }
-        
-        .lang-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-        
-        .lang-btn.active {
-            background: linear-gradient(135deg, #7289da 0%, #5865f2 100%);
-            color: white;
-            border-color: #7289da;
         }
         
         body {
@@ -256,6 +325,12 @@
             margin-top: 20px;
             margin-bottom: 40px;
             backdrop-filter: blur(10px);
+            animation: containerSlideIn 0.5s ease-out;
+        }
+        
+        @keyframes containerSlideIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         .header-area {
@@ -355,6 +430,7 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            transition: all 0.3s ease;
         }
         
         h3 {
@@ -362,12 +438,19 @@
             border-bottom: 1px solid #4f545c;
             padding-bottom: 10px;
             font-size: 20px;
+            transition: all 0.3s ease;
         }
         
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
+            animation: tableFadeIn 0.7s ease-out;
+        }
+        
+        @keyframes tableFadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         th, td {
@@ -375,6 +458,7 @@
             text-align: left;
             border-bottom: 1px solid #4f545c;
             vertical-align: middle;
+            transition: all 0.3s ease;
         }
         
         th {
@@ -383,8 +467,13 @@
             font-weight: 600;
         }
         
+        tr {
+            transition: all 0.3s ease;
+        }
+        
         tr:hover {
             background-color: rgba(114, 137, 218, 0.05);
+            transform: translateX(5px);
         }
         
         .overall-score {
@@ -393,6 +482,11 @@
             display: inline-block;
             color: #43b581;
             text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .overall-score:hover {
+            transform: scale(1.05);
         }
         
         [contenteditable="true"] {
@@ -409,6 +503,7 @@
             outline: 2px solid #7289da;
             background-color: rgba(255, 255, 255, 0.1);
             box-shadow: 0 0 8px rgba(114, 137, 218, 0.5);
+            transform: scale(1.02);
         }
         
         .action-btn {
@@ -421,11 +516,42 @@
             margin: 0 3px;
             transition: all 0.2s ease;
             font-weight: 500;
+            position: relative;
+            overflow: hidden;
         }
         
         .action-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .action-btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%);
+            transform-origin: 50% 50%;
+        }
+        
+        .action-btn:focus:not(:active)::after {
+            animation: ripple 1s ease-out;
+        }
+        
+        @keyframes ripple {
+            0% {
+                transform: scale(0, 0);
+                opacity: 0.5;
+            }
+            100% {
+                transform: scale(20, 20);
+                opacity: 0;
+            }
         }
         
         .remove-row-btn {
@@ -467,12 +593,29 @@
             font-weight: 600;
             transition: all 0.3s ease;
             box-shadow: 0 4px 6px rgba(114, 137, 218, 0.3);
+            position: relative;
+            overflow: hidden;
         }
         
         #add-row-btn:hover {
             background: linear-gradient(135deg, #677bc4 0%, #4752c4 100%);
             transform: translateY(-2px);
             box-shadow: 0 6px 8px rgba(114, 137, 218, 0.4);
+        }
+        
+        #add-row-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        #add-row-btn:hover::before {
+            left: 100%;
         }
         
         /* 新增样式 */
@@ -497,12 +640,14 @@
             color: #faa61a;
             font-weight: bold;
             margin-left: 5px;
+            transition: all 0.3s ease;
         }
         
         /* 指引文本样式 */
         p {
             color: #b9bbbe;
             line-height: 1.5;
+            transition: all 0.3s ease;
         }
         
         strong {
@@ -516,6 +661,7 @@
             background-color: rgba(67, 181, 129, 0.1);
             padding: 2px 8px;
             border-radius: 4px;
+            transition: all 0.3s ease;
         }
         
         /* 子项行的特殊样式 */
@@ -577,7 +723,14 @@
     <div id="loading-overlay">
         <div>
             <div class="spinner"></div>
-            <div class="loading-text">加载中... | Loading...</div>
+            <div class="loading-text" id="loadingText">加载中... | Loading...</div>
+        </div>
+    </div>
+    
+    <!-- 语言切换动画 -->
+    <div id="languageAnimation" class="language-switch-animation">
+        <div class="language-animation-content">
+            <div class="language-animation-text" id="animationText">Switching...</div>
         </div>
     </div>
     
@@ -640,7 +793,7 @@
             <div class="header-left">
                 <!-- 返回主页按钮 -->
                 <a href="https://joe666.dpdns.org" class="home-btn" target="_blank" data-i18n="returnHome">返回主页</a>
-                <h2 data-i18n="appTitle">唐氏分数计算器</h2>
+                <h2 data-i18n="appTitle">Down's Score Calculator</h2>
             </div>
             <div class="header-center">
                 <!-- 语言切换器 -->
@@ -757,17 +910,21 @@
                 
                 // 加载文本
                 loading: "加载中...",
+                
+                // 动画文本
+                switchingToChinese: "切换到中文",
+                switchingToEnglish: "切换到英文"
             },
             en: {
                 // Page elements
                 appTitle: "Down's Score Calculator",
-                calculatorTitle: "Down's Score Calculator",
+                calculatorTitle: "Score Calculator",
                 instructions: "Instructions:",
-                instructionsText: "Enter grades and weights for calculation, supports multi-level sub-items",
+                instructionsText: "Enter scores and weights for calculation, supports multi-level sub-items",
                 currentTime: "Current Time:",
                 project: "Project",
                 weight: "Weight",
-                grade: "Grade",
+                grade: "Score",
                 actions: "Actions",
                 addNewProject: "+ Add New Project",
                 calculateOverall: "Calculate Total",
@@ -813,6 +970,10 @@
                 
                 // Loading text
                 loading: "Loading...",
+                
+                // Animation text
+                switchingToChinese: "切换到中文",
+                switchingToEnglish: "Switching to English"
             }
         };
         
@@ -835,19 +996,58 @@
                 localStorage.setItem(LANGUAGE_STORAGE_KEY, currentLang);
             }
             
+            // 更新加载文本
+            const loadingText = document.getElementById('loadingText');
+            if (loadingText && currentLang === 'zh') {
+                loadingText.textContent = "加载中...";
+            } else if (loadingText) {
+                loadingText.textContent = "Loading...";
+            }
+            
             // 更新语言按钮状态
             updateLanguageButtons();
             // 应用语言
             applyLanguage();
         }
         
+        // 显示语言切换动画
+        function showLanguageAnimation(targetLang) {
+            const animationElement = document.getElementById('languageAnimation');
+            const animationText = document.getElementById('animationText');
+            
+            // 设置动画文本
+            if (targetLang === 'zh') {
+                animationText.textContent = translations['en']['switchingToChinese'];
+            } else {
+                animationText.textContent = translations['zh']['switchingToEnglish'];
+            }
+            
+            // 显示动画
+            animationElement.style.opacity = '1';
+            animationElement.style.pointerEvents = 'auto';
+            
+            // 1.5秒后隐藏动画
+            setTimeout(() => {
+                animationElement.style.opacity = '0';
+                setTimeout(() => {
+                    animationElement.style.pointerEvents = 'none';
+                }, 500);
+            }, 1500);
+        }
+        
         // 切换语言
         function switchLanguage(lang) {
             if (lang !== currentLang && (lang === 'zh' || lang === 'en')) {
-                currentLang = lang;
-                localStorage.setItem(LANGUAGE_STORAGE_KEY, currentLang);
-                updateLanguageButtons();
-                applyLanguage();
+                // 显示语言切换动画
+                showLanguageAnimation(lang);
+                
+                // 延迟切换语言，让动画先显示
+                setTimeout(() => {
+                    currentLang = lang;
+                    localStorage.setItem(LANGUAGE_STORAGE_KEY, currentLang);
+                    updateLanguageButtons();
+                    applyLanguage();
+                }, 800);
             }
         }
         
@@ -879,12 +1079,6 @@
                     element.placeholder = translations[currentLang][key];
                 }
             });
-            
-            // 更新加载文本
-            const loadingText = document.querySelector('.loading-text');
-            if (loadingText) {
-                loadingText.textContent = translations[currentLang]['loading'];
-            }
             
             // 更新表格中的按钮文本
             updateTableButtonTexts();
@@ -1507,4 +1701,3 @@
     </script>
 </body>
 </html>
-
