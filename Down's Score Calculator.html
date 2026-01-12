@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>唐氏分数计算器</title>
+    <title>唐氏分数计算器 | Grade Calculator</title>
     <!-- 使用指定网站的图标 -->
     <link rel="icon" href="https://joe666.dpdns.org/favicon.ico" >
     <style>
@@ -176,6 +176,34 @@
         .btn-delete {
             background: linear-gradient(135deg, #f04747 0%, #d84040 100%);
             color: white;
+        }
+        
+        /* 语言切换器样式 */
+        .language-switcher {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .lang-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid #4f545c;
+            color: #b9bbbe;
+            padding: 4px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+        
+        .lang-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .lang-btn.active {
+            background: linear-gradient(135deg, #7289da 0%, #5865f2 100%);
+            color: white;
+            border-color: #7289da;
         }
         
         body {
@@ -549,7 +577,7 @@
     <div id="loading-overlay">
         <div>
             <div class="spinner"></div>
-            <div class="loading-text">加载中...</div>
+            <div class="loading-text">加载中... | Loading...</div>
         </div>
     </div>
     
@@ -557,17 +585,17 @@
     <div id="saveModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title">保存管理</h3>
+                <h3 class="modal-title" data-i18n="saveManagement">保存管理</h3>
                 <button class="close-modal" id="closeSaveModal">×</button>
             </div>
             <div class="modal-body">
                 <div id="saveList"></div>
                 <div id="emptySaveState" class="empty-state" style="display: none;">
-                    <p>暂无保存记录</p>
+                    <p data-i18n="noSavedRecords">暂无保存记录</p>
                 </div>
             </div>
             <div class="modal-footer">
-                <button id="saveCurrentBtn" class="save-manage-btn">保存当前状态</button>
+                <button id="saveCurrentBtn" class="save-manage-btn" data-i18n="saveCurrentState">保存当前状态</button>
             </div>
         </div>
     </div>
@@ -576,15 +604,15 @@
     <div id="saveInputModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title">保存当前状态</h3>
+                <h3 class="modal-title" data-i18n="saveCurrentState">保存当前状态</h3>
                 <button class="close-modal" id="closeSaveInputModal">×</button>
             </div>
             <div class="modal-body">
-                <input type="text" id="saveNameInput" class="modal-input" placeholder="请输入保存名称（默认：当前日期）" autofocus>
+                <input type="text" id="saveNameInput" class="modal-input" data-i18n-placeholder="saveNamePlaceholder" placeholder="请输入保存名称（默认：当前日期）" autofocus>
             </div>
             <div class="modal-footer">
-                <button id="cancelSaveBtn" class="action-btn remove-row-btn">取消</button>
-                <button id="confirmSaveBtn" class="action-btn solve-item-btn">保存</button>
+                <button id="cancelSaveBtn" class="action-btn remove-row-btn" data-i18n="cancel">取消</button>
+                <button id="confirmSaveBtn" class="action-btn solve-item-btn" data-i18n="save">保存</button>
             </div>
         </div>
     </div>
@@ -593,16 +621,16 @@
     <div id="renameModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title">重命名保存</h3>
+                <h3 class="modal-title" data-i18n="renameSave">重命名保存</h3>
                 <button class="close-modal" id="closeRenameModal">×</button>
             </div>
             <div class="modal-body">
-                <input type="text" id="renameInput" class="modal-input" placeholder="请输入新名称" autofocus>
+                <input type="text" id="renameInput" class="modal-input" data-i18n-placeholder="renamePlaceholder" placeholder="请输入新名称" autofocus>
                 <input type="hidden" id="renameSaveId">
             </div>
             <div class="modal-footer">
-                <button id="cancelRenameBtn" class="action-btn remove-row-btn">取消</button>
-                <button id="confirmRenameBtn" class="action-btn solve-item-btn">重命名</button>
+                <button id="cancelRenameBtn" class="action-btn remove-row-btn" data-i18n="cancel">取消</button>
+                <button id="confirmRenameBtn" class="action-btn solve-item-btn" data-i18n="rename">重命名</button>
             </div>
         </div>
     </div>
@@ -611,39 +639,44 @@
         <div class="header-area">
             <div class="header-left">
                 <!-- 返回主页按钮 -->
-                <a href="https://joe666.dpdns.org" class="home-btn" target="_blank">返回主页</a>
-                <h2>唐氏分数计算器</h2>
+                <a href="https://joe666.dpdns.org" class="home-btn" target="_blank" data-i18n="returnHome">返回主页</a>
+                <h2 data-i18n="appTitle">唐氏分数计算器</h2>
             </div>
             <div class="header-center">
+                <!-- 语言切换器 -->
+                <div class="language-switcher">
+                    <button class="lang-btn active" data-lang="zh">中文</button>
+                    <button class="lang-btn" data-lang="en">English</button>
+                </div>
                 <!-- 保存管理按钮 -->
-                <button id="manageSavesBtn" class="save-manage-btn">保存管理</button>
+                <button id="manageSavesBtn" class="save-manage-btn" data-i18n="saveManagement">保存管理</button>
             </div>
             <div class="overall-score-container">
                 <div class="overall-score" contenteditable="true">100</div>
-                <button id="solve-overall-btn" class="action-btn">计算总分</button>
+                <button id="solve-overall-btn" class="action-btn" data-i18n="calculateOverall">计算总分</button>
             </div>
         </div>
-        <h3>分数计算器</h3>
+        <h3 data-i18n="calculatorTitle">分数计算器</h3>
         <p>
-            <strong>使用指引:</strong> 输入成绩和权重进行计算，支持多层级的子项目<br>
-            <strong>当前时间:</strong> <span id="timeStr"></span>
+            <strong data-i18n="instructions">使用指引:</strong> <span data-i18n="instructionsText">输入成绩和权重进行计算，支持多层级的子项目</span><br>
+            <strong data-i18n="currentTime">当前时间:</strong> <span id="timeStr"></span>
         </p>
         <table>
             <thead>
                 <tr>
-                    <th>项目</th>
-                    <th>权重</th>
-                    <th>成绩</th>
-                    <th style="width: 220px;">操作</th>
+                    <th data-i18n="project">项目</th>
+                    <th data-i18n="weight">权重</th>
+                    <th data-i18n="grade">成绩</th>
+                    <th style="width: 220px;" data-i18n="actions">操作</th>
                 </tr>
             </thead>
             <tbody id="grade-table-body">
                 <!-- Table rows are managed by JavaScript -->
             </tbody>
         </table>
-        <button id="add-row-btn">+ 添加新项目</button>
+        <button id="add-row-btn" data-i18n="addNewProject">+ 添加新项目</button>
     </div>
-    <footer>Powered by Down`sicient | 版权所有 © 2026 Down`sicient Studio，Tach的附属工作室</footer>
+    <footer data-i18n="footerText">Powered by Down`sicient | 版权所有 © 2026 Down`sicient Studio，Tach的附属工作室</footer>
     <script>
         // 加载动画控制
         window.addEventListener('load', function() {
@@ -665,6 +698,225 @@
         
         // 保存管理相关变量
         const SAVE_STORAGE_KEY = 'grade_calculator_saves';
+        const LANGUAGE_STORAGE_KEY = 'grade_calculator_language';
+        
+        // 国际化支持
+        const translations = {
+            zh: {
+                // 页面元素
+                appTitle: "唐氏分数计算器",
+                calculatorTitle: "分数计算器",
+                instructions: "使用指引:",
+                instructionsText: "输入成绩和权重进行计算，支持多层级的子项目",
+                currentTime: "当前时间:",
+                project: "项目",
+                weight: "权重",
+                grade: "成绩",
+                actions: "操作",
+                addNewProject: "+ 添加新项目",
+                calculateOverall: "计算总分",
+                returnHome: "返回主页",
+                saveManagement: "保存管理",
+                footerText: "Powered by Down`sicient | 版权所有 © 2026 Down`sicient Studio，Tach的附属工作室",
+                
+                // 按钮文本
+                solveItem: "求解",
+                removeItem: "删除",
+                addSubItem: "添加子项",
+                
+                // 保存管理相关
+                saveCurrentState: "保存当前状态",
+                load: "加载",
+                rename: "重命名",
+                delete: "删除",
+                cancel: "取消",
+                save: "保存",
+                saveNamePlaceholder: "请输入保存名称（默认：当前日期）",
+                renameSave: "重命名保存",
+                renamePlaceholder: "请输入新名称",
+                noSavedRecords: "暂无保存记录",
+                
+                // 确认对话框
+                confirmDelete: "确定要删除这个项目及其所有子项目吗？",
+                confirmDeleteSave: "确定要删除这个保存记录吗？",
+                
+                // 提示信息
+                saveSuccess: "保存成功！",
+                loadSuccess: "加载成功！",
+                renameSuccess: "重命名成功！",
+                deleteSuccess: "删除成功！",
+                invalidTotalScore: "无效的总分目标值。",
+                cannotSolveParent: "无法为包含子项的项目求解。请为具体的子节点项目求解。",
+                zeroWeightError: "无法为权重为零或负数的项目求解。",
+                saveFailed: "保存失败，请检查控制台错误信息。",
+                enterNewName: "请输入新名称！",
+                
+                // 默认项目名称
+                newProject: "新项目",
+                newSubProject: "新子项目",
+                
+                // 加载文本
+                loading: "加载中...",
+            },
+            en: {
+                // Page elements
+                appTitle: "Grade Calculator",
+                calculatorTitle: "Grade Calculator",
+                instructions: "Instructions:",
+                instructionsText: "Enter grades and weights for calculation, supports multi-level sub-items",
+                currentTime: "Current Time:",
+                project: "Project",
+                weight: "Weight",
+                grade: "Grade",
+                actions: "Actions",
+                addNewProject: "+ Add New Project",
+                calculateOverall: "Calculate Total",
+                returnHome: "Return Home",
+                saveManagement: "Save Management",
+                footerText: "Powered by Down`sicient | Copyright © 2026 Down`sicient Studio, Tach's subsidiary studio",
+                
+                // Button texts
+                solveItem: "Solve",
+                removeItem: "Delete",
+                addSubItem: "Add Sub-item",
+                
+                // Save management related
+                saveCurrentState: "Save Current State",
+                load: "Load",
+                rename: "Rename",
+                delete: "Delete",
+                cancel: "Cancel",
+                save: "Save",
+                saveNamePlaceholder: "Enter save name (default: current date)",
+                renameSave: "Rename Save",
+                renamePlaceholder: "Enter new name",
+                noSavedRecords: "No saved records",
+                
+                // Confirmation dialogs
+                confirmDelete: "Are you sure you want to delete this item and all its sub-items?",
+                confirmDeleteSave: "Are you sure you want to delete this save record?",
+                
+                // Messages
+                saveSuccess: "Save successful!",
+                loadSuccess: "Load successful!",
+                renameSuccess: "Rename successful!",
+                deleteSuccess: "Delete successful!",
+                invalidTotalScore: "Invalid total score target.",
+                cannotSolveParent: "Cannot solve for items with sub-items. Please solve for specific sub-items.",
+                zeroWeightError: "Cannot solve for items with zero or negative weight.",
+                saveFailed: "Save failed, please check console for errors.",
+                enterNewName: "Please enter a new name!",
+                
+                // Default item names
+                newProject: "New Project",
+                newSubProject: "New Sub-project",
+                
+                // Loading text
+                loading: "Loading...",
+            }
+        };
+        
+        // 当前语言
+        let currentLang = 'zh';
+        
+        // 初始化语言
+        function initLanguage() {
+            const savedLang = localStorage.getItem(LANGUAGE_STORAGE_KEY);
+            if (savedLang && (savedLang === 'zh' || savedLang === 'en')) {
+                currentLang = savedLang;
+            } else {
+                // 根据浏览器语言自动检测
+                const browserLang = navigator.language || navigator.userLanguage;
+                if (browserLang.startsWith('zh')) {
+                    currentLang = 'zh';
+                } else {
+                    currentLang = 'en';
+                }
+                localStorage.setItem(LANGUAGE_STORAGE_KEY, currentLang);
+            }
+            
+            // 更新语言按钮状态
+            updateLanguageButtons();
+            // 应用语言
+            applyLanguage();
+        }
+        
+        // 切换语言
+        function switchLanguage(lang) {
+            if (lang !== currentLang && (lang === 'zh' || lang === 'en')) {
+                currentLang = lang;
+                localStorage.setItem(LANGUAGE_STORAGE_KEY, currentLang);
+                updateLanguageButtons();
+                applyLanguage();
+            }
+        }
+        
+        // 更新语言按钮状态
+        function updateLanguageButtons() {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                if (btn.dataset.lang === currentLang) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+        }
+        
+        // 应用语言到页面
+        function applyLanguage() {
+            // 更新所有有 data-i18n 属性的元素
+            document.querySelectorAll('[data-i18n]').forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                if (translations[currentLang][key]) {
+                    element.textContent = translations[currentLang][key];
+                }
+            });
+            
+            // 更新占位符
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
+                const key = element.getAttribute('data-i18n-placeholder');
+                if (translations[currentLang][key]) {
+                    element.placeholder = translations[currentLang][key];
+                }
+            });
+            
+            // 更新加载文本
+            const loadingText = document.querySelector('.loading-text');
+            if (loadingText) {
+                loadingText.textContent = translations[currentLang]['loading'];
+            }
+            
+            // 更新表格中的按钮文本
+            updateTableButtonTexts();
+        }
+        
+        // 更新表格中的按钮文本
+        function updateTableButtonTexts() {
+            document.querySelectorAll('.add-sub-btn').forEach(btn => {
+                btn.textContent = translations[currentLang]['addSubItem'];
+            });
+            
+            document.querySelectorAll('.solve-item-btn').forEach(btn => {
+                btn.textContent = translations[currentLang]['solveItem'];
+            });
+            
+            document.querySelectorAll('.remove-row-btn').forEach(btn => {
+                btn.textContent = translations[currentLang]['removeItem'];
+            });
+            
+            // 更新保存列表中的按钮
+            document.querySelectorAll('.btn-load').forEach(btn => {
+                btn.textContent = translations[currentLang]['load'];
+            });
+            
+            document.querySelectorAll('.btn-rename').forEach(btn => {
+                btn.textContent = translations[currentLang]['rename'];
+            });
+            
+            document.querySelectorAll('.btn-delete').forEach(btn => {
+                btn.textContent = translations[currentLang]['delete'];
+            });
+        }
         
         // 保存管理功能
         class SaveManager {
@@ -687,35 +939,23 @@
                     localStorage.setItem(SAVE_STORAGE_KEY, JSON.stringify(this.saves));
                 } catch (e) {
                     console.error('保存记录失败:', e);
-                    alert('保存失败，可能是存储空间不足。');
+                    alert(translations[currentLang]['saveFailed']);
                 }
             }
             
             addSave(name, data) {
                 const timestamp = new Date().toISOString();
-                const formattedDate = new Date().toLocaleString('zh-CN');
+                const formattedDate = new Date().toLocaleString(currentLang === 'zh' ? 'zh-CN' : 'en-US');
                 const save = {
                     id: 'save_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
-                    name: name || `保存 ${formattedDate}`,
+                    name: name || translations[currentLang]['saveCurrentState'] + ' ' + formattedDate,
                     timestamp: timestamp,
                     formattedDate: formattedDate,
                     data: data
                 };
-                this.saves.unshift(save); // 最新保存放在最前面
+                this.saves.unshift(save);
                 this.saveSaves();
                 return save;
-            }
-            
-            updateSave(id, data) {
-                const saveIndex = this.saves.findIndex(save => save.id === id);
-                if (saveIndex !== -1) {
-                    this.saves[saveIndex].data = data;
-                    this.saves[saveIndex].timestamp = new Date().toISOString();
-                    this.saves[saveIndex].formattedDate = new Date().toLocaleString('zh-CN');
-                    this.saveSaves();
-                    return true;
-                }
-                return false;
             }
             
             renameSave(id, newName) {
@@ -723,7 +963,7 @@
                 if (saveIndex !== -1) {
                     this.saves[saveIndex].name = newName;
                     this.saves[saveIndex].timestamp = new Date().toISOString();
-                    this.saves[saveIndex].formattedDate = new Date().toLocaleString('zh-CN');
+                    this.saves[saveIndex].formattedDate = new Date().toLocaleString(currentLang === 'zh' ? 'zh-CN' : 'en-US');
                     this.saveSaves();
                     return true;
                 }
@@ -745,12 +985,7 @@
             }
             
             getAllSaves() {
-                return [...this.saves]; // 返回副本
-            }
-            
-            clearAllSaves() {
-                this.saves = [];
-                this.saveSaves();
+                return [...this.saves];
             }
         }
         
@@ -841,19 +1076,19 @@
         function solveForItem(button) {
             const targetRow = button.closest('tr');
             if (gradeTableBody.querySelector(`[data-parent-id="${targetRow.id}"]`)) {
-                alert("无法为包含子项的项目求解。请为具体的子节点项目求解。");
+                alert(translations[currentLang]['cannotSolveParent']);
                 return;
             }
             
             const desiredGrade = parseFloat(document.querySelector('.overall-score').textContent);
             if (isNaN(desiredGrade)) {
-                alert("无效的总分目标值。");
+                alert(translations[currentLang]['invalidTotalScore']);
                 return;
             }
 
             const targetEffectiveWeight = getEffectiveWeight(targetRow);
             if (targetEffectiveWeight <= 0) {
-                alert("无法为权重为零或负数的项目求解。");
+                alert(translations[currentLang]['zeroWeightError']);
                 return;
             }
 
@@ -895,9 +1130,9 @@
                     <span class="letter-grade">${grade}</span>
                 </td>
                 <td>
-                    <button class="add-sub-btn action-btn">添加子项</button>
-                    <button class="solve-item-btn action-btn">求解</button>
-                    <button class="remove-row-btn action-btn">删除</button>
+                    <button class="add-sub-btn action-btn">${translations[currentLang]['addSubItem']}</button>
+                    <button class="solve-item-btn action-btn">${translations[currentLang]['solveItem']}</button>
+                    <button class="remove-row-btn action-btn">${translations[currentLang]['removeItem']}</button>
                 </td>
             `;
             gradeTableBody.appendChild(row);
@@ -909,7 +1144,8 @@
         }
         
         function addTopLevelRow() {
-            renderRow({ id: generateId(), name: '新项目', weight: '0%', score: '0' });
+            const newItemName = translations[currentLang]['newProject'];
+            renderRow({ id: generateId(), name: newItemName, weight: '0%', score: '0' });
             gradeTableBody.lastElementChild.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
 
@@ -920,7 +1156,8 @@
             
             const level = parseInt(parentRow.querySelector('td:first-child').style.paddingLeft.replace('px', '')) / 25 + 1;
             
-            const newRowData = { id: generateId(), name: '新子项目', weight: '0%', score: '0' };
+            const newItemName = translations[currentLang]['newSubProject'];
+            const newRowData = { id: generateId(), name: newItemName, weight: '0%', score: '0' };
 
             const newRow = document.createElement('tr');
             newRow.id = newRowData.id;
@@ -935,9 +1172,9 @@
                     <span class="letter-grade">F</span>
                 </td>
                 <td>
-                    <button class="add-sub-btn action-btn">添加子项</button>
-                    <button class="solve-item-btn action-btn">求解</button>
-                    <button class="remove-row-btn action-btn">删除</button>
+                    <button class="add-sub-btn action-btn">${translations[currentLang]['addSubItem']}</button>
+                    <button class="solve-item-btn action-btn">${translations[currentLang]['solveItem']}</button>
+                    <button class="remove-row-btn action-btn">${translations[currentLang]['removeItem']}</button>
                 </td>
             `;
             parentRow.after(newRow);
@@ -946,7 +1183,7 @@
         }
 
         function removeRow(button) {
-            if (!confirm('确定要删除这个项目及其所有子项目吗？')) return;
+            if (!confirm(translations[currentLang]['confirmDelete'])) return;
             
             const rowToRemove = button.closest('tr');
             const parentId = rowToRemove.dataset.parentId;
@@ -1053,12 +1290,12 @@
                 saveItem.innerHTML = `
                     <div>
                         <div class="save-item-name">${save.name}</div>
-                        <div class="save-item-meta">保存时间: ${save.formattedDate}</div>
+                        <div class="save-item-meta">${currentLang === 'zh' ? '保存时间:' : 'Saved:'} ${save.formattedDate}</div>
                     </div>
                     <div class="save-item-actions">
-                        <button class="save-action-btn btn-load" data-save-id="${save.id}">加载</button>
-                        <button class="save-action-btn btn-rename" data-save-id="${save.id}">重命名</button>
-                        <button class="save-action-btn btn-delete" data-save-id="${save.id}">删除</button>
+                        <button class="save-action-btn btn-load" data-save-id="${save.id}">${translations[currentLang]['load']}</button>
+                        <button class="save-action-btn btn-rename" data-save-id="${save.id}">${translations[currentLang]['rename']}</button>
+                        <button class="save-action-btn btn-delete" data-save-id="${save.id}">${translations[currentLang]['delete']}</button>
                     </div>
                 `;
                 saveListElement.appendChild(saveItem);
@@ -1073,7 +1310,7 @@
         
         // 打开保存输入模态框
         function openSaveInputModal() {
-            const defaultName = `保存 ${new Date().toLocaleString('zh-CN')}`;
+            const defaultName = `${translations[currentLang]['saveCurrentState']} ${new Date().toLocaleString(currentLang === 'zh' ? 'zh-CN' : 'en-US')}`;
             document.getElementById('saveNameInput').value = defaultName;
             document.getElementById('saveInputModal').style.display = 'flex';
             document.getElementById('saveNameInput').focus();
@@ -1092,8 +1329,18 @@
 
         // --- 事件监听器绑定 ---
         document.addEventListener('DOMContentLoaded', () => {
+            // 初始化语言
+            initLanguage();
+            
             updateTime();
             gradeTableBody = document.getElementById('grade-table-body');
+
+            // 绑定语言切换按钮事件
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    switchLanguage(btn.dataset.lang);
+                });
+            });
 
             // 绑定保存相关按钮事件
             document.getElementById('manageSavesBtn').addEventListener('click', openSaveModal);
@@ -1125,17 +1372,16 @@
             document.getElementById('confirmSaveBtn').addEventListener('click', () => {
                 const saveName = document.getElementById('saveNameInput').value.trim();
                 const currentData = getCurrentData();
-                console.log('正在保存数据:', currentData);
                 
                 try {
                     saveManager.addSave(saveName, currentData);
                     document.getElementById('saveInputModal').style.display = 'none';
                     document.getElementById('saveModal').style.display = 'none';
                     renderSaveList();
-                    alert('保存成功！');
+                    alert(translations[currentLang]['saveSuccess']);
                 } catch (error) {
                     console.error('保存失败:', error);
-                    alert('保存失败，请检查控制台错误信息。');
+                    alert(translations[currentLang]['saveFailed']);
                 }
             });
             
@@ -1147,10 +1393,10 @@
                     if (saveManager.renameSave(saveId, newName)) {
                         document.getElementById('renameModal').style.display = 'none';
                         renderSaveList();
-                        alert('重命名成功！');
+                        alert(translations[currentLang]['renameSuccess']);
                     }
                 } else {
-                    alert('请输入新名称！');
+                    alert(translations[currentLang]['enterNewName']);
                 }
             });
 
@@ -1169,7 +1415,7 @@
                     if (save) {
                         loadData(save.data);
                         document.getElementById('saveModal').style.display = 'none';
-                        alert('加载成功！');
+                        alert(translations[currentLang]['loadSuccess']);
                     }
                 }
                 
@@ -1180,10 +1426,10 @@
                 
                 if (e.target.matches('.btn-delete')) {
                     const saveId = e.target.dataset.saveId;
-                    if (confirm('确定要删除这个保存记录吗？')) {
+                    if (confirm(translations[currentLang]['confirmDeleteSave'])) {
                         if (saveManager.deleteSave(saveId)) {
                             renderSaveList();
-                            alert('删除成功！');
+                            alert(translations[currentLang]['deleteSuccess']);
                         }
                     }
                 }
@@ -1243,15 +1489,15 @@
             // --- 初始化数据 ---
             const initialData = [
                 {
-                    id: generateId(), name: '期中考试', weight: '30%',
+                    id: generateId(), name: currentLang === 'zh' ? '期中考试' : 'Midterm Exam', weight: '30%',
                     subItems: [
-                        { id: generateId(), name: '选择题', weight: '60%', score: '95' },
-                        { id: generateId(), name: '简答题', weight: '40%', score: '88' }
+                        { id: generateId(), name: currentLang === 'zh' ? '选择题' : 'Multiple Choice', weight: '60%', score: '95' },
+                        { id: generateId(), name: currentLang === 'zh' ? '简答题' : 'Short Answer', weight: '40%', score: '88' }
                     ]
                 },
-                { id: generateId(), name: '期末考试', weight: '40%', score: '92' },
-                { id: generateId(), name: '平时作业', weight: '15%', score: '100' },
-                { id: generateId(), name: '课堂参与', weight: '15%', score: '85' }
+                { id: generateId(), name: currentLang === 'zh' ? '期末考试' : 'Final Exam', weight: '40%', score: '92' },
+                { id: generateId(), name: currentLang === 'zh' ? '平时作业' : 'Homework', weight: '15%', score: '100' },
+                { id: generateId(), name: currentLang === 'zh' ? '课堂参与' : 'Class Participation', weight: '15%', score: '85' }
             ];
             initialData.forEach(item => renderRow(item));
             
