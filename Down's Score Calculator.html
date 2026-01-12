@@ -673,12 +673,22 @@
             }
             
             loadSaves() {
-                const savesJson = localStorage.getItem(SAVE_STORAGE_KEY);
-                return savesJson ? JSON.parse(savesJson) : [];
+                try {
+                    const savesJson = localStorage.getItem(SAVE_STORAGE_KEY);
+                    return savesJson ? JSON.parse(savesJson) : [];
+                } catch (e) {
+                    console.error('加载保存记录失败:', e);
+                    return [];
+                }
             }
             
             saveSaves() {
-                localStorage.setItem(SAVE_STORAGE_KEY, JSON.stringify(this.saves));
+                try {
+                    localStorage.setItem(SAVE_STORAGE_KEY, JSON.stringify(this.saves));
+                } catch (e) {
+                    console.error('保存记录失败:', e);
+                    alert('保存失败，可能是存储空间不足。');
+                }
             }
             
             addSave(name, data) {
@@ -747,349 +757,404 @@
         // 初始化保存管理器
         const saveManager = new SaveManager();
 
+        // --- 主要函数定义 ---
+        let gradeTableBody;
+
+        function getGrade(score) {
+            if (score >= 93) return 'A'; 
+            if (score >= 90) return 'A−'; 
+            if (score >= 86) return 'B';
+            if (score >= 80) return 'B−'; 
+            if (score >= 76) return 'C'; 
+            if (score >= 70) return 'C−';
+            if (score >= 66) return 'D'; 
+            if (score >= 60) return 'D−'; 
+            return 'F';
+        }
+        
+        function generateId() {
+            return 'item-' + Math.random().toString(36).substr(2, 9);
+        }
+
+        function getEffectiveWeight(row) {
+            if (!row) return 0;
+            let weight = (parseFloat(row.querySelector('.editable-weight').textContent) || 0) / 100;
+            const parentId = row.dataset.parentId;
+            if (parentId) {
+                const parentRow = document.getElementById(parentId);
+                weight *= getEffectiveWeight(parentRow);
+            }
+            return weight;
+        }
+
+        function updateParentScore(parentId) {
+            if (!parentId) return;
+            const parentRow = document.getElementById(parentId);
+            if (!parentRow) return;
+
+            let weightedSum = 0;
+            let totalWeight = 0;
+            const children = gradeTableBody.querySelectorAll(`[data-parent-id="${parentId}"]`);
+
+            if (children.length === 0) {
+                parentRow.querySelector('.editable-score').contentEditable = true;
+                return;
+            }
+
+            children.forEach(child => {
+                const weight = parseFloat(child.querySelector('.editable-weight').textContent) || 0;
+                const score = parseFloat(child.querySelector('.editable-score').textContent);
+                if (!isNaN(score)) {
+                    weightedSum += score * weight;
+                    totalWeight += weight;
+                }
+            });
+
+            const parentScore = totalWeight > 0 ? weightedSum / totalWeight : 0;
+            const parentScoreEl = parentRow.querySelector('.editable-score');
+            parentScoreEl.textContent = parentScore.toFixed(1);
+            updateGradeForScore(parentScoreEl);
+
+            if (parentRow.dataset.parentId) {
+                updateParentScore(parentRow.dataset.parentId);
+            }
+        }
+
+        function calculateOverallScore() {
+            let totalScore = 0;
+            gradeTableBody.querySelectorAll('tr').forEach(row => {
+                if (!gradeTableBody.querySelector(`[data-parent-id="${row.id}"]`)) {
+                    const score = parseFloat(row.querySelector('.editable-score').textContent);
+                    if (!isNaN(score)) {
+                        totalScore += getEffectiveWeight(row) * score;
+                    }
+                }
+            });
+            const overallScoreElement = document.querySelector('.overall-score');
+            overallScoreElement.textContent = totalScore.toFixed(1);
+            overallScoreElement.style.transform = 'scale(1.1)';
+            setTimeout(() => {
+                overallScoreElement.style.transform = 'scale(1)';
+            }, 200);
+        }
+
+        function solveForItem(button) {
+            const targetRow = button.closest('tr');
+            if (gradeTableBody.querySelector(`[data-parent-id="${targetRow.id}"]`)) {
+                alert("无法为包含子项的项目求解。请为具体的子节点项目求解。");
+                return;
+            }
+            
+            const desiredGrade = parseFloat(document.querySelector('.overall-score').textContent);
+            if (isNaN(desiredGrade)) {
+                alert("无效的总分目标值。");
+                return;
+            }
+
+            const targetEffectiveWeight = getEffectiveWeight(targetRow);
+            if (targetEffectiveWeight <= 0) {
+                alert("无法为权重为零或负数的项目求解。");
+                return;
+            }
+
+            let sumOfOtherProducts = 0;
+            gradeTableBody.querySelectorAll('tr').forEach(row => {
+                if (row.id !== targetRow.id && !gradeTableBody.querySelector(`[data-parent-id="${row.id}"]`)) {
+                     const score = parseFloat(row.querySelector('.editable-score').textContent);
+                     if (!isNaN(score)) {
+                        sumOfOtherProducts += getEffectiveWeight(row) * score;
+                     }
+                }
+            });
+
+            const requiredScore = (desiredGrade - sumOfOtherProducts) / targetEffectiveWeight;
+            const targetScoreEl = targetRow.querySelector('.editable-score');
+            targetScoreEl.textContent = Math.max(0, Math.min(100, requiredScore)).toFixed(1);
+            updateGradeForScore(targetScoreEl);
+            
+            const parentId = targetRow.dataset.parentId;
+            if(parentId) updateParentScore(parentId);
+        }
+
+        function renderRow(itemData, parentId = null, level = 0) {
+            const row = document.createElement('tr');
+            row.id = itemData.id;
+            if (parentId) row.dataset.parentId = parentId;
+            
+            const hasChildren = itemData.subItems && itemData.subItems.length > 0;
+            const score = itemData.score ?? '0';
+            const grade = isNaN(parseFloat(score)) ? '' : getGrade(score);
+
+            row.innerHTML = `
+                <td style="padding-left: ${level * 25 + 8}px" contenteditable="true">
+                    ${level > 0 ? '<span class="sub-item-indicator">└</span>' : ''}${itemData.name}
+                </td>
+                <td class="editable-weight" contenteditable="true">${itemData.weight}</td>
+                <td>
+                    <span class="editable-score" contenteditable="${!hasChildren}">${score}</span> 
+                    <span class="letter-grade">${grade}</span>
+                </td>
+                <td>
+                    <button class="add-sub-btn action-btn">添加子项</button>
+                    <button class="solve-item-btn action-btn">求解</button>
+                    <button class="remove-row-btn action-btn">删除</button>
+                </td>
+            `;
+            gradeTableBody.appendChild(row);
+
+            if (hasChildren) {
+                itemData.subItems.forEach(subItem => renderRow(subItem, itemData.id, level + 1));
+                updateParentScore(itemData.id);
+            }
+        }
+        
+        function addTopLevelRow() {
+            renderRow({ id: generateId(), name: '新项目', weight: '0%', score: '0' });
+            gradeTableBody.lastElementChild.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function addSubItem(button) {
+            const parentRow = button.closest('tr');
+            const parentId = parentRow.id;
+            parentRow.querySelector('.editable-score').contentEditable = false;
+            
+            const level = parseInt(parentRow.querySelector('td:first-child').style.paddingLeft.replace('px', '')) / 25 + 1;
+            
+            const newRowData = { id: generateId(), name: '新子项目', weight: '0%', score: '0' };
+
+            const newRow = document.createElement('tr');
+            newRow.id = newRowData.id;
+            newRow.dataset.parentId = parentId;
+            newRow.innerHTML = `
+                <td style="padding-left: ${level * 25 + 8}px" contenteditable="true">
+                    <span class="sub-item-indicator">└</span>${newRowData.name}
+                </td>
+                <td class="editable-weight" contenteditable="true">${newRowData.weight}</td>
+                <td>
+                    <span class="editable-score" contenteditable="true">${newRowData.score}</span> 
+                    <span class="letter-grade">F</span>
+                </td>
+                <td>
+                    <button class="add-sub-btn action-btn">添加子项</button>
+                    <button class="solve-item-btn action-btn">求解</button>
+                    <button class="remove-row-btn action-btn">删除</button>
+                </td>
+            `;
+            parentRow.after(newRow);
+            updateParentScore(parentId);
+            newRow.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function removeRow(button) {
+            if (!confirm('确定要删除这个项目及其所有子项目吗？')) return;
+            
+            const rowToRemove = button.closest('tr');
+            const parentId = rowToRemove.dataset.parentId;
+            const children = gradeTableBody.querySelectorAll(`[data-parent-id="${rowToRemove.id}"]`);
+            children.forEach(child => removeRow(child.querySelector('.remove-row-btn')));
+            rowToRemove.remove();
+            if(parentId) {
+                updateParentScore(parentId);
+            }
+        }
+
+        function updateGradeForScore(scoreElement) {
+            const score = parseFloat(scoreElement.textContent);
+            if (isNaN(score)) return;
+            const letterGradeSpan = scoreElement.closest('td').querySelector('.letter-grade');
+            if (letterGradeSpan) {
+                letterGradeSpan.textContent = getGrade(score);
+                if (score >= 90) letterGradeSpan.style.color = '#43b581';
+                else if (score >= 80) letterGradeSpan.style.color = '#7289da';
+                else if (score >= 70) letterGradeSpan.style.color = '#faa61a';
+                else letterGradeSpan.style.color = '#f04747';
+            }
+        }
+        
+        // 获取当前表格数据
+        function getCurrentData() {
+            const rows = gradeTableBody.querySelectorAll('tr');
+            const data = [];
+            const overallScore = parseFloat(document.querySelector('.overall-score').textContent) || 100;
+            
+            const itemMap = new Map();
+            
+            rows.forEach(row => {
+                const id = row.id;
+                const name = row.querySelector('td:first-child').textContent.replace('└', '').trim();
+                const weight = row.querySelector('.editable-weight').textContent;
+                const score = row.querySelector('.editable-score').textContent;
+                const parentId = row.dataset.parentId || null;
+                
+                const item = {
+                    id,
+                    name,
+                    weight,
+                    score,
+                    subItems: []
+                };
+                
+                itemMap.set(id, item);
+                
+                if (!parentId) {
+                    data.push(item);
+                }
+            });
+            
+            rows.forEach(row => {
+                const id = row.id;
+                const parentId = row.dataset.parentId;
+                
+                if (parentId && itemMap.has(parentId)) {
+                    const parent = itemMap.get(parentId);
+                    const child = itemMap.get(id);
+                    parent.subItems.push(child);
+                }
+            });
+            
+            return {
+                overallScore,
+                items: data,
+                timestamp: new Date().toISOString()
+            };
+        }
+        
+        // 加载数据到表格
+        function loadData(data) {
+            gradeTableBody.innerHTML = '';
+            
+            document.querySelector('.overall-score').textContent = data.overallScore.toFixed(1);
+            
+            data.items.forEach(item => {
+                renderRow(item);
+            });
+            
+            setTimeout(calculateOverallScore, 100);
+        }
+        
+        // 渲染保存列表
+        function renderSaveList() {
+            const saveListElement = document.getElementById('saveList');
+            const emptyStateElement = document.getElementById('emptySaveState');
+            const saves = saveManager.getAllSaves();
+            
+            if (saves.length === 0) {
+                saveListElement.innerHTML = '';
+                emptyStateElement.style.display = 'block';
+                return;
+            }
+            
+            emptyStateElement.style.display = 'none';
+            saveListElement.innerHTML = '';
+            
+            saves.forEach(save => {
+                const saveItem = document.createElement('div');
+                saveItem.className = 'save-item';
+                saveItem.innerHTML = `
+                    <div>
+                        <div class="save-item-name">${save.name}</div>
+                        <div class="save-item-meta">保存时间: ${save.formattedDate}</div>
+                    </div>
+                    <div class="save-item-actions">
+                        <button class="save-action-btn btn-load" data-save-id="${save.id}">加载</button>
+                        <button class="save-action-btn btn-rename" data-save-id="${save.id}">重命名</button>
+                        <button class="save-action-btn btn-delete" data-save-id="${save.id}">删除</button>
+                    </div>
+                `;
+                saveListElement.appendChild(saveItem);
+            });
+        }
+        
+        // 打开保存管理模态框
+        function openSaveModal() {
+            renderSaveList();
+            document.getElementById('saveModal').style.display = 'flex';
+        }
+        
+        // 打开保存输入模态框
+        function openSaveInputModal() {
+            const defaultName = `保存 ${new Date().toLocaleString('zh-CN')}`;
+            document.getElementById('saveNameInput').value = defaultName;
+            document.getElementById('saveInputModal').style.display = 'flex';
+            document.getElementById('saveNameInput').focus();
+        }
+        
+        // 打开重命名模态框
+        function openRenameModal(saveId) {
+            const save = saveManager.getSave(saveId);
+            if (save) {
+                document.getElementById('renameInput').value = save.name;
+                document.getElementById('renameSaveId').value = saveId;
+                document.getElementById('renameModal').style.display = 'flex';
+                document.getElementById('renameInput').focus();
+            }
+        }
+
+        // --- 事件监听器绑定 ---
         document.addEventListener('DOMContentLoaded', () => {
             updateTime();
-            const tableBody = document.getElementById('grade-table-body');
+            gradeTableBody = document.getElementById('grade-table-body');
 
-            const getGrade = score => {
-                if (score >= 93) return 'A'; if (score >= 90) return 'A−'; if (score >= 86) return 'B';
-                if (score >= 80) return 'B−'; if (score >= 76) return 'C'; if (score >= 70) return 'C−';
-                if (score >= 66) return 'D'; if (score >= 60) return 'D−'; return 'F';
-            };
+            // 绑定保存相关按钮事件
+            document.getElementById('manageSavesBtn').addEventListener('click', openSaveModal);
+            document.getElementById('saveCurrentBtn').addEventListener('click', openSaveInputModal);
             
-            const generateId = () => 'item-' + Math.random().toString(36).substr(2, 9);
-
-            function getEffectiveWeight(row) {
-                if (!row) return 0;
-                let weight = (parseFloat(row.querySelector('.editable-weight').textContent) || 0) / 100;
-                const parentId = row.dataset.parentId;
-                if (parentId) {
-                    const parentRow = document.getElementById(parentId);
-                    weight *= getEffectiveWeight(parentRow);
+            // 绑定模态框关闭按钮
+            document.getElementById('closeSaveModal').addEventListener('click', () => {
+                document.getElementById('saveModal').style.display = 'none';
+            });
+            
+            document.getElementById('closeSaveInputModal').addEventListener('click', () => {
+                document.getElementById('saveInputModal').style.display = 'none';
+            });
+            
+            document.getElementById('closeRenameModal').addEventListener('click', () => {
+                document.getElementById('renameModal').style.display = 'none';
+            });
+            
+            // 绑定取消按钮
+            document.getElementById('cancelSaveBtn').addEventListener('click', () => {
+                document.getElementById('saveInputModal').style.display = 'none';
+            });
+            
+            document.getElementById('cancelRenameBtn').addEventListener('click', () => {
+                document.getElementById('renameModal').style.display = 'none';
+            });
+            
+            // 绑定确认保存按钮
+            document.getElementById('confirmSaveBtn').addEventListener('click', () => {
+                const saveName = document.getElementById('saveNameInput').value.trim();
+                const currentData = getCurrentData();
+                console.log('正在保存数据:', currentData);
+                
+                try {
+                    saveManager.addSave(saveName, currentData);
+                    document.getElementById('saveInputModal').style.display = 'none';
+                    document.getElementById('saveModal').style.display = 'none';
+                    renderSaveList();
+                    alert('保存成功！');
+                } catch (error) {
+                    console.error('保存失败:', error);
+                    alert('保存失败，请检查控制台错误信息。');
                 }
-                return weight;
-            }
-
-            function updateParentScore(parentId) {
-                if (!parentId) return;
-                const parentRow = document.getElementById(parentId);
-                if (!parentRow) return;
-
-                let weightedSum = 0;
-                let totalWeight = 0;
-                const children = tableBody.querySelectorAll(`[data-parent-id="${parentId}"]`);
-
-                if (children.length === 0) { // No children, re-enable editing
-                    parentRow.querySelector('.editable-score').contentEditable = true;
-                    return;
-                }
-
-                children.forEach(child => {
-                    const weight = parseFloat(child.querySelector('.editable-weight').textContent) || 0;
-                    const score = parseFloat(child.querySelector('.editable-score').textContent);
-                    if (!isNaN(score)) {
-                        weightedSum += score * weight;
-                        totalWeight += weight;
+            });
+            
+            // 绑定确认重命名按钮
+            document.getElementById('confirmRenameBtn').addEventListener('click', () => {
+                const saveId = document.getElementById('renameSaveId').value;
+                const newName = document.getElementById('renameInput').value.trim();
+                if (newName) {
+                    if (saveManager.renameSave(saveId, newName)) {
+                        document.getElementById('renameModal').style.display = 'none';
+                        renderSaveList();
+                        alert('重命名成功！');
                     }
-                });
-
-                const parentScore = totalWeight > 0 ? weightedSum / totalWeight : 0;
-                const parentScoreEl = parentRow.querySelector('.editable-score');
-                parentScoreEl.textContent = parentScore.toFixed(1);
-                updateGradeForScore(parentScoreEl);
-
-                // Recursively update upwards
-                if (parentRow.dataset.parentId) {
-                    updateParentScore(parentRow.dataset.parentId);
+                } else {
+                    alert('请输入新名称！');
                 }
-            }
+            });
 
-            function calculateOverallScore() {
-                let totalScore = 0;
-                tableBody.querySelectorAll('tr').forEach(row => {
-                    // Only consider leaf nodes for final calculation
-                    if (!tableBody.querySelector(`[data-parent-id="${row.id}"]`)) {
-                        const score = parseFloat(row.querySelector('.editable-score').textContent);
-                        if (!isNaN(score)) {
-                            totalScore += getEffectiveWeight(row) * score;
-                        }
-                    }
-                });
-                const overallScoreElement = document.querySelector('.overall-score');
-                overallScoreElement.textContent = totalScore.toFixed(1);
-                // 添加总分变化动画效果
-                overallScoreElement.style.transform = 'scale(1.1)';
-                setTimeout(() => {
-                    overallScoreElement.style.transform = 'scale(1)';
-                }, 200);
-            }
-
-            function solveForItem(button) {
-                const targetRow = button.closest('tr');
-                if (tableBody.querySelector(`[data-parent-id="${targetRow.id}"]`)) {
-                    alert("无法为包含子项的项目求解。请为具体的子节点项目求解。");
-                    return;
-                }
-                
-                const desiredGrade = parseFloat(document.querySelector('.overall-score').textContent);
-                if (isNaN(desiredGrade)) {
-                    alert("无效的总分目标值。");
-                    return;
-                }
-
-                const targetEffectiveWeight = getEffectiveWeight(targetRow);
-                if (targetEffectiveWeight <= 0) {
-                    alert("无法为权重为零或负数的项目求解。");
-                    return;
-                }
-
-                let sumOfOtherProducts = 0;
-                tableBody.querySelectorAll('tr').forEach(row => {
-                    if (row.id !== targetRow.id && !tableBody.querySelector(`[data-parent-id="${row.id}"]`)) {
-                         const score = parseFloat(row.querySelector('.editable-score').textContent);
-                         if (!isNaN(score)) {
-                            sumOfOtherProducts += getEffectiveWeight(row) * score;
-                         }
-                    }
-                });
-
-                const requiredScore = (desiredGrade - sumOfOtherProducts) / targetEffectiveWeight;
-                const targetScoreEl = targetRow.querySelector('.editable-score');
-                targetScoreEl.textContent = Math.max(0, Math.min(100, requiredScore)).toFixed(1); // 限制在0-100之间
-                updateGradeForScore(targetScoreEl);
-                
-                // 更新父项目
-                const parentId = targetRow.dataset.parentId;
-                if(parentId) updateParentScore(parentId);
-            }
-
-            function renderRow(itemData, parentId = null, level = 0) {
-                const row = document.createElement('tr');
-                row.id = itemData.id;
-                if (parentId) row.dataset.parentId = parentId;
-                
-                const hasChildren = itemData.subItems && itemData.subItems.length > 0;
-                const score = itemData.score ?? '0';
-                const grade = isNaN(parseFloat(score)) ? '' : getGrade(score);
-
-                row.innerHTML = `
-                    <td style="padding-left: ${level * 25 + 8}px" contenteditable="true">
-                        ${level > 0 ? '<span class="sub-item-indicator">└</span>' : ''}${itemData.name}
-                    </td>
-                    <td class="editable-weight" contenteditable="true">${itemData.weight}</td>
-                    <td>
-                        <span class="editable-score" contenteditable="${!hasChildren}">${score}</span> 
-                        <span class="letter-grade">${grade}</span>
-                    </td>
-                    <td>
-                        <button class="add-sub-btn action-btn">添加子项</button>
-                        <button class="solve-item-btn action-btn">求解</button>
-                        <button class="remove-row-btn action-btn">删除</button>
-                    </td>
-                `;
-                tableBody.appendChild(row);
-
-                if (hasChildren) {
-                    itemData.subItems.forEach(subItem => renderRow(subItem, itemData.id, level + 1));
-                    // After rendering children, update parent score
-                    updateParentScore(itemData.id);
-                }
-            }
-            
-            function addTopLevelRow() {
-                renderRow({ id: generateId(), name: '新项目', weight: '0%', score: '0' });
-                // 滚动到新添加的行
-                tableBody.lastElementChild.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            }
-
-            function addSubItem(button) {
-                const parentRow = button.closest('tr');
-                const parentId = parentRow.id;
-                parentRow.querySelector('.editable-score').contentEditable = false; // Disable parent score editing
-                
-                const level = parseInt(parentRow.querySelector('td:first-child').style.paddingLeft.replace('px', '')) / 25 + 1;
-                
-                const newRowData = { id: generateId(), name: '新子项目', weight: '0%', score: '0' };
-
-                const newRow = document.createElement('tr');
-                newRow.id = newRowData.id;
-                newRow.dataset.parentId = parentId;
-                newRow.innerHTML = `
-                    <td style="padding-left: ${level * 25 + 8}px" contenteditable="true">
-                        <span class="sub-item-indicator">└</span>${newRowData.name}
-                    </td>
-                    <td class="editable-weight" contenteditable="true">${newRowData.weight}</td>
-                    <td>
-                        <span class="editable-score" contenteditable="true">${newRowData.score}</span> 
-                        <span class="letter-grade">F</span>
-                    </td>
-                    <td>
-                        <button class="add-sub-btn action-btn">添加子项</button>
-                        <button class="solve-item-btn action-btn">求解</button>
-                        <button class="remove-row-btn action-btn">删除</button>
-                    </td>
-                `;
-                parentRow.after(newRow);
-                updateParentScore(parentId);
-                // 滚动到新添加的行
-                newRow.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            }
-
-            function removeRow(button) {
-                if (!confirm('确定要删除这个项目及其所有子项目吗？')) return;
-                
-                const rowToRemove = button.closest('tr');
-                const parentId = rowToRemove.dataset.parentId;
-                // Recursively remove children
-                const children = tableBody.querySelectorAll(`[data-parent-id="${rowToRemove.id}"]`);
-                children.forEach(child => removeRow(child.querySelector('.remove-row-btn')));
-                rowToRemove.remove();
-                // After removing, update the parent's score
-                if(parentId) {
-                    updateParentScore(parentId);
-                }
-            }
-
-            function updateGradeForScore(scoreElement) {
-                const score = parseFloat(scoreElement.textContent);
-                if (isNaN(score)) return;
-                const letterGradeSpan = scoreElement.closest('td').querySelector('.letter-grade');
-                if (letterGradeSpan) {
-                    letterGradeSpan.textContent = getGrade(score);
-                    // 根据成绩等级设置颜色
-                    if (score >= 90) letterGradeSpan.style.color = '#43b581';
-                    else if (score >= 80) letterGradeSpan.style.color = '#7289da';
-                    else if (score >= 70) letterGradeSpan.style.color = '#faa61a';
-                    else letterGradeSpan.style.color = '#f04747';
-                }
-            }
-            
-            // 获取当前表格数据
-            function getCurrentData() {
-                const rows = tableBody.querySelectorAll('tr');
-                const data = [];
-                const overallScore = parseFloat(document.querySelector('.overall-score').textContent) || 100;
-                
-                // 构建项目映射
-                const itemMap = new Map();
-                
-                // 第一遍：收集所有项目
-                rows.forEach(row => {
-                    const id = row.id;
-                    const name = row.querySelector('td:first-child').textContent.replace('└', '').trim();
-                    const weight = row.querySelector('.editable-weight').textContent;
-                    const score = row.querySelector('.editable-score').textContent;
-                    const parentId = row.dataset.parentId || null;
-                    
-                    const item = {
-                        id,
-                        name,
-                        weight,
-                        score,
-                        subItems: []
-                    };
-                    
-                    itemMap.set(id, item);
-                    
-                    if (!parentId) {
-                        data.push(item);
-                    }
-                });
-                
-                // 第二遍：建立父子关系
-                rows.forEach(row => {
-                    const id = row.id;
-                    const parentId = row.dataset.parentId;
-                    
-                    if (parentId && itemMap.has(parentId)) {
-                        const parent = itemMap.get(parentId);
-                        const child = itemMap.get(id);
-                        parent.subItems.push(child);
-                    }
-                });
-                
-                return {
-                    overallScore,
-                    items: data,
-                    timestamp: new Date().toISOString()
-                };
-            }
-            
-            // 加载数据到表格
-            function loadData(data) {
-                // 清空当前表格
-                tableBody.innerHTML = '';
-                
-                // 设置总分
-                document.querySelector('.overall-score').textContent = data.overallScore.toFixed(1);
-                
-                // 渲染项目
-                data.items.forEach(item => {
-                    renderRow(item);
-                });
-                
-                // 重新计算总分
-                setTimeout(calculateOverallScore, 100);
-            }
-            
-            // 渲染保存列表
-            function renderSaveList() {
-                const saveListElement = document.getElementById('saveList');
-                const emptyStateElement = document.getElementById('emptySaveState');
-                const saves = saveManager.getAllSaves();
-                
-                if (saves.length === 0) {
-                    saveListElement.innerHTML = '';
-                    emptyStateElement.style.display = 'block';
-                    return;
-                }
-                
-                emptyStateElement.style.display = 'none';
-                saveListElement.innerHTML = '';
-                
-                saves.forEach(save => {
-                    const saveItem = document.createElement('div');
-                    saveItem.className = 'save-item';
-                    saveItem.innerHTML = `
-                        <div>
-                            <div class="save-item-name">${save.name}</div>
-                            <div class="save-item-meta">保存时间: ${save.formattedDate}</div>
-                        </div>
-                        <div class="save-item-actions">
-                            <button class="save-action-btn btn-load" data-save-id="${save.id}">加载</button>
-                            <button class="save-action-btn btn-rename" data-save-id="${save.id}">重命名</button>
-                            <button class="save-action-btn btn-delete" data-save-id="${save.id}">删除</button>
-                        </div>
-                    `;
-                    saveListElement.appendChild(saveItem);
-                });
-            }
-            
-            // 打开保存管理模态框
-            function openSaveModal() {
-                renderSaveList();
-                document.getElementById('saveModal').style.display = 'flex';
-            }
-            
-            // 打开保存输入模态框
-            function openSaveInputModal() {
-                document.getElementById('saveNameInput').value = '';
-                document.getElementById('saveInputModal').style.display = 'flex';
-                document.getElementById('saveNameInput').focus();
-            }
-            
-            // 打开重命名模态框
-            function openRenameModal(saveId) {
-                const save = saveManager.getSave(saveId);
-                if (save) {
-                    document.getElementById('renameInput').value = save.name;
-                    document.getElementById('renameSaveId').value = saveId;
-                    document.getElementById('renameModal').style.display = 'flex';
-                    document.getElementById('renameInput').focus();
-                }
-            }
-
-            // --- Event Delegation ---
+            // 绑定表格操作按钮事件（事件委托）
             document.body.addEventListener('click', (e) => {
                 if (e.target.matches('#add-row-btn')) addTopLevelRow();
                 if (e.target.matches('.add-sub-btn')) addSubItem(e.target);
@@ -1097,16 +1162,7 @@
                 if (e.target.matches('#solve-overall-btn')) calculateOverallScore();
                 if (e.target.matches('.solve-item-btn')) solveForItem(e.target);
                 
-                // 保存管理相关事件
-                if (e.target.matches('#manageSavesBtn')) openSaveModal();
-                if (e.target.matches('#saveCurrentBtn')) openSaveInputModal();
-                
-                // 模态框关闭按钮
-                if (e.target.matches('#closeSaveModal') || e.target.matches('#closeSaveInputModal') || e.target.matches('#closeRenameModal')) {
-                    e.target.closest('.modal').style.display = 'none';
-                }
-                
-                // 保存列表操作
+                // 保存列表操作（事件委托）
                 if (e.target.matches('.btn-load')) {
                     const saveId = e.target.dataset.saveId;
                     const save = saveManager.getSave(saveId);
@@ -1131,41 +1187,12 @@
                         }
                     }
                 }
-                
-                // 保存确认
-                if (e.target.matches('#confirmSaveBtn')) {
-                    const saveName = document.getElementById('saveNameInput').value.trim();
-                    const currentData = getCurrentData();
-                    saveManager.addSave(saveName, currentData);
-                    document.getElementById('saveInputModal').style.display = 'none';
-                    document.getElementById('saveModal').style.display = 'none';
-                    alert('保存成功！');
-                    renderSaveList();
-                }
-                
-                // 取消保存
-                if (e.target.matches('#cancelSaveBtn')) {
-                    document.getElementById('saveInputModal').style.display = 'none';
-                }
-                
-                // 重命名确认
-                if (e.target.matches('#confirmRenameBtn')) {
-                    const saveId = document.getElementById('renameSaveId').value;
-                    const newName = document.getElementById('renameInput').value.trim();
-                    if (newName) {
-                        if (saveManager.renameSave(saveId, newName)) {
-                            document.getElementById('renameModal').style.display = 'none';
-                            renderSaveList();
-                            alert('重命名成功！');
-                        }
-                    } else {
-                        alert('请输入新名称！');
-                    }
-                }
-                
-                // 取消重命名
-                if (e.target.matches('#cancelRenameBtn')) {
-                    document.getElementById('renameModal').style.display = 'none';
+            });
+
+            // 点击模态框外部关闭
+            window.addEventListener('click', (e) => {
+                if (e.target.classList.contains('modal')) {
+                    e.target.style.display = 'none';
                 }
             });
 
@@ -1198,7 +1225,6 @@
                     e.target.blur();
                 }
                 
-                // ESC键关闭模态框
                 if (e.key === 'Escape') {
                     const modals = document.querySelectorAll('.modal');
                     modals.forEach(modal => {
@@ -1208,21 +1234,13 @@
                     });
                 }
                 
-                // 保存快捷键 Ctrl+S
                 if (e.ctrlKey && e.key === 's') {
                     e.preventDefault();
                     openSaveInputModal();
                 }
             });
 
-            // 点击模态框外部关闭
-            window.addEventListener('click', (e) => {
-                if (e.target.classList.contains('modal')) {
-                    e.target.style.display = 'none';
-                }
-            });
-
-            // --- Initial Data ---
+            // --- 初始化数据 ---
             const initialData = [
                 {
                     id: generateId(), name: '期中考试', weight: '30%',
