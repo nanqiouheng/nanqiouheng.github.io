@@ -41,6 +41,143 @@
             text-align: center;
         }
         
+        /* 模态框样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background: linear-gradient(135deg, #2c2f33 0%, #23272a 100%);
+            padding: 25px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            border: 1px solid #4f545c;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #7289da;
+            padding-bottom: 10px;
+        }
+        
+        .modal-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #7289da;
+            margin: 0;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            color: #99aab5;
+            font-size: 24px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        
+        .close-modal:hover {
+            color: #7289da;
+        }
+        
+        .modal-body {
+            margin-bottom: 20px;
+        }
+        
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .modal-input {
+            width: 100%;
+            padding: 12px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid #4f545c;
+            border-radius: 5px;
+            color: white;
+            font-size: 16px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+        
+        .modal-input:focus {
+            outline: none;
+            border-color: #7289da;
+            box-shadow: 0 0 8px rgba(114, 137, 218, 0.5);
+        }
+        
+        .save-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid #4f545c;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            transition: background-color 0.3s;
+        }
+        
+        .save-item:hover {
+            background-color: rgba(255, 255, 255, 0.08);
+        }
+        
+        .save-item-name {
+            font-weight: bold;
+            color: white;
+        }
+        
+        .save-item-meta {
+            color: #99aab5;
+            font-size: 12px;
+        }
+        
+        .save-item-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .save-action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+        
+        .btn-load {
+            background: linear-gradient(135deg, #43b581 0%, #3ca374 100%);
+            color: white;
+        }
+        
+        .btn-rename {
+            background: linear-gradient(135deg, #7289da 0%, #5865f2 100%);
+            color: white;
+        }
+        
+        .btn-delete {
+            background: linear-gradient(135deg, #f04747 0%, #d84040 100%);
+            color: white;
+        }
+        
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
@@ -107,6 +244,36 @@
             display: flex;
             align-items: center;
             gap: 20px;
+        }
+        
+        /* 添加保存管理按钮容器 */
+        .header-center {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        /* 保存管理按钮样式 */
+        .save-manage-btn {
+            background: linear-gradient(135deg, #5865f2 0%, #4752c4 100%);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(114, 137, 218, 0.3);
+        }
+        
+        .save-manage-btn:hover {
+            background: linear-gradient(135deg, #4752c4 0%, #3c45a5 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(114, 137, 218, 0.4);
         }
         
         /* 返回主页按钮样式 */
@@ -328,6 +495,13 @@
             background-color: rgba(79, 84, 92, 0.1);
         }
         
+        /* 空状态提示 */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #99aab5;
+        }
+        
         /* 响应式调整 */
         @media (max-width: 850px) {
             .container {
@@ -341,6 +515,11 @@
                 align-items: flex-start;
                 height: auto;
                 gap: 10px;
+            }
+            
+            .header-left, .header-center {
+                width: 100%;
+                justify-content: space-between;
             }
             
             .overall-score-container {
@@ -374,12 +553,70 @@
         </div>
     </div>
     
+    <!-- 保存管理模态框 -->
+    <div id="saveModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">保存管理</h3>
+                <button class="close-modal" id="closeSaveModal">×</button>
+            </div>
+            <div class="modal-body">
+                <div id="saveList"></div>
+                <div id="emptySaveState" class="empty-state" style="display: none;">
+                    <p>暂无保存记录</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="saveCurrentBtn" class="save-manage-btn">保存当前状态</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 保存输入模态框 -->
+    <div id="saveInputModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">保存当前状态</h3>
+                <button class="close-modal" id="closeSaveInputModal">×</button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="saveNameInput" class="modal-input" placeholder="请输入保存名称（默认：当前日期）" autofocus>
+            </div>
+            <div class="modal-footer">
+                <button id="cancelSaveBtn" class="action-btn remove-row-btn">取消</button>
+                <button id="confirmSaveBtn" class="action-btn solve-item-btn">保存</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 重命名模态框 -->
+    <div id="renameModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">重命名保存</h3>
+                <button class="close-modal" id="closeRenameModal">×</button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="renameInput" class="modal-input" placeholder="请输入新名称" autofocus>
+                <input type="hidden" id="renameSaveId">
+            </div>
+            <div class="modal-footer">
+                <button id="cancelRenameBtn" class="action-btn remove-row-btn">取消</button>
+                <button id="confirmRenameBtn" class="action-btn solve-item-btn">重命名</button>
+            </div>
+        </div>
+    </div>
+    
     <div class="container">
         <div class="header-area">
             <div class="header-left">
                 <!-- 返回主页按钮 -->
                 <a href="https://joe666.dpdns.org" class="home-btn" target="_blank">返回主页</a>
                 <h2>唐氏分数计算器</h2>
+            </div>
+            <div class="header-center">
+                <!-- 保存管理按钮 -->
+                <button id="manageSavesBtn" class="save-manage-btn">保存管理</button>
             </div>
             <div class="overall-score-container">
                 <div class="overall-score" contenteditable="true">100</div>
@@ -425,6 +662,90 @@
             document.getElementById("timeStr").textContent = str;
         }
         setInterval(updateTime, 1000); // 每秒更新一次
+        
+        // 保存管理相关变量
+        const SAVE_STORAGE_KEY = 'grade_calculator_saves';
+        
+        // 保存管理功能
+        class SaveManager {
+            constructor() {
+                this.saves = this.loadSaves();
+            }
+            
+            loadSaves() {
+                const savesJson = localStorage.getItem(SAVE_STORAGE_KEY);
+                return savesJson ? JSON.parse(savesJson) : [];
+            }
+            
+            saveSaves() {
+                localStorage.setItem(SAVE_STORAGE_KEY, JSON.stringify(this.saves));
+            }
+            
+            addSave(name, data) {
+                const timestamp = new Date().toISOString();
+                const formattedDate = new Date().toLocaleString('zh-CN');
+                const save = {
+                    id: 'save_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+                    name: name || `保存 ${formattedDate}`,
+                    timestamp: timestamp,
+                    formattedDate: formattedDate,
+                    data: data
+                };
+                this.saves.unshift(save); // 最新保存放在最前面
+                this.saveSaves();
+                return save;
+            }
+            
+            updateSave(id, data) {
+                const saveIndex = this.saves.findIndex(save => save.id === id);
+                if (saveIndex !== -1) {
+                    this.saves[saveIndex].data = data;
+                    this.saves[saveIndex].timestamp = new Date().toISOString();
+                    this.saves[saveIndex].formattedDate = new Date().toLocaleString('zh-CN');
+                    this.saveSaves();
+                    return true;
+                }
+                return false;
+            }
+            
+            renameSave(id, newName) {
+                const saveIndex = this.saves.findIndex(save => save.id === id);
+                if (saveIndex !== -1) {
+                    this.saves[saveIndex].name = newName;
+                    this.saves[saveIndex].timestamp = new Date().toISOString();
+                    this.saves[saveIndex].formattedDate = new Date().toLocaleString('zh-CN');
+                    this.saveSaves();
+                    return true;
+                }
+                return false;
+            }
+            
+            deleteSave(id) {
+                const initialLength = this.saves.length;
+                this.saves = this.saves.filter(save => save.id !== id);
+                if (this.saves.length !== initialLength) {
+                    this.saveSaves();
+                    return true;
+                }
+                return false;
+            }
+            
+            getSave(id) {
+                return this.saves.find(save => save.id === id);
+            }
+            
+            getAllSaves() {
+                return [...this.saves]; // 返回副本
+            }
+            
+            clearAllSaves() {
+                this.saves = [];
+                this.saveSaves();
+            }
+        }
+        
+        // 初始化保存管理器
+        const saveManager = new SaveManager();
 
         document.addEventListener('DOMContentLoaded', () => {
             updateTime();
@@ -642,6 +963,131 @@
                     else letterGradeSpan.style.color = '#f04747';
                 }
             }
+            
+            // 获取当前表格数据
+            function getCurrentData() {
+                const rows = tableBody.querySelectorAll('tr');
+                const data = [];
+                const overallScore = parseFloat(document.querySelector('.overall-score').textContent) || 100;
+                
+                // 构建项目映射
+                const itemMap = new Map();
+                
+                // 第一遍：收集所有项目
+                rows.forEach(row => {
+                    const id = row.id;
+                    const name = row.querySelector('td:first-child').textContent.replace('└', '').trim();
+                    const weight = row.querySelector('.editable-weight').textContent;
+                    const score = row.querySelector('.editable-score').textContent;
+                    const parentId = row.dataset.parentId || null;
+                    
+                    const item = {
+                        id,
+                        name,
+                        weight,
+                        score,
+                        subItems: []
+                    };
+                    
+                    itemMap.set(id, item);
+                    
+                    if (!parentId) {
+                        data.push(item);
+                    }
+                });
+                
+                // 第二遍：建立父子关系
+                rows.forEach(row => {
+                    const id = row.id;
+                    const parentId = row.dataset.parentId;
+                    
+                    if (parentId && itemMap.has(parentId)) {
+                        const parent = itemMap.get(parentId);
+                        const child = itemMap.get(id);
+                        parent.subItems.push(child);
+                    }
+                });
+                
+                return {
+                    overallScore,
+                    items: data,
+                    timestamp: new Date().toISOString()
+                };
+            }
+            
+            // 加载数据到表格
+            function loadData(data) {
+                // 清空当前表格
+                tableBody.innerHTML = '';
+                
+                // 设置总分
+                document.querySelector('.overall-score').textContent = data.overallScore.toFixed(1);
+                
+                // 渲染项目
+                data.items.forEach(item => {
+                    renderRow(item);
+                });
+                
+                // 重新计算总分
+                setTimeout(calculateOverallScore, 100);
+            }
+            
+            // 渲染保存列表
+            function renderSaveList() {
+                const saveListElement = document.getElementById('saveList');
+                const emptyStateElement = document.getElementById('emptySaveState');
+                const saves = saveManager.getAllSaves();
+                
+                if (saves.length === 0) {
+                    saveListElement.innerHTML = '';
+                    emptyStateElement.style.display = 'block';
+                    return;
+                }
+                
+                emptyStateElement.style.display = 'none';
+                saveListElement.innerHTML = '';
+                
+                saves.forEach(save => {
+                    const saveItem = document.createElement('div');
+                    saveItem.className = 'save-item';
+                    saveItem.innerHTML = `
+                        <div>
+                            <div class="save-item-name">${save.name}</div>
+                            <div class="save-item-meta">保存时间: ${save.formattedDate}</div>
+                        </div>
+                        <div class="save-item-actions">
+                            <button class="save-action-btn btn-load" data-save-id="${save.id}">加载</button>
+                            <button class="save-action-btn btn-rename" data-save-id="${save.id}">重命名</button>
+                            <button class="save-action-btn btn-delete" data-save-id="${save.id}">删除</button>
+                        </div>
+                    `;
+                    saveListElement.appendChild(saveItem);
+                });
+            }
+            
+            // 打开保存管理模态框
+            function openSaveModal() {
+                renderSaveList();
+                document.getElementById('saveModal').style.display = 'flex';
+            }
+            
+            // 打开保存输入模态框
+            function openSaveInputModal() {
+                document.getElementById('saveNameInput').value = '';
+                document.getElementById('saveInputModal').style.display = 'flex';
+                document.getElementById('saveNameInput').focus();
+            }
+            
+            // 打开重命名模态框
+            function openRenameModal(saveId) {
+                const save = saveManager.getSave(saveId);
+                if (save) {
+                    document.getElementById('renameInput').value = save.name;
+                    document.getElementById('renameSaveId').value = saveId;
+                    document.getElementById('renameModal').style.display = 'flex';
+                    document.getElementById('renameInput').focus();
+                }
+            }
 
             // --- Event Delegation ---
             document.body.addEventListener('click', (e) => {
@@ -650,6 +1096,77 @@
                 if (e.target.matches('.remove-row-btn')) removeRow(e.target);
                 if (e.target.matches('#solve-overall-btn')) calculateOverallScore();
                 if (e.target.matches('.solve-item-btn')) solveForItem(e.target);
+                
+                // 保存管理相关事件
+                if (e.target.matches('#manageSavesBtn')) openSaveModal();
+                if (e.target.matches('#saveCurrentBtn')) openSaveInputModal();
+                
+                // 模态框关闭按钮
+                if (e.target.matches('#closeSaveModal') || e.target.matches('#closeSaveInputModal') || e.target.matches('#closeRenameModal')) {
+                    e.target.closest('.modal').style.display = 'none';
+                }
+                
+                // 保存列表操作
+                if (e.target.matches('.btn-load')) {
+                    const saveId = e.target.dataset.saveId;
+                    const save = saveManager.getSave(saveId);
+                    if (save) {
+                        loadData(save.data);
+                        document.getElementById('saveModal').style.display = 'none';
+                        alert('加载成功！');
+                    }
+                }
+                
+                if (e.target.matches('.btn-rename')) {
+                    const saveId = e.target.dataset.saveId;
+                    openRenameModal(saveId);
+                }
+                
+                if (e.target.matches('.btn-delete')) {
+                    const saveId = e.target.dataset.saveId;
+                    if (confirm('确定要删除这个保存记录吗？')) {
+                        if (saveManager.deleteSave(saveId)) {
+                            renderSaveList();
+                            alert('删除成功！');
+                        }
+                    }
+                }
+                
+                // 保存确认
+                if (e.target.matches('#confirmSaveBtn')) {
+                    const saveName = document.getElementById('saveNameInput').value.trim();
+                    const currentData = getCurrentData();
+                    saveManager.addSave(saveName, currentData);
+                    document.getElementById('saveInputModal').style.display = 'none';
+                    document.getElementById('saveModal').style.display = 'none';
+                    alert('保存成功！');
+                    renderSaveList();
+                }
+                
+                // 取消保存
+                if (e.target.matches('#cancelSaveBtn')) {
+                    document.getElementById('saveInputModal').style.display = 'none';
+                }
+                
+                // 重命名确认
+                if (e.target.matches('#confirmRenameBtn')) {
+                    const saveId = document.getElementById('renameSaveId').value;
+                    const newName = document.getElementById('renameInput').value.trim();
+                    if (newName) {
+                        if (saveManager.renameSave(saveId, newName)) {
+                            document.getElementById('renameModal').style.display = 'none';
+                            renderSaveList();
+                            alert('重命名成功！');
+                        }
+                    } else {
+                        alert('请输入新名称！');
+                    }
+                }
+                
+                // 取消重命名
+                if (e.target.matches('#cancelRenameBtn')) {
+                    document.getElementById('renameModal').style.display = 'none';
+                }
             });
 
             document.body.addEventListener('blur', (e) => {
@@ -679,6 +1196,29 @@
                 if (e.target.isContentEditable && e.key === 'Enter') {
                     e.preventDefault();
                     e.target.blur();
+                }
+                
+                // ESC键关闭模态框
+                if (e.key === 'Escape') {
+                    const modals = document.querySelectorAll('.modal');
+                    modals.forEach(modal => {
+                        if (modal.style.display === 'flex') {
+                            modal.style.display = 'none';
+                        }
+                    });
+                }
+                
+                // 保存快捷键 Ctrl+S
+                if (e.ctrlKey && e.key === 's') {
+                    e.preventDefault();
+                    openSaveInputModal();
+                }
+            });
+
+            // 点击模态框外部关闭
+            window.addEventListener('click', (e) => {
+                if (e.target.classList.contains('modal')) {
+                    e.target.style.display = 'none';
                 }
             });
 
