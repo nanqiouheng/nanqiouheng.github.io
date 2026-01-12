@@ -5,22 +5,59 @@
     <!-- 使用指定网站的图标 -->
     <link rel="icon" href="https://joe666.dpdns.org/favicon.ico" >
     <style>
+        /* 加载动画样式 - 同款加载动画 */
+        #loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(30, 30, 46, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #7289da;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            color: #7289da;
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+        }
+        
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            background-color: #2c3e50;
+            background-color: #2c2f33;
             background-size: cover;
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(3px);
             flex-direction: column;
             /* 使用指定网站的同款背景 */
             background-image: url(https://joe666.dpdns.org/background.jpg);
             background-attachment: fixed;
             position: relative;
+            color: #ffffff;
         }
         
         /* 添加网站水印效果 */
@@ -31,35 +68,36 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(44, 62, 80, 0.7);
+            background: linear-gradient(135deg, rgba(44, 47, 51, 0.9) 0%, rgba(35, 39, 42, 0.95) 100%);
             z-index: -1;
         }
         
         footer {
             position: absolute;
             bottom: 10px;
-            color: #ecf0f1;
+            color: #99aab5;
             font-size: 12px;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
         }
         
         .container {
             width: 800px;
-            padding: 20px;
-            border: 1px solid #34495e;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            background-color: rgba(52, 73, 94, 0.9);
-            color: #ecf0f1;
-            border-radius: 8px;
+            padding: 25px;
+            border: 1px solid #23272a;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            background-color: rgba(35, 39, 42, 0.95);
+            color: #ffffff;
+            border-radius: 10px;
             margin-top: 20px;
             margin-bottom: 40px;
+            backdrop-filter: blur(10px);
         }
         
         .header-area {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 2px solid #3498db;
+            border-bottom: 2px solid #7289da;
             padding-bottom: 15px;
             height: 50px;
         }
@@ -73,22 +111,25 @@
         
         /* 返回主页按钮样式 */
         .home-btn {
-            background-color: #3498db;
+            background: linear-gradient(135deg, #7289da 0%, #5865f2 100%);
             color: white;
             border: none;
             padding: 8px 16px;
-            border-radius: 4px;
+            border-radius: 5px;
             cursor: pointer;
             font-size: 14px;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
             gap: 5px;
-            transition: background-color 0.3s;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(114, 137, 218, 0.3);
         }
         
         .home-btn:hover {
-            background-color: #2980b9;
+            background: linear-gradient(135deg, #677bc4 0%, #4752c4 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(114, 137, 218, 0.4);
             text-decoration: none;
         }
         
@@ -109,13 +150,23 @@
             border: none;
             padding: 0;
             margin: 0;
-            color: #ecf0f1;
+            color: #ffffff;
+        }
+        
+        h2 {
+            font-size: 24px;
+            font-weight: 600;
+            background: linear-gradient(135deg, #7289da, #43b581);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
         
         h3 {
             margin-top: 15px;
-            border-bottom: 1px solid #3498db;
+            border-bottom: 1px solid #4f545c;
             padding-bottom: 10px;
+            font-size: 20px;
         }
         
         table {
@@ -125,102 +176,118 @@
         }
         
         th, td {
-            padding: 12px;
+            padding: 12px 15px;
             text-align: left;
-            border-bottom: 1px solid #34495e;
+            border-bottom: 1px solid #4f545c;
             vertical-align: middle;
         }
         
         th {
-            background-color: rgba(52, 152, 219, 0.2);
-            color: #3498db;
+            background-color: rgba(114, 137, 218, 0.1);
+            color: #7289da;
+            font-weight: 600;
         }
         
         tr:hover {
-            background-color: rgba(52, 152, 219, 0.1);
+            background-color: rgba(114, 137, 218, 0.05);
         }
         
         .overall-score {
-            font-size: 2.5em;
+            font-size: 2.8em;
             font-weight: bold;
             display: inline-block;
-            color: #2ecc71;
+            color: #43b581;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
         
         [contenteditable="true"] {
-            outline: 1px dashed #3498db;
+            outline: 1px solid #7289da;
             cursor: text;
-            padding: 2px 4px;
-            border-radius: 3px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            background-color: rgba(255, 255, 255, 0.05);
+            color: #ffffff;
+            transition: all 0.3s;
+        }
+        
+        [contenteditable="true"]:focus {
+            outline: 2px solid #7289da;
             background-color: rgba(255, 255, 255, 0.1);
-            color: #ecf0f1;
+            box-shadow: 0 0 8px rgba(114, 137, 218, 0.5);
         }
         
         .action-btn {
             border: none;
-            padding: 6px 12px;
-            border-radius: 3px;
+            padding: 7px 14px;
+            border-radius: 4px;
             cursor: pointer;
             color: white;
-            font-size: 12px;
-            margin: 0 2px;
-            transition: opacity 0.3s;
+            font-size: 13px;
+            margin: 0 3px;
+            transition: all 0.2s ease;
+            font-weight: 500;
         }
         
         .action-btn:hover {
-            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
         
         .remove-row-btn {
-            background-color: #e74c3c;
+            background: linear-gradient(135deg, #f04747 0%, #d84040 100%);
         }
         
         .remove-row-btn:hover {
-            background-color: #c0392b;
+            background: linear-gradient(135deg, #d84040 0%, #c03939 100%);
         }
         
         .solve-item-btn {
-            background-color: #2ecc71;
+            background: linear-gradient(135deg, #43b581 0%, #3ca374 100%);
         }
         
         .solve-item-btn:hover {
-            background-color: #27ae60;
+            background: linear-gradient(135deg, #3ca374 0%, #359169 100%);
         }
         
         #solve-overall-btn {
-            background-color: #3498db;
-            margin-top: 5px;
+            background: linear-gradient(135deg, #7289da 0%, #5865f2 100%);
+            margin-top: 8px;
+            padding: 8px 16px;
         }
         
         #solve-overall-btn:hover {
-            background-color: #2980b9;
+            background: linear-gradient(135deg, #677bc4 0%, #4752c4 100%);
         }
         
         #add-row-btn {
-            margin-top: 20px;
-            background-color: #9b59b6;
+            margin-top: 25px;
+            background: linear-gradient(135deg, #7289da 0%, #5865f2 100%);
             color: white;
             border: none;
-            padding: 12px 15px;
-            border-radius: 4px;
+            padding: 14px 15px;
+            border-radius: 6px;
             cursor: pointer;
             width: 100%;
             font-size: 16px;
-            transition: background-color 0.3s;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(114, 137, 218, 0.3);
         }
         
         #add-row-btn:hover {
-            background-color: #8e44ad;
+            background: linear-gradient(135deg, #677bc4 0%, #4752c4 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(114, 137, 218, 0.4);
         }
         
         /* 新增样式 */
         .add-sub-btn { 
-            background-color: #f39c12; 
+            background: linear-gradient(135deg, #faa61a 0%, #f1a10e 100%);
             color: white; 
         }
         
         .add-sub-btn:hover { 
-            background-color: #d68910; 
+            background: linear-gradient(135deg, #e69919 0%, #d98e0d 100%);
         }
         
         .sub-item-indicator { 
@@ -228,60 +295,101 @@
             width: 15px; 
             text-align: center; 
             margin-right: 5px; 
-            color: #3498db; 
-        }
-        
-        /* 表格单元格样式调整 */
-        td[contenteditable="true"]:focus,
-        .editable-weight[contenteditable="true"]:focus,
-        .editable-score[contenteditable="true"]:focus {
-            background-color: rgba(255, 255, 255, 0.2);
-            outline: 2px solid #3498db;
+            color: #7289da; 
         }
         
         .letter-grade {
-            color: #f1c40f;
+            color: #faa61a;
             font-weight: bold;
+            margin-left: 5px;
         }
         
         /* 指引文本样式 */
         p {
-            color: #bdc3c7;
+            color: #b9bbbe;
+            line-height: 1.5;
         }
         
         strong {
-            color: #3498db;
+            color: #7289da;
         }
         
         /* 时间显示样式 */
         #timeStr {
-            color: #2ecc71;
+            color: #43b581;
             font-weight: bold;
+            background-color: rgba(67, 181, 129, 0.1);
+            padding: 2px 8px;
+            border-radius: 4px;
         }
         
         /* 子项行的特殊样式 */
         tr[data-parent-id] {
-            background-color: rgba(52, 152, 219, 0.05);
+            background-color: rgba(79, 84, 92, 0.1);
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 850px) {
+            .container {
+                width: 95%;
+                margin: 10px;
+                padding: 15px;
+            }
+            
+            .header-area {
+                flex-direction: column;
+                align-items: flex-start;
+                height: auto;
+                gap: 10px;
+            }
+            
+            .overall-score-container {
+                position: static;
+                text-align: left;
+                margin-top: 10px;
+            }
+            
+            th, td {
+                padding: 8px 10px;
+            }
+            
+            .action-btn {
+                padding: 5px 10px;
+                font-size: 12px;
+                margin: 2px;
+            }
+            
+            td:last-child {
+                width: 180px;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- 加载动画 -->
+    <div id="loading-overlay">
+        <div>
+            <div class="spinner"></div>
+            <div class="loading-text">加载中...</div>
+        </div>
+    </div>
+    
     <div class="container">
         <div class="header-area">
             <div class="header-left">
                 <!-- 返回主页按钮 -->
                 <a href="https://joe666.dpdns.org" class="home-btn" target="_blank">返回主页</a>
-                <h2>成绩详情</h2>
+                <h2>唐氏分数计算器</h2>
             </div>
             <div class="overall-score-container">
                 <div class="overall-score" contenteditable="true">100</div>
-                <button id="solve-overall-btn" class="action-btn">计算</button>
+                <button id="solve-overall-btn" class="action-btn">计算总分</button>
             </div>
         </div>
         <h3>分数计算器</h3>
         <p>
-            <strong>指引:</strong> 输入成绩和权重进行计算<br>
-            <strong>目前时间:</strong> <span id="timeStr"></span>
+            <strong>使用指引:</strong> 输入成绩和权重进行计算，支持多层级的子项目<br>
+            <strong>当前时间:</strong> <span id="timeStr"></span>
         </p>
         <table>
             <thead>
@@ -289,17 +397,27 @@
                     <th>项目</th>
                     <th>权重</th>
                     <th>成绩</th>
-                    <th style="width: 210px;">操作</th>
+                    <th style="width: 220px;">操作</th>
                 </tr>
             </thead>
             <tbody id="grade-table-body">
                 <!-- Table rows are managed by JavaScript -->
             </tbody>
         </table>
-        <button id="add-row-btn">添加新项目</button>
+        <button id="add-row-btn">+ 添加新项目</button>
     </div>
     <footer>Powered by Down`sicient | 版权所有 © 2026 Down`sicient Studio，Tach的附属工作室</footer>
     <script>
+        // 加载动画控制
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                document.getElementById('loading-overlay').style.opacity = '0';
+                setTimeout(function() {
+                    document.getElementById('loading-overlay').style.display = 'none';
+                }, 500);
+            }, 800); // 模拟加载时间
+        });
+        
         // --- 时间更新函数 ---
         function updateTime() {
             var date = new Date();
@@ -367,9 +485,6 @@
 
             function calculateOverallScore() {
                 let totalScore = 0;
-                tableBody.querySelectorAll('tr[data-parent-id]').forEach(row => {
-                     // Only sum up children, parents are auto-calculated
-                });
                 tableBody.querySelectorAll('tr').forEach(row => {
                     // Only consider leaf nodes for final calculation
                     if (!tableBody.querySelector(`[data-parent-id="${row.id}"]`)) {
@@ -379,7 +494,13 @@
                         }
                     }
                 });
-                document.querySelector('.overall-score').textContent = totalScore.toFixed(1);
+                const overallScoreElement = document.querySelector('.overall-score');
+                overallScoreElement.textContent = totalScore.toFixed(1);
+                // 添加总分变化动画效果
+                overallScoreElement.style.transform = 'scale(1.1)';
+                setTimeout(() => {
+                    overallScoreElement.style.transform = 'scale(1)';
+                }, 200);
             }
 
             function solveForItem(button) {
@@ -413,8 +534,12 @@
 
                 const requiredScore = (desiredGrade - sumOfOtherProducts) / targetEffectiveWeight;
                 const targetScoreEl = targetRow.querySelector('.editable-score');
-                targetScoreEl.textContent = requiredScore.toFixed(1);
+                targetScoreEl.textContent = Math.max(0, Math.min(100, requiredScore)).toFixed(1); // 限制在0-100之间
                 updateGradeForScore(targetScoreEl);
+                
+                // 更新父项目
+                const parentId = targetRow.dataset.parentId;
+                if(parentId) updateParentScore(parentId);
             }
 
             function renderRow(itemData, parentId = null, level = 0) {
@@ -432,7 +557,7 @@
                     </td>
                     <td class="editable-weight" contenteditable="true">${itemData.weight}</td>
                     <td>
-                        <span class="editable-score" contenteditable="${!hasChildren}">${score}</span> / 
+                        <span class="editable-score" contenteditable="${!hasChildren}">${score}</span> 
                         <span class="letter-grade">${grade}</span>
                     </td>
                     <td>
@@ -452,6 +577,8 @@
             
             function addTopLevelRow() {
                 renderRow({ id: generateId(), name: '新项目', weight: '0%', score: '0' });
+                // 滚动到新添加的行
+                tableBody.lastElementChild.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             }
 
             function addSubItem(button) {
@@ -472,7 +599,7 @@
                     </td>
                     <td class="editable-weight" contenteditable="true">${newRowData.weight}</td>
                     <td>
-                        <span class="editable-score" contenteditable="true">${newRowData.score}</span> / 
+                        <span class="editable-score" contenteditable="true">${newRowData.score}</span> 
                         <span class="letter-grade">F</span>
                     </td>
                     <td>
@@ -483,9 +610,13 @@
                 `;
                 parentRow.after(newRow);
                 updateParentScore(parentId);
+                // 滚动到新添加的行
+                newRow.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             }
 
             function removeRow(button) {
+                if (!confirm('确定要删除这个项目及其所有子项目吗？')) return;
+                
                 const rowToRemove = button.closest('tr');
                 const parentId = rowToRemove.dataset.parentId;
                 // Recursively remove children
@@ -502,7 +633,14 @@
                 const score = parseFloat(scoreElement.textContent);
                 if (isNaN(score)) return;
                 const letterGradeSpan = scoreElement.closest('td').querySelector('.letter-grade');
-                if (letterGradeSpan) letterGradeSpan.textContent = getGrade(score);
+                if (letterGradeSpan) {
+                    letterGradeSpan.textContent = getGrade(score);
+                    // 根据成绩等级设置颜色
+                    if (score >= 90) letterGradeSpan.style.color = '#43b581';
+                    else if (score >= 80) letterGradeSpan.style.color = '#7289da';
+                    else if (score >= 70) letterGradeSpan.style.color = '#faa61a';
+                    else letterGradeSpan.style.color = '#f04747';
+                }
             }
 
             // --- Event Delegation ---
@@ -518,9 +656,13 @@
                 const target = e.target;
                 if (target.matches('.editable-weight') || target.matches('.editable-score')) {
                     const num = parseFloat(target.textContent);
-                    if (target.matches('.editable-weight')) target.textContent = isNaN(num) ? '0%' : num + '%';
+                    if (target.matches('.editable-weight')) {
+                        const weightValue = Math.max(0, Math.min(100, isNaN(num) ? 0 : num));
+                        target.textContent = weightValue + '%';
+                    }
                     if (target.matches('.editable-score')) {
-                        target.textContent = isNaN(num) ? '0' : num;
+                        const scoreValue = Math.max(0, Math.min(1000, isNaN(num) ? 0 : num));
+                        target.textContent = scoreValue;
                         updateGradeForScore(target);
                     }
                     const parentId = target.closest('tr').dataset.parentId;
@@ -528,7 +670,8 @@
                 }
                  if (target.matches('.overall-score')) {
                     const num = parseFloat(target.textContent);
-                    target.textContent = isNaN(num) ? '0' : num;
+                    const scoreValue = Math.max(0, Math.min(1000, isNaN(num) ? 0 : num));
+                    target.textContent = scoreValue;
                 }
             }, true);
 
@@ -544,14 +687,18 @@
                 {
                     id: generateId(), name: '期中考试', weight: '30%',
                     subItems: [
-                        { id: generateId(), name: '选择题', weight: '60%', score: '100' },
-                        { id: generateId(), name: '简答题', weight: '40%', score: '100' }
+                        { id: generateId(), name: '选择题', weight: '60%', score: '95' },
+                        { id: generateId(), name: '简答题', weight: '40%', score: '88' }
                     ]
                 },
-                { id: generateId(), name: '期末考试', weight: '40%', score: '100' },
-                { id: generateId(), name: '项目参与', weight: '30%', score: '100' }
+                { id: generateId(), name: '期末考试', weight: '40%', score: '92' },
+                { id: generateId(), name: '平时作业', weight: '15%', score: '100' },
+                { id: generateId(), name: '课堂参与', weight: '15%', score: '85' }
             ];
             initialData.forEach(item => renderRow(item));
+            
+            // 初始化计算总分
+            setTimeout(calculateOverallScore, 100);
         });
     </script>
 </body>
