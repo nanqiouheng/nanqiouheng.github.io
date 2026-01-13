@@ -3,21 +3,69 @@
 <head>
     <title>Down's Score Calculator | 唐氏分数计算器</title>
     <!-- 使用指定网站的图标 -->
-    <link rel="icon" href="https://joe666.dpdns.org/favicon.ico" >
+    <link rel="icon" href="https://joe666.dpdns.org/favicon.ico">
     <style>
-        /* 加载动画样式 - 调整为白色主题 */
+        /* CSS 变量用于主题切换 */
+        :root {
+            /* 浅色主题变量 */
+            --primary-color: #7289da;
+            --primary-dark: #5865f2;
+            --primary-light: #8fa3f0;
+            --success-color: #43b581;
+            --warning-color: #faa61a;
+            --danger-color: #f04747;
+            --text-primary: #2d3748;
+            --text-secondary: #4a5568;
+            --text-tertiary: #718096;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f7fafc;
+            --bg-tertiary: #edf2f7;
+            --border-color: #e2e8f0;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --overlay-bg: rgba(255, 255, 255, 0.95);
+            --table-header-bg: rgba(114, 137, 218, 0.05);
+            --table-row-hover: rgba(114, 137, 218, 0.03);
+            --modal-bg: rgba(0, 0, 0, 0.3);
+            --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            --transition-speed: 0.3s;
+        }
+
+        .dark-theme {
+            /* 深色主题变量 */
+            --primary-color: #5865f2;
+            --primary-dark: #4752c4;
+            --primary-light: #7289da;
+            --success-color: #3ca374;
+            --warning-color: #f1a10e;
+            --danger-color: #d84040;
+            --text-primary: #f7fafc;
+            --text-secondary: #e2e8f0;
+            --text-tertiary: #a0aec0;
+            --bg-primary: #1a202c;
+            --bg-secondary: #2d3748;
+            --bg-tertiary: #4a5568;
+            --border-color: #4a5568;
+            --shadow-color: rgba(0, 0, 0, 0.3);
+            --overlay-bg: rgba(26, 32, 44, 0.95);
+            --table-header-bg: rgba(88, 101, 242, 0.1);
+            --table-row-hover: rgba(88, 101, 242, 0.05);
+            --modal-bg: rgba(0, 0, 0, 0.5);
+            --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        /* 加载动画样式 */
         #loading-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(255, 255, 255, 0.95);
+            background: var(--overlay-bg);
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 9999;
-            transition: opacity 0.3s ease;
+            transition: opacity var(--transition-speed) ease;
         }
         
         .spinner {
@@ -25,7 +73,7 @@
             height: 50px;
             border: 3px solid rgba(114, 137, 218, 0.2);
             border-radius: 50%;
-            border-top-color: #7289da;
+            border-top-color: var(--primary-color);
             animation: spin 1s ease-in-out infinite;
         }
         
@@ -34,21 +82,21 @@
         }
         
         .loading-text {
-            color: #4a5568;
+            color: var(--text-secondary);
             margin-top: 20px;
             font-size: 18px;
             font-weight: bold;
             text-align: center;
         }
         
-        /* 语言切换动画样式 - 加速版本 */
+        /* 语言切换动画样式 */
         .language-switch-animation {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(255, 255, 255, 0.95);
+            background: var(--overlay-bg);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -66,13 +114,13 @@
             font-size: 48px;
             font-weight: bold;
             margin-bottom: 20px;
-            background: linear-gradient(135deg, #7289da, #43b581);
+            background: linear-gradient(135deg, var(--primary-color), var(--success-color));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             opacity: 0;
             transform: scale(0.8);
-            animation: languageFadeInOut 0.8s ease-in-out; /* 缩短动画时间 */
+            animation: languageFadeInOut 0.8s ease-in-out;
         }
         
         @keyframes languageFadeInOut {
@@ -91,9 +139,9 @@
         }
         
         .lang-btn {
-            background: #f7fafc;
-            border: 1px solid #e2e8f0;
-            color: #4a5568;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
             padding: 4px 10px;
             border-radius: 4px;
             cursor: pointer;
@@ -104,13 +152,13 @@
         }
         
         .lang-btn:hover {
-            background: #edf2f7;
+            background: var(--bg-secondary);
         }
         
         .lang-btn.active {
-            background: linear-gradient(135deg, #7289da 0%, #5865f2 100%);
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
             color: white;
-            border-color: #7289da;
+            border-color: var(--primary-color);
         }
         
         /* 按钮切换动画 */
@@ -129,6 +177,75 @@
             left: 100%;
         }
         
+        /* 主题切换按钮样式 - 来自 uiverse.io */
+        .theme-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 30px;
+            margin: 0 10px;
+        }
+        
+        .theme-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .theme-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, #4a5568, #2d3748);
+            transition: var(--transition-speed);
+            border-radius: 30px;
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .theme-slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 4px;
+            background: linear-gradient(45deg, #ffd700, #ffaa00);
+            border-radius: 50%;
+            transition: var(--transition-speed);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+        
+        input:checked + .theme-slider {
+            background: linear-gradient(45deg, #2d3748, #1a202c);
+        }
+        
+        input:checked + .theme-slider:before {
+            transform: translateX(30px);
+            background: linear-gradient(45deg, #c0c0c0, #e0e0e0);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+        
+        .theme-switch-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        
+        .theme-label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .sun-icon, .moon-icon {
+            font-size: 18px;
+        }
+        
         /* 模态框样式 */
         .modal {
             display: none;
@@ -137,20 +254,20 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.3);
+            background-color: var(--modal-bg);
             z-index: 1000;
             justify-content: center;
             align-items: center;
         }
         
         .modal-content {
-            background: white;
+            background: var(--bg-primary);
             padding: 25px;
             border-radius: 10px;
             width: 90%;
             max-width: 500px;
-            border: 1px solid #e2e8f0;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--card-shadow);
             animation: modalFadeIn 0.2s ease-out;
         }
         
@@ -164,28 +281,28 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
-            border-bottom: 2px solid #7289da;
+            border-bottom: 2px solid var(--primary-color);
             padding-bottom: 10px;
         }
         
         .modal-title {
             font-size: 20px;
             font-weight: bold;
-            color: #2d3748;
+            color: var(--text-primary);
             margin: 0;
         }
         
         .close-modal {
             background: none;
             border: none;
-            color: #718096;
+            color: var(--text-tertiary);
             font-size: 24px;
             cursor: pointer;
             transition: color 0.2s;
         }
         
         .close-modal:hover {
-            color: #4a5568;
+            color: var(--text-secondary);
         }
         
         .modal-body {
@@ -202,10 +319,10 @@
         .modal-input {
             width: 100%;
             padding: 12px;
-            background-color: #f7fafc;
-            border: 1px solid #e2e8f0;
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
             border-radius: 5px;
-            color: #2d3748;
+            color: var(--text-primary);
             font-size: 16px;
             margin-bottom: 15px;
             box-sizing: border-box;
@@ -214,7 +331,7 @@
         
         .modal-input:focus {
             outline: none;
-            border-color: #7289da;
+            border-color: var(--primary-color);
             box-shadow: 0 0 0 3px rgba(114, 137, 218, 0.1);
         }
         
@@ -223,25 +340,25 @@
             justify-content: space-between;
             align-items: center;
             padding: 12px;
-            background-color: #f8fafc;
-            border: 1px solid #e2e8f0;
+            background-color: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
             border-radius: 5px;
             margin-bottom: 10px;
             transition: all 0.2s;
         }
         
         .save-item:hover {
-            background-color: #edf2f7;
+            background-color: var(--bg-secondary);
             transform: translateX(3px);
         }
         
         .save-item-name {
             font-weight: bold;
-            color: #2d3748;
+            color: var(--text-primary);
         }
         
         .save-item-meta {
-            color: #718096;
+            color: var(--text-tertiary);
             font-size: 12px;
         }
         
@@ -260,17 +377,17 @@
         }
         
         .btn-load {
-            background: linear-gradient(135deg, #43b581 0%, #3ca374 100%);
+            background: linear-gradient(135deg, var(--success-color) 0%, #3ca374 100%);
             color: white;
         }
         
         .btn-rename {
-            background: linear-gradient(135deg, #7289da 0%, #5865f2 100%);
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
             color: white;
         }
         
         .btn-delete {
-            background: linear-gradient(135deg, #f04747 0%, #d84040 100%);
+            background: linear-gradient(135deg, var(--danger-color) 0%, #d84040 100%);
             color: white;
         }
         
@@ -282,18 +399,18 @@
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            background-color: #f7fafc;
+            background-color: var(--bg-secondary);
             background-size: cover;
             backdrop-filter: blur(3px);
             flex-direction: column;
-            /* 使用白色主题背景 */
-            background-image: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+            background-image: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
             background-attachment: fixed;
             position: relative;
-            color: #2d3748;
+            color: var(--text-primary);
+            transition: background-color var(--transition-speed), color var(--transition-speed);
         }
         
-        /* 移除深色水印效果 */
+        /* 背景效果 */
         body::before {
             content: '';
             position: fixed;
@@ -301,28 +418,32 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(247, 250, 252, 0.95) 100%);
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
             z-index: -1;
+            opacity: 0.9;
         }
         
         footer {
             position: absolute;
             bottom: 10px;
-            color: #718096;
+            color: var(--text-tertiary);
             font-size: 12px;
+            text-align: center;
+            width: 100%;
         }
         
         .container {
             width: 800px;
             padding: 25px;
-            border: 1px solid #e2e8f0;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
-            background-color: white;
-            color: #2d3748;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--card-shadow);
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
             border-radius: 10px;
             margin-top: 20px;
             margin-bottom: 40px;
             animation: containerSlideIn 0.3s ease-out;
+            transition: background-color var(--transition-speed), color var(--transition-speed), border-color var(--transition-speed), box-shadow var(--transition-speed);
         }
         
         @keyframes containerSlideIn {
@@ -334,7 +455,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 2px solid #7289da;
+            border-bottom: 2px solid var(--primary-color);
             padding-bottom: 15px;
             height: 50px;
         }
@@ -350,12 +471,12 @@
         .header-center {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 15px;
         }
         
         /* 保存管理按钮样式 */
         .save-manage-btn {
-            background: linear-gradient(135deg, #5865f2 0%, #4752c4 100%);
+            background: linear-gradient(135deg, var(--primary-dark) 0%, #4752c4 100%);
             color: white;
             border: none;
             padding: 8px 16px;
@@ -378,7 +499,7 @@
         
         /* 返回主页按钮样式 */
         .home-btn {
-            background: linear-gradient(135deg, #7289da 0%, #5865f2 100%);
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
             color: white;
             border: none;
             padding: 8px 16px;
@@ -417,13 +538,13 @@
             border: none;
             padding: 0;
             margin: 0;
-            color: #2d3748;
+            color: var(--text-primary);
         }
         
         h2 {
             font-size: 24px;
             font-weight: 600;
-            background: linear-gradient(135deg, #7289da, #43b581);
+            background: linear-gradient(135deg, var(--primary-color), var(--success-color));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -432,7 +553,7 @@
         
         h3 {
             margin-top: 15px;
-            border-bottom: 1px solid #e2e8f0;
+            border-bottom: 1px solid var(--border-color);
             padding-bottom: 10px;
             font-size: 20px;
             transition: all 0.2s ease;
@@ -453,14 +574,14 @@
         th, td {
             padding: 12px 15px;
             text-align: left;
-            border-bottom: 1px solid #e2e8f0;
+            border-bottom: 1px solid var(--border-color);
             vertical-align: middle;
             transition: all 0.2s ease;
         }
         
         th {
-            background-color: rgba(114, 137, 218, 0.05);
-            color: #4a5568;
+            background-color: var(--table-header-bg);
+            color: var(--text-secondary);
             font-weight: 600;
         }
         
@@ -469,14 +590,14 @@
         }
         
         tr:hover {
-            background-color: rgba(114, 137, 218, 0.03);
+            background-color: var(--table-row-hover);
         }
         
         .overall-score {
             font-size: 2.8em;
             font-weight: bold;
             display: inline-block;
-            color: #43b581;
+            color: var(--success-color);
             transition: all 0.2s ease;
         }
         
@@ -485,18 +606,18 @@
         }
         
         [contenteditable="true"] {
-            outline: 1px solid #cbd5e0;
+            outline: 1px solid var(--border-color);
             cursor: text;
             padding: 4px 8px;
             border-radius: 4px;
-            background-color: #f7fafc;
-            color: #2d3748;
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
             transition: all 0.2s;
         }
         
         [contenteditable="true"]:focus {
-            outline: 2px solid #7289da;
-            background-color: white;
+            outline: 2px solid var(--primary-color);
+            background-color: var(--bg-primary);
             box-shadow: 0 0 0 3px rgba(114, 137, 218, 0.1);
         }
         
@@ -516,7 +637,7 @@
         
         .action-btn:hover {
             transform: translateY(-1px);
-            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 3px 6px var(--shadow-color);
         }
         
         .action-btn::after {
@@ -549,7 +670,7 @@
         }
         
         .remove-row-btn {
-            background: linear-gradient(135deg, #f04747 0%, #d84040 100%);
+            background: linear-gradient(135deg, var(--danger-color) 0%, #d84040 100%);
         }
         
         .remove-row-btn:hover {
@@ -557,7 +678,7 @@
         }
         
         .solve-item-btn {
-            background: linear-gradient(135deg, #43b581 0%, #3ca374 100%);
+            background: linear-gradient(135deg, var(--success-color) 0%, #3ca374 100%);
         }
         
         .solve-item-btn:hover {
@@ -565,7 +686,7 @@
         }
         
         #solve-overall-btn {
-            background: linear-gradient(135deg, #7289da 0%, #5865f2 100%);
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
             margin-top: 8px;
             padding: 8px 16px;
         }
@@ -576,7 +697,7 @@
         
         #add-row-btn {
             margin-top: 25px;
-            background: linear-gradient(135deg, #7289da 0%, #5865f2 100%);
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
             color: white;
             border: none;
             padding: 14px 15px;
@@ -614,7 +735,7 @@
         
         /* 新增样式 */
         .add-sub-btn { 
-            background: linear-gradient(135deg, #faa61a 0%, #f1a10e 100%);
+            background: linear-gradient(135deg, var(--warning-color) 0%, #f1a10e 100%);
             color: white; 
         }
         
@@ -627,11 +748,11 @@
             width: 15px; 
             text-align: center; 
             margin-right: 5px; 
-            color: #7289da; 
+            color: var(--primary-color); 
         }
         
         .letter-grade {
-            color: #faa61a;
+            color: var(--warning-color);
             font-weight: bold;
             margin-left: 5px;
             transition: all 0.2s ease;
@@ -639,18 +760,18 @@
         
         /* 指引文本样式 */
         p {
-            color: #4a5568;
+            color: var(--text-secondary);
             line-height: 1.5;
             transition: all 0.2s ease;
         }
         
         strong {
-            color: #4a5568;
+            color: var(--text-secondary);
         }
         
         /* 时间显示样式 */
         #timeStr {
-            color: #43b581;
+            color: var(--success-color);
             font-weight: bold;
             background-color: rgba(67, 181, 129, 0.1);
             padding: 2px 8px;
@@ -663,11 +784,15 @@
             background-color: rgba(247, 250, 252, 0.5);
         }
         
+        .dark-theme tr[data-parent-id] {
+            background-color: rgba(45, 55, 72, 0.5);
+        }
+        
         /* 空状态提示 */
         .empty-state {
             text-align: center;
             padding: 40px 20px;
-            color: #a0aec0;
+            color: var(--text-tertiary);
         }
         
         /* 响应式调整 */
@@ -708,6 +833,10 @@
             
             td:last-child {
                 width: 180px;
+            }
+            
+            .theme-switch-container {
+                font-size: 12px;
             }
         }
     </style>
@@ -795,6 +924,21 @@
                     <button class="lang-btn active" data-lang="zh">中文</button>
                     <button class="lang-btn" data-lang="en">English</button>
                 </div>
+                <!-- 主题切换器 -->
+                <div class="theme-switch-container">
+                    <span class="theme-label">
+                        <span class="sun-icon">☀️</span>
+                        <span data-i18n="light">浅色</span>
+                    </span>
+                    <label class="theme-switch">
+                        <input type="checkbox" id="themeToggle">
+                        <span class="theme-slider"></span>
+                    </label>
+                    <span class="theme-label">
+                        <span class="moon-icon">🌙</span>
+                        <span data-i18n="dark">深色</span>
+                    </span>
+                </div>
                 <!-- 保存管理按钮 -->
                 <button id="manageSavesBtn" class="save-manage-btn" data-i18n="saveManagement">保存管理</button>
             </div>
@@ -825,6 +969,29 @@
     </div>
     <footer data-i18n="footerText">Powered by Down`sicient | 版权所有 © 2026 Down`sicient Studio，Tach的附属工作室</footer>
     <script>
+        // 主题切换相关
+        const THEME_STORAGE_KEY = 'grade_calculator_theme';
+        
+        // 初始化主题
+        function initTheme() {
+            const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+                document.body.classList.add('dark-theme');
+                document.getElementById('themeToggle').checked = true;
+            } else {
+                document.body.classList.remove('dark-theme');
+                document.getElementById('themeToggle').checked = false;
+            }
+        }
+        
+        // 切换主题
+        function toggleTheme() {
+            const isDark = document.body.classList.toggle('dark-theme');
+            localStorage.setItem(THEME_STORAGE_KEY, isDark ? 'dark' : 'light');
+        }
+        
         // 加载动画控制 - 缩短时间
         window.addEventListener('load', function() {
             setTimeout(function() {
@@ -865,6 +1032,10 @@
                 returnHome: "返回主页",
                 saveManagement: "保存管理",
                 footerText: "Powered by Down`sicient | 版权所有 © 2026 Down`sicient Studio，Tach的附属工作室",
+                
+                // 主题相关
+                light: "浅色",
+                dark: "深色",
                 
                 // 按钮文本
                 solveItem: "求解",
@@ -925,6 +1096,10 @@
                 returnHome: "Return Home",
                 saveManagement: "Save Management",
                 footerText: "Powered by Down`sicient | Copyright © 2026 Down`sicient Studio, Tach's subsidiary studio",
+                
+                // Theme related
+                light: "Light",
+                dark: "Dark",
                 
                 // Button texts
                 solveItem: "Solve",
@@ -1389,10 +1564,10 @@
             const letterGradeSpan = scoreElement.closest('td').querySelector('.letter-grade');
             if (letterGradeSpan) {
                 letterGradeSpan.textContent = getGrade(score);
-                if (score >= 90) letterGradeSpan.style.color = '#43b581';
-                else if (score >= 80) letterGradeSpan.style.color = '#7289da';
-                else if (score >= 70) letterGradeSpan.style.color = '#faa61a';
-                else letterGradeSpan.style.color = '#f04747';
+                if (score >= 90) letterGradeSpan.style.color = 'var(--success-color)';
+                else if (score >= 80) letterGradeSpan.style.color = 'var(--primary-color)';
+                else if (score >= 70) letterGradeSpan.style.color = 'var(--warning-color)';
+                else letterGradeSpan.style.color = 'var(--danger-color)';
             }
         }
         
@@ -1517,6 +1692,12 @@
 
         // --- 事件监听器绑定 ---
         document.addEventListener('DOMContentLoaded', () => {
+            // 初始化主题
+            initTheme();
+            
+            // 绑定主题切换事件
+            document.getElementById('themeToggle').addEventListener('change', toggleTheme);
+            
             // 初始化语言
             initLanguage();
             
@@ -1671,6 +1852,12 @@
                 if (e.ctrlKey && e.key === 's') {
                     e.preventDefault();
                     openSaveInputModal();
+                }
+                
+                // 主题切换快捷键: Ctrl+Shift+T
+                if (e.ctrlKey && e.shiftKey && e.key === 'T') {
+                    e.preventDefault();
+                    document.getElementById('themeToggle').click();
                 }
             });
 
