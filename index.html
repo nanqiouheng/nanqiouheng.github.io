@@ -197,10 +197,6 @@
                 <span class="lang-en">Home</span>
                 <span class="lang-zh">主页</span>
             </a>
-            <a href="#tools" class="hover:text-white transition-colors">
-                <span class="lang-en">Tools</span>
-                <span class="lang-zh">工具集</span>
-            </a>
             <a href="#features" class="hover:text-white transition-colors">
                 <span class="lang-en">Features</span>
                 <span class="lang-zh">特性</span>
@@ -208,6 +204,10 @@
             <a href="#demo" class="hover:text-white transition-colors">
                 <span class="lang-en">Demo</span>
                 <span class="lang-zh">演示</span>
+            </a>
+            <a href="#about" class="hover:text-white transition-colors">
+                <span class="lang-en">About</span>
+                <span class="lang-zh">关于</span>
             </a>
         </div>
         <div class="flex items-center gap-4">
@@ -285,10 +285,10 @@
                         class="inline-block ml-2 -mr-1 transition-transform group-hover:translate-x-1"
                         width="18"></iconify-icon>
                 </button>
-                <button onclick="window.location.href='#tools'"
+                <button onclick="window.location.href='#features'"
                     class="px-8 py-4 text-white hover:text-purple-200 font-medium transition-colors flex items-center gap-2">
-                    <iconify-icon icon="lucide:package" width="20"></iconify-icon>
-                    View All Tools
+                    <iconify-icon icon="lucide:sparkles" width="20"></iconify-icon>
+                    View Features
                 </button>
             </div>
 
@@ -301,10 +301,10 @@
                         class="inline-block ml-2 -mr-1 transition-transform group-hover:translate-x-1"
                         width="18"></iconify-icon>
                 </button>
-                <button onclick="window.location.href='#tools'"
+                <button onclick="window.location.href='#features'"
                     class="px-8 py-4 text-white hover:text-purple-200 font-medium transition-colors flex items-center gap-2">
-                    <iconify-icon icon="lucide:package" width="20"></iconify-icon>
-                    查看所有工具
+                    <iconify-icon icon="lucide:sparkles" width="20"></iconify-icon>
+                    查看特性
                 </button>
             </div>
         </div>
@@ -706,119 +706,58 @@
         </div>
     </section>
 
-    <!-- Calculator Demo Section -->
+    <!-- Calculator CTA Section -->
     <section id="calculator" class="py-32 px-4 relative z-10">
-        <div class="max-w-6xl mx-auto">
-            <div class="text-center mb-20 reveal-on-scroll">
-                <h2 class="text-3xl md:text-5xl text-white font-serif mb-6 lang-en">Interactive Calculator Demo</h2>
-                <h2 class="text-3xl md:text-5xl text-white serif-zh mb-6 lang-zh">交互式计算器演示</h2>
-                <p class="text-neutral-400 lang-en">Try our powerful calculator with real-time computation</p>
-                <p class="text-neutral-400 lang-zh">试用我们的实时计算器</p>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div class="lg:col-span-2 reveal-on-scroll">
-                    <div class="glass-panel rounded-3xl p-8">
-                        <div class="mb-6">
-                            <h3 class="text-xl text-white font-semibold mb-4 lang-en">Calculator</h3>
-                            <h3 class="text-xl text-white font-semibold mb-4 lang-zh">计算器</h3>
-                            <div class="bg-neutral-900 rounded-2xl p-4">
-                                <div class="text-right mb-4">
-                                    <div id="calc-display" class="text-3xl text-white font-mono py-4 px-2 min-h-[60px]">0</div>
-                                </div>
-                                <div class="grid grid-cols-4 gap-3">
-                                    <button class="calc-btn bg-neutral-800 hover:bg-neutral-700" onclick="clearCalc()">C</button>
-                                    <button class="calc-btn bg-neutral-800 hover:bg-neutral-700" onclick="backspace()">⌫</button>
-                                    <button class="calc-btn bg-purple-600 hover:bg-purple-500" onclick="appendToCalc('/')">/</button>
-                                    <button class="calc-btn bg-purple-600 hover:bg-purple-500" onclick="appendToCalc('*')">×</button>
-                                    
-                                    <button class="calc-btn" onclick="appendToCalc('7')">7</button>
-                                    <button class="calc-btn" onclick="appendToCalc('8')">8</button>
-                                    <button class="calc-btn" onclick="appendToCalc('9')">9</button>
-                                    <button class="calc-btn bg-purple-600 hover:bg-purple-500" onclick="appendToCalc('-')">-</button>
-                                    
-                                    <button class="calc-btn" onclick="appendToCalc('4')">4</button>
-                                    <button class="calc-btn" onclick="appendToCalc('5')">5</button>
-                                    <button class="calc-btn" onclick="appendToCalc('6')">6</button>
-                                    <button class="calc-btn bg-purple-600 hover:bg-purple-500" onclick="appendToCalc('+')">+</button>
-                                    
-                                    <button class="calc-btn" onclick="appendToCalc('1')">1</button>
-                                    <button class="calc-btn" onclick="appendToCalc('2')">2</button>
-                                    <button class="calc-btn" onclick="appendToCalc('3')">3</button>
-                                    <button class="calc-btn bg-purple-600 hover:bg-purple-500 row-span-2" onclick="calculate()">=</button>
-                                    
-                                    <button class="calc-btn col-span-2" onclick="appendToCalc('0')">0</button>
-                                    <button class="calc-btn" onclick="appendToCalc('.')">.</button>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div>
-                            <h3 class="text-xl text-white font-semibold mb-4 lang-en">Scientific Functions</h3>
-                            <h3 class="text-xl text-white font-semibold mb-4 lang-zh">科学函数</h3>
-                            <div class="grid grid-cols-3 sm:grid-cols-6 gap-3">
-                                <button class="calc-btn-sm bg-blue-900/30 hover:bg-blue-800/50" onclick="scientificFunction('sin(')">sin</button>
-                                <button class="calc-btn-sm bg-blue-900/30 hover:bg-blue-800/50" onclick="scientificFunction('cos(')">cos</button>
-                                <button class="calc-btn-sm bg-blue-900/30 hover:bg-blue-800/50" onclick="scientificFunction('tan(')">tan</button>
-                                <button class="calc-btn-sm bg-blue-900/30 hover:bg-blue-800/50" onclick="scientificFunction('log(')">log</button>
-                                <button class="calc-btn-sm bg-blue-900/30 hover:bg-blue-800/50" onclick="scientificFunction('ln(')">ln</button>
-                                <button class="calc-btn-sm bg-blue-900/30 hover:bg-blue-800/50" onclick="scientificFunction('sqrt(')">√</button>
-                            </div>
-                        </div>
-                    </div>
+        <div class="max-w-4xl mx-auto text-center">
+            <div class="glass-panel rounded-3xl p-12 reveal-on-scroll">
+                <div class="w-20 h-20 bg-purple-500/10 rounded-2xl flex items-center justify-center text-purple-500 mb-8 mx-auto">
+                    <iconify-icon icon="lucide:calculator" width="40"></iconify-icon>
                 </div>
                 
-                <div class="reveal-on-scroll delay-100">
-                    <div class="glass-panel rounded-3xl p-8 h-full">
-                        <h3 class="text-xl text-white font-semibold mb-6 lang-en">Recent Calculations</h3>
-                        <h3 class="text-xl text-white font-semibold mb-6 lang-zh">最近计算</h3>
-                        
-                        <div id="history-list" class="space-y-4 mb-6">
-                            <div class="text-neutral-500 italic text-sm lang-en">No calculations yet</div>
-                            <div class="text-neutral-500 italic text-sm lang-zh">暂无计算记录</div>
+                <h2 class="text-3xl md:text-5xl text-white font-serif mb-6 lang-en">Ready to Try Our Calculator?</h2>
+                <h2 class="text-3xl md:text-5xl text-white serif-zh mb-6 lang-zh">准备好试用我们的计算器了吗？</h2>
+                
+                <p class="text-neutral-400 text-lg mb-8 max-w-2xl mx-auto lang-en">
+                    Experience the power of our advanced calculation tools. Get instant results, save time, and eliminate calculation errors with our intuitive interface.
+                </p>
+                
+                <p class="text-neutral-400 text-lg mb-8 max-w-2xl mx-auto lang-zh">
+                    体验我们高级计算工具的强大功能。通过直观的界面获得即时结果，节省时间，消除计算错误。
+                </p>
+                
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-6">
+                    <a href="https://nanqiouheng.github.io/Down's%20Score%20Calculator.html" 
+                       class="px-10 py-4 bg-purple-500 hover:bg-purple-400 text-black font-bold rounded-full transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_-10px_rgba(147,51,234,0.6)]">
+                        <span class="lang-en">Open Full Calculator</span>
+                        <span class="lang-zh">打开完整计算器</span>
+                    </a>
+                    
+                    <a href="#features" 
+                       class="px-10 py-4 text-white hover:text-purple-200 font-medium transition-colors flex items-center gap-2">
+                        <iconify-icon icon="lucide:info" width="20"></iconify-icon>
+                        <span class="lang-en">Learn More Features</span>
+                        <span class="lang-zh">了解更多特性</span>
+                    </a>
+                </div>
+                
+                <div class="mt-12 pt-8 border-t border-white/10">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="text-center">
+                            <div class="text-2xl text-purple-400 font-bold mb-2">100%</div>
+                            <div class="text-neutral-500 text-sm lang-en">Free to Use</div>
+                            <div class="text-neutral-500 text-sm lang-zh">完全免费</div>
                         </div>
                         
-                        <div class="mt-6">
-                            <h4 class="text-white font-medium mb-3 lang-en">Tips & Tricks</h4>
-                            <h4 class="text-white font-medium mb-3 lang-zh">使用技巧</h4>
-                            <ul class="text-neutral-400 text-sm space-y-2">
-                                <li class="flex items-start gap-2 lang-en">
-                                    <iconify-icon icon="lucide:check" class="text-green-500 mt-0.5"></iconify-icon>
-                                    <span>Use parentheses for complex expressions</span>
-                                </li>
-                                <li class="flex items-start gap-2 lang-zh">
-                                    <iconify-icon icon="lucide:check" class="text-green-500 mt-0.5"></iconify-icon>
-                                    <span>使用括号处理复杂表达式</span>
-                                </li>
-                                <li class="flex items-start gap-2 lang-en">
-                                    <iconify-icon icon="lucide:check" class="text-green-500 mt-0.5"></iconify-icon>
-                                    <span>Click 'C' to clear, '⌫' to backspace</span>
-                                </li>
-                                <li class="flex items-start gap-2 lang-zh">
-                                    <iconify-icon icon="lucide:check" class="text-green-500 mt-0.5"></iconify-icon>
-                                    <span>点击 'C' 清除，'⌫' 退格</span>
-                                </li>
-                                <li class="flex items-start gap-2 lang-en">
-                                    <iconify-icon icon="lucide:check" class="text-green-500 mt-0.5"></iconify-icon>
-                                    <span>Scientific functions work in radians</span>
-                                </li>
-                                <li class="flex items-start gap-2 lang-zh">
-                                    <iconify-icon icon="lucide:check" class="text-green500 mt-0.5"></iconify-icon>
-                                    <span>科学函数使用弧度制</span>
-                                </li>
-                            </ul>
-                            
-                            <div class="mt-8 p-4 bg-purple-900/20 rounded-xl">
-                                <h5 class="text-white font-medium mb-2 lang-en">Try our advanced calculator</h5>
-                                <h5 class="text-white font-medium mb-2 lang-zh">试用我们高级计算器</h5>
-                                <p class="text-neutral-400 text-sm mb-3 lang-en">For more advanced features like score calculation, formula saving, and detailed analytics</p>
-                                <p class="text-neutral-400 text-sm mb-3 lang-zh">获取更多高级功能，如分数计算、公式保存和详细分析</p>
-                                <a href="https://nanqiouheng.github.io/Down's%20Score%20Calculator.html" 
-                                   class="block text-center bg-purple-600 hover:bg-purple-500 text-white font-medium py-2 rounded-lg transition-colors">
-                                    <span class="lang-en">Open Full Calculator</span>
-                                    <span class="lang-zh">打开完整计算器</span>
-                                </a>
-                            </div>
+                        <div class="text-center">
+                            <div class="text-2xl text-purple-400 font-bold mb-2">No Sign-up</div>
+                            <div class="text-neutral-500 text-sm lang-en">Required</div>
+                            <div class="text-neutral-500 text-sm lang-zh">无需注册</div>
+                        </div>
+                        
+                        <div class="text-center">
+                            <div class="text-2xl text-purple-400 font-bold mb-2">All Devices</div>
+                            <div class="text-neutral-500 text-sm lang-en">Compatible</div>
+                            <div class="text-neutral-500 text-sm lang-zh">全设备兼容</div>
                         </div>
                     </div>
                 </div>
@@ -864,22 +803,25 @@
     </section>
 
     <!-- Footer -->
-    <footer class="py-12 px-6 border-t border-white/10 bg-black relative z-10">
-        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
-            <div class="flex items-center gap-2">
-                <span class="w-2 h-2 rounded-full bg-purple-500"></span>
-                <span class="text-white font-semibold text-lg">Down's Tools</span>
+    <footer id="about" class="py-12 px-6 border-t border-white/10 bg-black relative z-10">
+        <div class="max-w-6xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6 mb-8">
+                <div class="flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-purple-500"></span>
+                    <span class="text-white font-semibold text-lg">Down's Tools</span>
+                </div>
+                <div class="flex gap-6 text-neutral-400">
+                    <a href="https://nanqiouheng.github.io" class="hover:text-purple-500 transition-colors"><iconify-icon icon="lucide:earth"
+                            width="20"></iconify-icon></a>
+                    <a href="https://github.com/nanqiouheng" class="hover:text-purple-500 transition-colors"><iconify-icon icon="lucide:github"
+                            width="20"></iconify-icon></a>
+                    <a href="https://nanqiouheng.github.io/Down's%20Score%20Calculator.html" class="hover:text-purple-500 transition-colors"><iconify-icon
+                            icon="lucide:calculator" width="20"></iconify-icon></a>
+                </div>
             </div>
-            <div class="text-neutral-500 text-sm">
-                © 2024 Down's Tools Studio
-            </div>
-            <div class="flex gap-6 text-neutral-400">
-                <a href="https://nanqiouheng.github.io" class="hover:text-purple-500 transition-colors"><iconify-icon icon="lucide:earth"
-                        width="20"></iconify-icon></a>
-                <a href="https://github.com/nanqiouheng" class="hover:text-purple-500 transition-colors"><iconify-icon icon="lucide:github"
-                        width="20"></iconify-icon></a>
-                <a href="https://nanqiouheng.github.io/Down's%20Score%20Calculator.html" class="hover:text-purple-500 transition-colors"><iconify-icon
-                        icon="lucide:calculator" width="20"></iconify-icon></a>
+            
+            <div class="text-center text-neutral-500 text-sm">
+                © 2024 Down's Tools Studio · Tach's Subsidiary Studio
             </div>
         </div>
     </footer>
@@ -929,110 +871,6 @@
             }
         }
 
-        // 计算器功能
-        let calcDisplay = document.getElementById('calc-display');
-        let calcHistory = [];
-        
-        function appendToCalc(value) {
-            if (calcDisplay.textContent === '0' && value !== '.') {
-                calcDisplay.textContent = value;
-            } else {
-                calcDisplay.textContent += value;
-            }
-        }
-        
-        function clearCalc() {
-            calcDisplay.textContent = '0';
-        }
-        
-        function backspace() {
-            if (calcDisplay.textContent.length > 1) {
-                calcDisplay.textContent = calcDisplay.textContent.slice(0, -1);
-            } else {
-                calcDisplay.textContent = '0';
-            }
-        }
-        
-        function scientificFunction(func) {
-            if (calcDisplay.textContent === '0') {
-                calcDisplay.textContent = func;
-            } else {
-                calcDisplay.textContent += func;
-            }
-        }
-        
-        function calculate() {
-            try {
-                let expression = calcDisplay.textContent
-                    .replace(/×/g, '*')
-                    .replace(/sin\(/g, 'Math.sin(')
-                    .replace(/cos\(/g, 'Math.cos(')
-                    .replace(/tan\(/g, 'Math.tan(')
-                    .replace(/log\(/g, 'Math.log10(')
-                    .replace(/ln\(/g, 'Math.log(')
-                    .replace(/sqrt\(/g, 'Math.sqrt(');
-                
-                // 添加缺失的右括号
-                let openParens = (expression.match(/\(/g) || []).length;
-                let closeParens = (expression.match(/\)/g) || []).length;
-                for (let i = 0; i < openParens - closeParens; i++) {
-                    expression += ')';
-                }
-                
-                let result = eval(expression);
-                if (isNaN(result) || !isFinite(result)) {
-                    throw new Error('Invalid calculation');
-                }
-                
-                // 添加到历史记录
-                addToHistory(calcDisplay.textContent, result);
-                
-                calcDisplay.textContent = result.toString();
-            } catch (error) {
-                calcDisplay.textContent = 'Error';
-                setTimeout(() => {
-                    calcDisplay.textContent = '0';
-                }, 1000);
-            }
-        }
-        
-        function addToHistory(expression, result) {
-            // 限制历史记录数量
-            if (calcHistory.length >= 5) {
-                calcHistory.shift();
-            }
-            
-            calcHistory.push({ expression, result });
-            updateHistoryDisplay();
-        }
-        
-        function updateHistoryDisplay() {
-            const historyList = document.getElementById('history-list');
-            historyList.innerHTML = '';
-            
-            if (calcHistory.length === 0) {
-                const emptyMsgEn = document.createElement('div');
-                emptyMsgEn.className = 'text-neutral-500 italic text-sm lang-en';
-                emptyMsgEn.textContent = 'No calculations yet';
-                historyList.appendChild(emptyMsgEn);
-                
-                const emptyMsgZh = document.createElement('div');
-                emptyMsgZh.className = 'text-neutral-500 italic text-sm lang-zh';
-                emptyMsgZh.textContent = '暂无计算记录';
-                historyList.appendChild(emptyMsgZh);
-            } else {
-                calcHistory.forEach(item => {
-                    const historyItem = document.createElement('div');
-                    historyItem.className = 'text-neutral-300';
-                    historyItem.innerHTML = `
-                        <div class="text-sm text-neutral-500">${item.expression}</div>
-                        <div class="text-lg font-mono">= ${item.result}</div>
-                    `;
-                    historyList.appendChild(historyItem);
-                });
-            }
-        }
-
         // 初始化页面
         document.addEventListener('DOMContentLoaded', () => {
             LoadObserverAnimation();
@@ -1044,52 +882,6 @@
             } else {
                 document.body.classList.replace('lang-zh', 'lang-en');
             }
-            
-            // 为计算器按钮添加样式
-            const style = document.createElement('style');
-            style.textContent = `
-                .calc-btn {
-                    background: rgba(255, 255, 255, 0.05);
-                    color: white;
-                    border: none;
-                    border-radius: 12px;
-                    padding: 16px;
-                    font-size: 1.25rem;
-                    font-weight: 600;
-                    cursor: pointer;a
-                    transition: all 0.2s ease;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                }
-                
-                .calc-btn:hover {
-                    background: rgba(255, 255, 255, 0.1);
-                    transform: translateY(-2px);
-                }
-                
-                .calc-btn-sm {
-                    background: rgba(255, 255, 255, 0.05);
-                    color: white;
-                    border: none;
-                    border-radius: 8px;
-                    padding: 10px;
-                    font-size: 0.9rem;
-                    cursor: pointer;
-                    transition: all 0.2s ease;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                }
-                
-                .calc-btn-sm:hover {
-                    background: rgba(255, 255, 255, 0.1);
-                    transform: translateY(-1px);
-                }
-            `;
-            document.head.appendChild(style);
-            
-            updateHistoryDisplay();
         });
 
         document.addEventListener("scroll", scrollNavBackground);
