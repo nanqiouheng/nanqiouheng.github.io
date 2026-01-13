@@ -5,25 +5,25 @@
     <!-- 使用指定网站的图标 -->
     <link rel="icon" href="https://joe666.dpdns.org/favicon.ico" >
     <style>
-        /* 加载动画样式 - 同款加载动画 */
+        /* 加载动画样式 - 调整为白色主题 */
         #loading-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(30, 30, 46, 0.95);
+            background: rgba(255, 255, 255, 0.95);
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 9999;
-            transition: opacity 0.5s ease;
+            transition: opacity 0.3s ease;
         }
         
         .spinner {
             width: 50px;
             height: 50px;
-            border: 3px solid rgba(255, 255, 255, 0.3);
+            border: 3px solid rgba(114, 137, 218, 0.2);
             border-radius: 50%;
             border-top-color: #7289da;
             animation: spin 1s ease-in-out infinite;
@@ -34,33 +34,32 @@
         }
         
         .loading-text {
-            color: #7289da;
+            color: #4a5568;
             margin-top: 20px;
             font-size: 18px;
             font-weight: bold;
             text-align: center;
         }
         
-        /* 语言切换动画样式 */
+        /* 语言切换动画样式 - 加速版本 */
         .language-switch-animation {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(30, 30, 46, 0.95);
+            background: rgba(255, 255, 255, 0.95);
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 9998;
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.5s ease;
+            transition: opacity 0.2s ease;
         }
         
         .language-animation-content {
             text-align: center;
-            color: white;
         }
         
         .language-animation-text {
@@ -73,7 +72,7 @@
             background-clip: text;
             opacity: 0;
             transform: scale(0.8);
-            animation: languageFadeInOut 1.5s ease-in-out;
+            animation: languageFadeInOut 0.8s ease-in-out; /* 缩短动画时间 */
         }
         
         @keyframes languageFadeInOut {
@@ -92,20 +91,20 @@
         }
         
         .lang-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid #4f545c;
-            color: #b9bbbe;
+            background: #f7fafc;
+            border: 1px solid #e2e8f0;
+            color: #4a5568;
             padding: 4px 10px;
             border-radius: 4px;
             cursor: pointer;
             font-size: 12px;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             position: relative;
             overflow: hidden;
         }
         
         .lang-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
+            background: #edf2f7;
         }
         
         .lang-btn.active {
@@ -123,7 +122,7 @@
             width: 100%;
             height: 100%;
             background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.5s ease;
+            transition: left 0.3s ease;
         }
         
         .lang-btn:hover::before {
@@ -138,25 +137,25 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
+            background-color: rgba(0, 0, 0, 0.3);
             z-index: 1000;
             justify-content: center;
             align-items: center;
         }
         
         .modal-content {
-            background: linear-gradient(135deg, #2c2f33 0%, #23272a 100%);
+            background: white;
             padding: 25px;
             border-radius: 10px;
             width: 90%;
             max-width: 500px;
-            border: 1px solid #4f545c;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-            animation: modalFadeIn 0.3s ease-out;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            animation: modalFadeIn 0.2s ease-out;
         }
         
         @keyframes modalFadeIn {
-            from { opacity: 0; transform: translateY(-20px); }
+            from { opacity: 0; transform: translateY(-10px); }
             to { opacity: 1; transform: translateY(0); }
         }
         
@@ -172,21 +171,21 @@
         .modal-title {
             font-size: 20px;
             font-weight: bold;
-            color: #7289da;
+            color: #2d3748;
             margin: 0;
         }
         
         .close-modal {
             background: none;
             border: none;
-            color: #99aab5;
+            color: #718096;
             font-size: 24px;
             cursor: pointer;
-            transition: color 0.3s;
+            transition: color 0.2s;
         }
         
         .close-modal:hover {
-            color: #7289da;
+            color: #4a5568;
         }
         
         .modal-body {
@@ -203,20 +202,20 @@
         .modal-input {
             width: 100%;
             padding: 12px;
-            background-color: rgba(255, 255, 255, 0.05);
-            border: 1px solid #4f545c;
+            background-color: #f7fafc;
+            border: 1px solid #e2e8f0;
             border-radius: 5px;
-            color: white;
+            color: #2d3748;
             font-size: 16px;
             margin-bottom: 15px;
             box-sizing: border-box;
-            transition: all 0.3s;
+            transition: all 0.2s;
         }
         
         .modal-input:focus {
             outline: none;
             border-color: #7289da;
-            box-shadow: 0 0 8px rgba(114, 137, 218, 0.5);
+            box-shadow: 0 0 0 3px rgba(114, 137, 218, 0.1);
         }
         
         .save-item {
@@ -224,25 +223,25 @@
             justify-content: space-between;
             align-items: center;
             padding: 12px;
-            background-color: rgba(255, 255, 255, 0.03);
-            border: 1px solid #4f545c;
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
             border-radius: 5px;
             margin-bottom: 10px;
-            transition: all 0.3s;
+            transition: all 0.2s;
         }
         
         .save-item:hover {
-            background-color: rgba(255, 255, 255, 0.08);
-            transform: translateX(5px);
+            background-color: #edf2f7;
+            transform: translateX(3px);
         }
         
         .save-item-name {
             font-weight: bold;
-            color: white;
+            color: #2d3748;
         }
         
         .save-item-meta {
-            color: #99aab5;
+            color: #718096;
             font-size: 12px;
         }
         
@@ -283,18 +282,18 @@
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            background-color: #2c2f33;
+            background-color: #f7fafc;
             background-size: cover;
             backdrop-filter: blur(3px);
             flex-direction: column;
-            /* 使用指定网站的同款背景 */
-            background-image: url(https://joe666.dpdns.org/background.jpg);
+            /* 使用白色主题背景 */
+            background-image: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
             background-attachment: fixed;
             position: relative;
-            color: #ffffff;
+            color: #2d3748;
         }
         
-        /* 添加网站水印效果 */
+        /* 移除深色水印效果 */
         body::before {
             content: '';
             position: fixed;
@@ -302,34 +301,32 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, rgba(44, 47, 51, 0.9) 0%, rgba(35, 39, 42, 0.95) 100%);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(247, 250, 252, 0.95) 100%);
             z-index: -1;
         }
         
         footer {
             position: absolute;
             bottom: 10px;
-            color: #99aab5;
+            color: #718096;
             font-size: 12px;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
         }
         
         .container {
             width: 800px;
             padding: 25px;
-            border: 1px solid #23272a;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-            background-color: rgba(35, 39, 42, 0.95);
-            color: #ffffff;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            background-color: white;
+            color: #2d3748;
             border-radius: 10px;
             margin-top: 20px;
             margin-bottom: 40px;
-            backdrop-filter: blur(10px);
-            animation: containerSlideIn 0.5s ease-out;
+            animation: containerSlideIn 0.3s ease-out;
         }
         
         @keyframes containerSlideIn {
-            from { opacity: 0; transform: translateY(30px); }
+            from { opacity: 0; transform: translateY(15px); }
             to { opacity: 1; transform: translateY(0); }
         }
         
@@ -369,14 +366,14 @@
             display: inline-flex;
             align-items: center;
             gap: 5px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(114, 137, 218, 0.3);
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(114, 137, 218, 0.2);
         }
         
         .save-manage-btn:hover {
             background: linear-gradient(135deg, #4752c4 0%, #3c45a5 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 8px rgba(114, 137, 218, 0.4);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(114, 137, 218, 0.3);
         }
         
         /* 返回主页按钮样式 */
@@ -392,14 +389,14 @@
             display: inline-flex;
             align-items: center;
             gap: 5px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(114, 137, 218, 0.3);
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(114, 137, 218, 0.2);
         }
         
         .home-btn:hover {
             background: linear-gradient(135deg, #677bc4 0%, #4752c4 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 8px rgba(114, 137, 218, 0.4);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(114, 137, 218, 0.3);
             text-decoration: none;
         }
         
@@ -420,7 +417,7 @@
             border: none;
             padding: 0;
             margin: 0;
-            color: #ffffff;
+            color: #2d3748;
         }
         
         h2 {
@@ -430,50 +427,49 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
         }
         
         h3 {
             margin-top: 15px;
-            border-bottom: 1px solid #4f545c;
+            border-bottom: 1px solid #e2e8f0;
             padding-bottom: 10px;
             font-size: 20px;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
         }
         
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
-            animation: tableFadeIn 0.7s ease-out;
+            animation: tableFadeIn 0.5s ease-out;
         }
         
         @keyframes tableFadeIn {
-            from { opacity: 0; transform: translateY(20px); }
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
         
         th, td {
             padding: 12px 15px;
             text-align: left;
-            border-bottom: 1px solid #4f545c;
+            border-bottom: 1px solid #e2e8f0;
             vertical-align: middle;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
         }
         
         th {
-            background-color: rgba(114, 137, 218, 0.1);
-            color: #7289da;
+            background-color: rgba(114, 137, 218, 0.05);
+            color: #4a5568;
             font-weight: 600;
         }
         
         tr {
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
         }
         
         tr:hover {
-            background-color: rgba(114, 137, 218, 0.05);
-            transform: translateX(5px);
+            background-color: rgba(114, 137, 218, 0.03);
         }
         
         .overall-score {
@@ -481,29 +477,27 @@
             font-weight: bold;
             display: inline-block;
             color: #43b581;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
         }
         
         .overall-score:hover {
-            transform: scale(1.05);
+            transform: scale(1.03);
         }
         
         [contenteditable="true"] {
-            outline: 1px solid #7289da;
+            outline: 1px solid #cbd5e0;
             cursor: text;
             padding: 4px 8px;
             border-radius: 4px;
-            background-color: rgba(255, 255, 255, 0.05);
-            color: #ffffff;
-            transition: all 0.3s;
+            background-color: #f7fafc;
+            color: #2d3748;
+            transition: all 0.2s;
         }
         
         [contenteditable="true"]:focus {
             outline: 2px solid #7289da;
-            background-color: rgba(255, 255, 255, 0.1);
-            box-shadow: 0 0 8px rgba(114, 137, 218, 0.5);
-            transform: scale(1.02);
+            background-color: white;
+            box-shadow: 0 0 0 3px rgba(114, 137, 218, 0.1);
         }
         
         .action-btn {
@@ -514,15 +508,15 @@
             color: white;
             font-size: 13px;
             margin: 0 3px;
-            transition: all 0.2s ease;
+            transition: all 0.15s ease;
             font-weight: 500;
             position: relative;
             overflow: hidden;
         }
         
         .action-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transform: translateY(-1px);
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
         }
         
         .action-btn::after {
@@ -540,7 +534,7 @@
         }
         
         .action-btn:focus:not(:active)::after {
-            animation: ripple 1s ease-out;
+            animation: ripple 0.8s ease-out;
         }
         
         @keyframes ripple {
@@ -591,16 +585,16 @@
             width: 100%;
             font-size: 16px;
             font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(114, 137, 218, 0.3);
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(114, 137, 218, 0.2);
             position: relative;
             overflow: hidden;
         }
         
         #add-row-btn:hover {
             background: linear-gradient(135deg, #677bc4 0%, #4752c4 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 8px rgba(114, 137, 218, 0.4);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(114, 137, 218, 0.3);
         }
         
         #add-row-btn::before {
@@ -611,7 +605,7 @@
             width: 100%;
             height: 100%;
             background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.5s ease;
+            transition: left 0.3s ease;
         }
         
         #add-row-btn:hover::before {
@@ -640,18 +634,18 @@
             color: #faa61a;
             font-weight: bold;
             margin-left: 5px;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
         }
         
         /* 指引文本样式 */
         p {
-            color: #b9bbbe;
+            color: #4a5568;
             line-height: 1.5;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
         }
         
         strong {
-            color: #7289da;
+            color: #4a5568;
         }
         
         /* 时间显示样式 */
@@ -661,19 +655,19 @@
             background-color: rgba(67, 181, 129, 0.1);
             padding: 2px 8px;
             border-radius: 4px;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
         }
         
         /* 子项行的特殊样式 */
         tr[data-parent-id] {
-            background-color: rgba(79, 84, 92, 0.1);
+            background-color: rgba(247, 250, 252, 0.5);
         }
         
         /* 空状态提示 */
         .empty-state {
             text-align: center;
             padding: 40px 20px;
-            color: #99aab5;
+            color: #a0aec0;
         }
         
         /* 响应式调整 */
@@ -831,14 +825,14 @@
     </div>
     <footer data-i18n="footerText">Powered by Down`sicient | 版权所有 © 2026 Down`sicient Studio，Tach的附属工作室</footer>
     <script>
-        // 加载动画控制
+        // 加载动画控制 - 缩短时间
         window.addEventListener('load', function() {
             setTimeout(function() {
                 document.getElementById('loading-overlay').style.opacity = '0';
                 setTimeout(function() {
                     document.getElementById('loading-overlay').style.display = 'none';
-                }, 500);
-            }, 800); // 模拟加载时间
+                }, 300);
+            }, 500); // 缩短加载时间
         });
         
         // --- 时间更新函数 ---
@@ -1010,7 +1004,7 @@
             applyLanguage();
         }
         
-        // 显示语言切换动画
+        // 显示语言切换动画 - 加速版本
         function showLanguageAnimation(targetLang) {
             const animationElement = document.getElementById('languageAnimation');
             const animationText = document.getElementById('animationText');
@@ -1026,28 +1020,28 @@
             animationElement.style.opacity = '1';
             animationElement.style.pointerEvents = 'auto';
             
-            // 1.5秒后隐藏动画
+            // 0.8秒后隐藏动画（加快速度）
             setTimeout(() => {
                 animationElement.style.opacity = '0';
                 setTimeout(() => {
                     animationElement.style.pointerEvents = 'none';
-                }, 500);
-            }, 1500);
+                }, 200);
+            }, 800); // 缩短动画时间
         }
         
-        // 切换语言
+        // 切换语言 - 加速版本
         function switchLanguage(lang) {
             if (lang !== currentLang && (lang === 'zh' || lang === 'en')) {
                 // 显示语言切换动画
                 showLanguageAnimation(lang);
                 
-                // 延迟切换语言，让动画先显示
+                // 延迟切换语言，让动画先显示 - 缩短延迟
                 setTimeout(() => {
                     currentLang = lang;
                     localStorage.setItem(LANGUAGE_STORAGE_KEY, currentLang);
                     updateLanguageButtons();
                     applyLanguage();
-                }, 800);
+                }, 400); // 缩短延迟
             }
         }
         
@@ -1261,10 +1255,10 @@
             });
             const overallScoreElement = document.querySelector('.overall-score');
             overallScoreElement.textContent = totalScore.toFixed(1);
-            overallScoreElement.style.transform = 'scale(1.1)';
+            overallScoreElement.style.transform = 'scale(1.05)';
             setTimeout(() => {
                 overallScoreElement.style.transform = 'scale(1)';
-            }, 200);
+            }, 150);
         }
 
         function solveForItem(button) {
