@@ -1,1258 +1,1088 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" class="scroll-smooth">
+
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Down's Tools </title>
-    <link rel="icon" href="DownsicientLoge.ico" >
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Down's Tools | 唐氏工具集</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <link rel="preconnect" href="https://fonts.loli.net">
+    <link rel="preconnect" href="https://gstatic.loli.net" crossorigin="">
+    <link
+        href="https://fonts.loli.net/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&amp;family=Geist:wght@100..900&amp;display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.loli.net/css2?family=Noto+Serif+SC:wght@200..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" crossorigin="anonymous"
+        href="https://cdn.jsdelivr.net/npm/misans@4.1.0/lib/Normal/MiSans-Regular.min.css" />
+    <link rel="stylesheet" crossorigin="anonymous"
+        href="https://cdn.jsdelivr.net/npm/misans@4.1.0/lib/Normal/MiSans-Semibold.min.css" />
+    <link rel="icon" href="./icon.png" />
     <style>
-        /* CSS变量 - 主题色 */
         :root {
-            --primary: #0a0e17;
-            --secondary: #121826;
-            --accent: #7c3aed;
-            --accent-glow: rgba(124, 58, 237, 0.5);
-            --accent-light: #a78bfa;
-            --text-primary: #f8fafc;
-            --text-secondary: #cbd5e1;
-            --text-muted: #94a3b8;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --card-bg: rgba(30, 41, 59, 0.5);
-            --card-border: rgba(124, 58, 237, 0.2);
-            --glass-bg: rgba(15, 23, 42, 0.7);
-            --glass-border: rgba(124, 58, 237, 0.1);
-            --shadow-color: rgba(0, 0, 0, 0.3);
-            --gradient-1: linear-gradient(135deg, #7c3aed 0%, #3b82f6 100%);
-            --gradient-2: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
-            --gradient-3: linear-gradient(135deg, #06b6d4 0%, #10b981 100%);
-            --spacing-xs: 0.5rem;
-            --spacing-sm: 1rem;
-            --spacing-md: 1.5rem;
-            --spacing-lg: 2.5rem;
-            --spacing-xl: 4rem;
-            --spacing-xxl: 6rem;
-            --border-radius-sm: 8px;
-            --border-radius-md: 12px;
-            --border-radius-lg: 20px;
-            --border-radius-xl: 30px;
-            --font-size-xs: 0.75rem;
-            --font-size-sm: 0.875rem;
-            --font-size-md: 1rem;
-            --font-size-lg: 1.25rem;
-            --font-size-xl: 1.5rem;
-            --font-size-xxl: 2rem;
-            --font-size-xxxl: 3rem;
-            --transition-fast: 0.2s ease;
-            --transition-normal: 0.3s ease;
-            --transition-slow: 0.5s ease;
-        }
-
-        /* 基础样式重置 */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
+            --accent: #8b5cf6;
+            /* 紫色 */
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-            background-color: var(--primary);
-            color: var(--text-primary);
-            line-height: 1.6;
+            font-family: 'MiSans', sans-serif;
+            background-color: #050505;
+            color: #e5e5e5;
             overflow-x: hidden;
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(124, 58, 237, 0.05) 0%, transparent 20%),
-                radial-gradient(circle at 90% 80%, rgba(59, 130, 246, 0.05) 0%, transparent 20%);
-            min-height: 100vh;
         }
 
-        /* 语言切换器 */
-        .language-switcher {
-            position: fixed;
-            top: var(--spacing-md);
-            right: var(--spacing-md);
-            z-index: 1000;
-            display: flex;
-            gap: var(--spacing-xs);
-            background: var(--glass-bg);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--border-radius-xl);
-            padding: var(--spacing-xs);
-            box-shadow: 0 4px 20px var(--shadow-color);
+        h1,
+        h2,
+        h3,
+        .serif {
+            font-family: 'Newsreader', serif;
         }
 
-        .lang-btn {
-            background: transparent;
-            color: var(--text-secondary);
-            border: none;
-            padding: var(--spacing-xs) var(--spacing-md);
-            border-radius: var(--border-radius-lg);
-            cursor: pointer;
-            font-weight: 600;
-            transition: all var(--transition-fast);
-            font-size: var(--font-size-sm);
+        nav.with-back {
+            --blurness: 15px;
+            z-index: 999 !important;
+            background: rgba(22, 22, 22, 0.5);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(var(--blurness));
+            -webkit-backdrop-filter: blur(var(--blurness));
         }
 
-        .lang-btn.active {
-            background: var(--gradient-1);
-            color: white;
-            box-shadow: 0 0 15px var(--accent-glow);
-        }
-
-        .lang-btn:hover:not(.active) {
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text-primary);
-        }
-
-        /* 导航栏 */
-        .navbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 999;
-            padding: var(--spacing-md) var(--spacing-lg);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--glass-bg);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--glass-border);
-            transition: all var(--transition-normal);
-        }
-
-        .navbar.scrolled {
-            padding: var(--spacing-sm) var(--spacing-lg);
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-sm);
-            font-size: var(--font-size-xl);
-            font-weight: 700;
-            color: var(--text-primary);
-            text-decoration: none;
-        }
-
-        .logo-icon {
-            color: var(--accent);
-            font-size: var(--font-size-xxl);
-        }
-
-        .logo-text {
-            background: var(--gradient-1);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: var(--spacing-lg);
-        }
-
-        .nav-link {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-weight: 500;
-            transition: all var(--transition-fast);
-            position: relative;
-            padding: var(--spacing-xs) 0;
-        }
-
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--gradient-1);
-            transition: width var(--transition-normal);
-        }
-
-        .nav-link:hover {
-            color: var(--text-primary);
-        }
-
-        .nav-link:hover::after {
-            width: 100%;
-        }
-
-        .nav-link.active {
-            color: var(--accent-light);
-        }
-
-        .nav-link.active::after {
-            width: 100%;
-        }
-
-        /* 主容器 */
-        .container {
-            width: 100%;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 var(--spacing-lg);
-        }
-
-        /* 英雄区域 */
-        .hero {
-            padding-top: var(--spacing-xxl);
-            padding-bottom: var(--spacing-xl);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero-bg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            overflow: hidden;
-        }
-
-        .hero-bg::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: 
-                radial-gradient(circle at 30% 30%, rgba(124, 58, 237, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 70% 70%, rgba(59, 130, 246, 0.1) 0%, transparent 50%);
-            animation: rotate 60s linear infinite;
-        }
-
-        @keyframes rotate {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .hero-content {
-            max-width: 800px;
-            margin-bottom: var(--spacing-xl);
-        }
-
-        .hero-title {
-            font-size: clamp(2.5rem, 5vw, 4rem);
-            font-weight: 800;
-            line-height: 1.1;
-            margin-bottom: var(--spacing-lg);
-            background: linear-gradient(to right, var(--text-primary), var(--accent-light));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .hero-subtitle {
-            font-size: clamp(1.125rem, 2vw, 1.5rem);
-            color: var(--text-secondary);
-            margin-bottom: var(--spacing-lg);
-            max-width: 600px;
-        }
-
-        .hero-badges {
-            display: flex;
-            flex-wrap: wrap;
-            gap: var(--spacing-sm);
-            margin-bottom: var(--spacing-xl);
-        }
-
-        .badge {
-            background: var(--glass-bg);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--border-radius-xl);
-            padding: var(--spacing-sm) var(--spacing-md);
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-sm);
-            font-weight: 500;
-            transition: all var(--transition-fast);
-        }
-
-        .badge:hover {
-            border-color: var(--accent);
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px var(--accent-glow);
-        }
-
-        .badge-icon {
-            color: var(--accent);
-            font-size: var(--font-size-lg);
-        }
-
-        .cta-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            gap: var(--spacing-md);
-        }
-
-        .btn {
-            padding: var(--spacing-md) var(--spacing-xl);
-            border-radius: var(--border-radius-lg);
-            font-weight: 600;
-            font-size: var(--font-size-md);
-            cursor: pointer;
-            transition: all var(--transition-normal);
-            border: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: var(--spacing-sm);
-            text-decoration: none;
-        }
-
-        .btn-primary {
-            background: var(--gradient-1);
-            color: white;
-            box-shadow: 0 4px 20px var(--accent-glow);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 30px var(--accent-glow);
-        }
-
-        .btn-secondary {
-            background: var(--glass-bg);
-            backdrop-filter: blur(10px);
-            color: var(--text-primary);
-            border: 1px solid var(--glass-border);
-        }
-
-        .btn-secondary:hover {
-            border-color: var(--accent);
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px var(--accent-glow);
-        }
-
-        /* 工具卡片区域 */
-        .tools-section {
-            padding: var(--spacing-xl) 0;
-        }
-
-        .section-title {
-            font-size: clamp(2rem, 4vw, 3rem);
-            font-weight: 700;
-            margin-bottom: var(--spacing-lg);
-            text-align: center;
-            background: linear-gradient(to right, var(--accent-light), var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .section-subtitle {
-            font-size: clamp(1rem, 2vw, 1.25rem);
-            color: var(--text-secondary);
-            text-align: center;
-            max-width: 700px;
-            margin: 0 auto var(--spacing-xl);
-        }
-
-        .tools-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: var(--spacing-lg);
-            margin-bottom: var(--spacing-xl);
-        }
-
-        .tool-card {
-            background: var(--card-bg);
-            border-radius: var(--border-radius-lg);
-            overflow: hidden;
-            border: 1px solid var(--card-border);
-            transition: all var(--transition-normal);
-            position: relative;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .tool-card:hover {
-            transform: translateY(-10px);
-            border-color: var(--accent);
-            box-shadow: 0 15px 40px var(--accent-glow);
-        }
-
-        .tool-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: var(--gradient-1);
-        }
-
-        .tool-icon {
-            height: 200px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(15, 23, 42, 0.5);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .tool-icon-bg {
-            position: absolute;
-            width: 150%;
-            height: 150%;
-            background: var(--gradient-1);
-            opacity: 0.1;
-            filter: blur(40px);
-            animation: pulse 4s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 0.1; }
-            50% { opacity: 0.2; }
-        }
-
-        .tool-icon img {
-            width: 100px;
-            height: 100px;
-            z-index: 1;
-            filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.3));
-        }
-
-        .tool-content {
-            padding: var(--spacing-lg);
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .tool-title {
-            font-size: var(--font-size-xl);
-            font-weight: 700;
-            margin-bottom: var(--spacing-sm);
-            color: var(--text-primary);
-        }
-
-        .tool-desc {
-            color: var(--text-secondary);
-            margin-bottom: var(--spacing-md);
-            flex-grow: 1;
-        }
-
-        .tool-features {
-            margin-bottom: var(--spacing-lg);
-        }
-
-        .feature {
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-sm);
-            margin-bottom: var(--spacing-xs);
-            color: var(--text-muted);
-            font-size: var(--font-size-sm);
-        }
-
-        .feature i {
-            color: var(--accent);
-        }
-
-        .tool-btn {
-            background: var(--gradient-1);
-            color: white;
-            text-align: center;
-            padding: var(--spacing-md);
-            border-radius: var(--border-radius-md);
-            text-decoration: none;
-            font-weight: 600;
-            display: block;
-            transition: all var(--transition-normal);
-        }
-
-        .tool-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px var(--accent-glow);
-        }
-
-        /* 特性区域 */
-        .features-section {
-            padding: var(--spacing-xl) 0;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: var(--spacing-lg);
-        }
-
-        .feature-card {
-            background: var(--card-bg);
-            border-radius: var(--border-radius-lg);
-            padding: var(--spacing-lg);
-            border: 1px solid var(--card-border);
-            transition: all var(--transition-normal);
-            text-align: center;
-        }
-
-        .feature-card:hover {
-            border-color: var(--accent);
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px var(--accent-glow);
-        }
-
-        .feature-icon {
-            width: 70px;
-            height: 70px;
-            margin: 0 auto var(--spacing-md);
-            background: var(--gradient-1);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: var(--font-size-xxl);
-            color: white;
-        }
-
-        .feature-title {
-            font-size: var(--font-size-lg);
-            font-weight: 700;
-            margin-bottom: var(--spacing-sm);
-            color: var(--text-primary);
-        }
-
-        .feature-desc {
-            color: var(--text-secondary);
-            font-size: var(--font-size-md);
-        }
-
-        /* 页脚 */
-        .footer {
-            background: var(--secondary);
-            padding: var(--spacing-xl) 0 var(--spacing-lg);
-            margin-top: var(--spacing-xl);
-            border-top: 1px solid var(--card-border);
-        }
-
-        .footer-content {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            gap: var(--spacing-xl);
-            margin-bottom: var(--spacing-lg);
-        }
-
-        .footer-logo {
-            font-size: var(--font-size-xl);
-            font-weight: 700;
-            margin-bottom: var(--spacing-sm);
-            background: var(--gradient-1);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .footer-desc {
-            color: var(--text-secondary);
-            max-width: 350px;
-        }
-
-        .footer-links {
-            display: flex;
-            flex-wrap: wrap;
-            gap: var(--spacing-xl);
-        }
-
-        .footer-column {
-            min-width: 150px;
-        }
-
-        .footer-column-title {
-            font-size: var(--font-size-lg);
-            font-weight: 600;
-            margin-bottom: var(--spacing-md);
-            color: var(--text-primary);
-        }
-
-        .footer-link {
-            display: block;
-            color: var(--text-secondary);
-            text-decoration: none;
-            margin-bottom: var(--spacing-sm);
-            transition: all var(--transition-fast);
-        }
-
-        .footer-link:hover {
-            color: var(--accent-light);
-            transform: translateX(5px);
-        }
-
-        .footer-bottom {
-            text-align: center;
-            padding-top: var(--spacing-lg);
-            border-top: 1px solid var(--card-border);
-            color: var(--text-muted);
-            font-size: var(--font-size-sm);
-        }
-
-        /* 响应式设计 */
-        @media (max-width: 1024px) {
-            .tools-grid {
-                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            }
-            
-            .features-grid {
-                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            }
-        }
-
-        @media (max-width: 768px) {
-            .navbar {
-                padding: var(--spacing-sm) var(--spacing-md);
-            }
-            
-            .nav-links {
-                display: none;
-            }
-            
-            .hero {
-                padding-top: calc(var(--spacing-xxl) + 60px);
-            }
-            
-            .hero-title {
-                font-size: clamp(2rem, 5vw, 2.8rem);
-            }
-            
-            .cta-buttons {
-                flex-direction: column;
-            }
-            
-            .btn {
-                width: 100%;
-                justify-content: center;
-            }
-            
-            .tools-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .footer-content {
-                flex-direction: column;
-            }
-            
-            .language-switcher {
-                top: var(--spacing-sm);
-                right: var(--spacing-sm);
-            }
-        }
-
-        @media (max-width: 480px) {
-            .container {
-                padding: 0 var(--spacing-md);
-            }
-            
-            .hero-badges {
-                flex-direction: column;
-            }
-            
-            .badge {
-                width: 100%;
-            }
-            
-            .features-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .footer-links {
-                flex-direction: column;
-                gap: var(--spacing-lg);
-            }
-        }
-
-        /* 动画类 */
-        .fade-in {
+        /* Smooth Scroll & Animations */
+        .reveal-on-scroll {
             opacity: 0;
             transform: translateY(30px);
-            transition: opacity 0.8s ease, transform 0.8s ease;
+            filter: blur(10px);
+            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        .fade-in.visible {
+        .reveal-on-scroll.is-visible {
             opacity: 1;
             transform: translateY(0);
+            filter: blur(0);
         }
 
-        .delay-1 {
-            transition-delay: 0.2s;
+        /* Hero Text Reveal Animation */
+        .char-reveal {
+            display: inline-block;
+            clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
+            transform: translateY(100%);
+            animation: text-slide-up 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
-        .delay-2 {
-            transition-delay: 0.4s;
+        @keyframes text-slide-up {
+            to {
+                clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+                transform: translateY(0);
+            }
         }
 
-        .delay-3 {
-            transition-delay: 0.6s;
+        /* Marquee Animation */
+        .marquee-container {
+            mask-image: linear-gradient(to right, transparent, black 20%, black 80%, transparent);
+            -webkit-mask-image: linear-gradient(to right, transparent, black 20%, black 80%, transparent);
         }
 
-        /* 滚动进度条 */
-        .scroll-progress {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 0%;
-            height: 3px;
-            background: var(--gradient-1);
-            z-index: 1001;
-            transition: width 0.1s;
+        .marquee-content {
+            animation: scroll 40s linear infinite;
         }
 
-        /* 加载动画 */
-        .loader {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            transition: opacity 0.5s, visibility 0.5s;
+        @keyframes scroll {
+            from {
+                transform: translateX(0);
+            }
+
+            to {
+                transform: translateX(-50%);
+            }
         }
 
-        .loader.hidden {
-            opacity: 0;
-            visibility: hidden;
+        /* Custom Utilities */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
 
-        .loader-spinner {
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            border: 5px solid transparent;
-            border-top-color: var(--accent);
-            border-bottom-color: var(--accent);
-            animation: spin 1s linear infinite;
+        .purple-glow {
+            box-shadow: 0 0 60px -20px rgba(147, 51, 234, 0.15);
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .bg-grid-pattern {
+            background-image: linear-gradient(to right, #ffffff05 1px, transparent 1px),
+                linear-gradient(to bottom, #ffffff05 1px, transparent 1px);
+            background-size: 40px 40px;
+            mask-image: radial-gradient(circle at center, black, transparent 80%);
+        }
+
+        /* Stagger delays */
+        .delay-100 {
+            transition-delay: 100ms;
+        }
+
+        .delay-200 {
+            transition-delay: 200ms;
+        }
+
+        .delay-300 {
+            transition-delay: 300ms;
+        }
+
+        /* Checkbox Custom */
+        .custom-checkbox:checked {
+            background-color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        body.lang-en .lang-zh {
+            display: none !important;
+        }
+
+        @font-face {
+            font-family: KangxiDict;
+            src: url("https://fonts.gstatic.com/ea/kangxidict/v5/KangXiDict.ttf");
+        }
+
+        .lang-zh .title-zh {
+            font-family: KangxiDict;
+        }
+
+        .lang-zh .serif-zh {
+            font-family: "Noto Serif SC", serif;
+            font-weight: 500;
+        }
+
+        .lang-zh {
+            font-family: MiSans;
+        }
+
+        body.lang-zh .lang-en {
+            display: none !important;
+        }
+
+        @keyframes background-radiant {
+            0% {
+                background-size: 100%;
+            }
+
+            50% {
+                background-size: 500%;
+            }
+
+            100% {
+                background-size: 100%;
+            }
+        }
+
+        .background-circle {
+            background: radial-gradient(circle at center, #8b5cf6 0, rgb(79, 70, 229) 100%);
+            animation: background-radiant 60s linear infinite;
+        }
+
+        .transition {
+            transition: .5s ease-in-out;
         }
     </style>
 </head>
-<body>
-    <!-- 加载动画 -->
-    <div class="loader" id="loader">
-        <div class="loader-spinner"></div>
-    </div>
 
-    <!-- 滚动进度条 -->
-    <div class="scroll-progress" id="scrollProgress"></div>
+<body class="antialiased selection:bg-purple-500/30 selection:text-purple-200 lang-en">
 
-    <!-- 语言切换器 -->
-    <div class="language-switcher">
-        <button class="lang-btn active" id="langZh">中文</button>
-        <button class="lang-btn" id="langEn">English</button>
-    </div>
-
-    <!-- 导航栏 -->
-    <nav class="navbar" id="navbar">
-        <div class="container">
-            <a href="#" class="logo">
-                <i class="fas fa-calculator logo-icon"></i>
-                <span class="logo-text">Down's Tools</span>
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 px-6 py-6 flex justify-between items-center transition">
+        <a href="#" class="text-xl font-semibold tracking-tight text-white flex items-center gap-2">
+            <span class="w-6 h-6"><img src="https://img.icons8.com/color/48/calculator--v1.png" alt="Calculator"></span>
+            Down's Tools
+        </a>
+        <div class="hidden md:flex gap-8 text-sm font-medium text-neutral-300">
+            <a href="./index.html" class="hover:text-white transition-colors">
+                <span class="lang-en">Home</span>
+                <span class="lang-zh">主页</span>
             </a>
-            
-            <div class="nav-links">
-                <a href="#home" class="nav-link active" data-lang="nav-home">主页</a>
-                <a href="#tools" class="nav-link" data-lang="nav-tools">工具</a>
-                <a href="#features" class="nav-link" data-lang="nav-features">特性</a>
-                <a href="#about" class="nav-link" data-lang="nav-about">关于</a>
-            </div>
+            <a href="#tools" class="hover:text-white transition-colors">
+                <span class="lang-en">Tools</span>
+                <span class="lang-zh">工具集</span>
+            </a>
+            <a href="#features" class="hover:text-white transition-colors">
+                <span class="lang-en">Features</span>
+                <span class="lang-zh">特性</span>
+            </a>
+            <a href="#demo" class="hover:text-white transition-colors">
+                <span class="lang-en">Demo</span>
+                <span class="lang-zh">演示</span>
+            </a>
+        </div>
+        <div class="flex items-center gap-4">
+            <button onclick="toggleLang()"
+                class="text-xs font-medium text-neutral-400 hover:text-white transition-colors flex items-center gap-1.5 uppercase tracking-wider">
+                <iconify-icon icon="lucide:globe" width="14"></iconify-icon>
+                <span class="lang-en">EN</span>
+                <span class="lang-zh">中</span>
+            </button>
+            <a href="#calculator"
+                class="text-sm font-medium text-white border border-white/20 px-4 py-2 rounded-full hover:bg-white hover:text-black transition-all duration-300">
+                <span class="lang-en">Calculator</span>
+                <span class="lang-zh">计算器</span>
+            </a>
         </div>
     </nav>
 
-    <!-- 主内容 -->
-    <main>
-        <!-- 英雄区域 -->
-        <section class="hero" id="home">
-            <div class="hero-bg"></div>
-            <div class="container">
-                <div class="hero-content fade-in">
-                    <h1 class="hero-title" data-lang="hero-title">专业计算工具套件</h1>
-                    <p class="hero-subtitle" data-lang="hero-subtitle">Down's Tools 提供强大、精准的计算工具，专为游戏玩家、数据分析师和需要精确计算的用户设计。我们的工具结合了先进算法与直观界面，让复杂计算变得简单。</p>
-                    
-                    <div class="hero-badges">
-                        <div class="badge fade-in delay-1">
-                            <i class="fas fa-bolt badge-icon"></i>
-                            <span data-lang="badge-fast">快速计算</span>
+    <!-- Hero Section -->
+    <section class="relative min-h-screen flex flex-col items-center justify-center overflow-hidden px-4">
+        <!-- Background Elements -->
+        <div class="absolute inset-0 z-0">
+            <div
+                class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-purple-900/10 background-circle rounded-full blur-[120px] opacity-40">
+            </div>
+            <div class="absolute inset-0 bg-grid-pattern opacity-30"></div>
+        </div>
+
+        <div class="relative z-10 max-w-4xl w-full text-center space-y-8">
+            <div
+                class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-white/5 text-xs font-medium text-purple-400 mb-4 reveal-on-scroll">
+                <span class="w-1.5 h-1.5 rounded-full bg-purple-500 animate-pulse"></span>
+                <span class="lang-en">Version 2.0 Released</span>
+                <span class="lang-zh">版本 2.0 已发布</span>
+            </div>
+
+            <h1 class="text-6xl lang-en md:text-8xl lg:text-9xl font-medium tracking-tight leading-[0.9] text-white">
+                <span class="block overflow-hidden">
+                    <span class="char-reveal lang-en" style="animation-delay: 0.1s;">Powerful</span>
+                    <span class="char-reveal lang-en italic text-purple-500/90" style="animation-delay: 0.2s;">Tools</span>
+                    <span class="char-reveal lang-en" style="animation-delay: 0.3s;">for</span>
+                </span>
+                <span class="block overflow-hidden">
+                    <span class="char-reveal lang-en" style="animation-delay: 0.4s;">Smart</span>
+                    <span class="char-reveal lang-en text-blue-500/90" style="animation-delay: 0.5s;">Calculation</span>
+                </span>
+            </h1>
+
+            <h1 class="text-6xl lang-zh md:text-8xl lg:text-9xl font-medium tracking-tight leading-[0.9] text-white">
+                <span class="block overflow-hidden">
+                    <span class="char-reveal title-zh" style="animation-delay: 0.1s;">智能计算</span>
+                    <span class="char-reveal title-zh text-purple-500/90" style="animation-delay: 0.2s;">工具集</span>
+                </span>
+                <span class="block overflow-hidden">
+                    <span class="char-reveal title-zh" style="animation-delay: 0.4s;">为您</span>
+                    <span class="char-reveal title-zh text-blue-500/90" style="animation-delay: 0.5s;">赋能</span>
+                </span>
+            </h1>
+
+            <p
+                class="max-w-xl mx-auto text-lg md:text-xl text-neutral-400 font-light leading-relaxed reveal-on-scroll delay-300 lang-en">
+                Advanced calculation tools for gamers, analysts, and anyone who needs precise computations. Save time and get accurate results instantly.
+            </p>
+
+            <p
+                class="max-w-xl mx-auto text-lg md:text-xl text-neutral-400 font-light leading-relaxed reveal-on-scroll delay-300 lang-zh">
+                为游戏玩家、数据分析师及需要精确计算的用户提供高级计算工具。节省时间，立即获得准确结果。
+            </p>
+
+            <div
+                class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6 reveal-on-scroll delay-300 lang-en">
+                <button onclick="window.location.href='#calculator'"
+                    class="group relative px-8 py-4 bg-purple-500 hover:bg-purple-400 text-black font-semibold rounded-full transition-all duration-300 hover:scale-105">
+                    Try Calculator Now
+                    <iconify-icon icon="lucide:arrow-right"
+                        class="inline-block ml-2 -mr-1 transition-transform group-hover:translate-x-1"
+                        width="18"></iconify-icon>
+                </button>
+                <button onclick="window.location.href='#tools'"
+                    class="px-8 py-4 text-white hover:text-purple-200 font-medium transition-colors flex items-center gap-2">
+                    <iconify-icon icon="lucide:package" width="20"></iconify-icon>
+                    View All Tools
+                </button>
+            </div>
+
+            <div
+                class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6 reveal-on-scroll delay-300 lang-zh">
+                <button onclick="window.location.href='#calculator'"
+                    class="group relative px-8 py-4 bg-purple-500 hover:bg-purple-400 text-black font-semibold rounded-full transition-all duration-300 hover:scale-105">
+                    立即试用计算器
+                    <iconify-icon icon="lucide:arrow-right"
+                        class="inline-block ml-2 -mr-1 transition-transform group-hover:translate-x-1"
+                        width="18"></iconify-icon>
+                </button>
+                <button onclick="window.location.href='#tools'"
+                    class="px-8 py-4 text-white hover:text-purple-200 font-medium transition-colors flex items-center gap-2">
+                    <iconify-icon icon="lucide:package" width="20"></iconify-icon>
+                    查看所有工具
+                </button>
+            </div>
+        </div>
+
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 text-neutral-500 animate-bounce">
+            <iconify-icon icon="lucide:arrow-down" width="24"></iconify-icon>
+        </div>
+    </section>
+
+    <!-- Marquee Section -->
+    <section class="py-12 border-y border-white/5 bg-black/50 relative z-20 overflow-hidden">
+        <div class="marquee-container w-full">
+            <div
+                class="marquee-content flex gap-12 whitespace-nowrap text-lg text-neutral-500 font-medium tracking-wide">
+                <span class="lang-en">Real-time Calculation</span> ✦
+                <span class="lang-zh">实时计算</span>
+                <span class="lang-en">Precise Results</span> ✦
+                <span class="lang-zh">精确结果</span>
+                <span class="lang-en">No Installation Required</span> ✦
+                <span class="lang-zh">无需安装</span>
+                <span class="lang-en">Cross-Platform</span> ✦
+                <span class="lang-zh">跨平台</span>
+                <span class="lang-en">User-Friendly Interface</span> ✦
+                <span class="lang-zh">用户友好界面</span>
+                <span class="lang-en">Free to Use</span> ✦
+                <span class="lang-zh">完全免费</span>
+                <span class="lang-en">Real-time Calculation</span> ✦
+                <span class="lang-zh">实时计算</span>
+                <span class="lang-en">Precise Results</span> ✦
+                <span class="lang-zh">精确结果</span>
+                <span class="lang-en">No Installation Required</span> ✦
+                <span class="lang-zh">无需安装</span>
+                <span class="lang-en">Cross-Platform</span> ✦
+                <span class="lang-zh">跨平台</span>
+                <span class="lang-en">User-Friendly Interface</span> ✦
+                <span class="lang-zh">用户友好界面</span>
+                <span class="lang-en">Free to Use</span> ✦
+                <span class="lang-zh">完全免费</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Problem -> Solution Section -->
+    <section class="py-32 px-4 relative z-10">
+        <div class="max-w-4xl mx-auto text-center space-y-24">
+            <div class="space-y-6">
+                <p class="text-3xl md:text-5xl serif text-neutral-600 reveal-on-scroll">
+                    <span class="lang-en">Manual calculations take too much time.</span>
+                    <span class="lang-zh serif-zh">手动计算耗时太久。</span>
+                </p>
+                <p class="text-3xl md:text-5xl serif text-neutral-600 reveal-on-scroll delay-100">
+                    <span class="lang-en">Complex formulas are hard to remember.</span>
+                    <span class="lang-zh serif-zh">复杂公式难以记忆。</span>
+                </p>
+                <p class="text-3xl md:text-5xl serif text-neutral-600 reveal-on-scroll delay-200">
+                    <span class="lang-en">Errors in calculation can be costly.</span>
+                    <span class="lang-zh serif-zh">计算错误代价高昂。</span>
+                </p>
+            </div>
+
+            <div class="reveal-on-scroll delay-300">
+                <div class="h-16 w-px bg-gradient-to-b from-transparent via-purple-500 to-transparent mx-auto mb-12">
+                </div>
+                <h2 class="text-4xl md:text-6xl text-white font-medium tracking-tight">
+                    <span class="lang-en">Down's Tools solves all of these with</span>
+                    <span class="lang-zh title-zh">唐氏工具集解决这些只需要</span> <br>
+                    <span class="serif italic text-purple-500">
+                        <span class="lang-en">smart calculation tools.</span>
+                        <span class="lang-zh title-zh">智能计算工具。</span>
+                    </span>
+                </h2>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Grid -->
+    <section id="features" class="py-32 px-4 relative z-10">
+        <div class="max-w-6xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                <!-- Card 1 -->
+                <div
+                    class="glass-panel p-8 rounded-3xl reveal-on-scroll hover:bg-white/5 transition-colors duration-500 group lang-en">
+                    <div
+                        class="w-12 h-12 bg-purple-500/10 rounded-2xl flex items-center justify-center text-purple-500 mb-6 group-hover:scale-110 transition-transform">
+                        <iconify-icon icon="lucide:calculator" width="24"></iconify-icon>
+                    </div>
+                    <h3 class="text-xl text-white font-semibold mb-3">Advanced Calculator</h3>
+                    <p class="text-neutral-400 leading-relaxed text-sm">
+                        Powerful calculator with scientific functions, formula support, and real-time computation. Perfect for complex calculations.
+                    </p>
+                </div>
+
+                <div
+                    class="glass-panel p-8 rounded-3xl reveal-on-scroll hover:bg-white/5 transition-colors duration-500 group lang-zh serif-zh">
+                    <div
+                        class="w-12 h-12 bg-purple-500/10 rounded-2xl flex items-center justify-center text-purple-500 mb-6 group-hover:scale-110 transition-transform">
+                        <iconify-icon icon="lucide:calculator" width="24"></iconify-icon>
+                    </div>
+                    <h3 class="text-xl text-white font-semibold mb-3">高级计算器</h3>
+                    <p class="text-neutral-400 leading-relaxed text-sm">
+                        功能强大的计算器，支持科学函数、公式计算和实时计算。完美处理复杂计算需求。
+                    </p>
+                </div>
+
+
+                <!-- Card 2 -->
+                <div
+                    class="glass-panel p-8 rounded-3xl reveal-on-scroll delay-100 hover:bg-white/5 transition-colors duration-500 group lang-en">
+                    <div
+                        class="w-12 h-12 bg-purple-500/10 rounded-2xl flex items-center justify-center text-purple-500 mb-6 group-hover:scale-110 transition-transform">
+                        <iconify-icon icon="lucide:bar-chart" width="24"></iconify-icon>
+                    </div>
+                    <h3 class="text-xl text-white font-semibold mb-3">Data Analysis</h3>
+                    <p class="text-neutral-400 leading-relaxed text-sm">
+                        Analyze your data with statistical tools, generate reports, and visualize results with charts and graphs.
+                    </p>
+                </div>
+
+                <div
+                    class="glass-panel p-8 rounded-3xl reveal-on-scroll delay-100 hover:bg-white/5 transition-colors duration-500 group lang-zh serif-zh">
+                    <div
+                        class="w-12 h-12 bg-purple-500/10 rounded-2xl flex items-center justify-center text-purple-500 mb-6 group-hover:scale-110 transition-transform">
+                        <iconify-icon icon="lucide:bar-chart" width="24"></iconify-icon>
+                    </div>
+                    <h3 class="text-xl text-white font-semibold mb-3">数据分析</h3>
+                    <p class="text-neutral-400 leading-relaxed text-sm">
+                        使用统计工具分析数据，生成报告，并通过图表可视化结果。
+                    </p>
+                </div>
+
+
+                <!-- Card 3 -->
+                <div
+                    class="glass-panel p-8 rounded-3xl reveal-on-scroll delay-200 hover:bg-white/5 transition-colors duration-500 group lang-en">
+                    <div
+                        class="w-12 h-12 bg-purple-500/10 rounded-2xl flex items-center justify-center text-purple-500 mb-6 group-hover:scale-110 transition-transform">
+                        <iconify-icon icon="lucide:zap" width="24"></iconify-icon>
+                    </div>
+                    <h3 class="text-xl text-white font-semibold mb-3">Fast Computation</h3>
+                    <p class="text-neutral-400 leading-relaxed text-sm">
+                        Optimized algorithms ensure lightning-fast calculations even with complex formulas and large datasets.
+                    </p>
+                </div>
+
+                <div
+                    class="glass-panel p-8 rounded-3xl reveal-on-scroll delay-200 hover:bg-white/5 transition-colors duration-500 group lang-zh serif-zh">
+                    <div
+                        class="w-12 h-12 bg-purple-500/10 rounded-2xl flex items-center justify-center text-purple-500 mb-6 group-hover:scale-110 transition-transform">
+                        <iconify-icon icon="lucide:zap" width="24"></iconify-icon>
+                    </div>
+                    <h3 class="text-xl text-white font-semibold mb-3">快速计算</h3>
+                    <p class="text-neutral-400 leading-relaxed text-sm">
+                        优化的算法确保即使在复杂公式和大数据集的情况下也能实现闪电般快速的计算。
+                    </p>
+                </div>
+
+
+                <!-- Card 4 (Wide) -->
+                <div
+                    class="glass-panel p-8 rounded-3xl md:col-span-2 lg:col-span-2 reveal-on-scroll hover:bg-white/5 transition-colors duration-500 group flex flex-col md:flex-row gap-8 items-center lang-en">
+                    <div class="flex-1 space-y-4">
+                        <div
+                            class="w-12 h-12 bg-purple-500/10 rounded-2xl flex items-center justify-center text-purple-500 mb-2 group-hover:scale-110 transition-transform">
+                            <iconify-icon icon="lucide:settings" width="24"></iconify-icon>
                         </div>
-                        <div class="badge fade-in delay-2">
-                            <i class="fas fa-shield-alt badge-icon"></i>
-                            <span data-lang="badge-accurate">精准结果</span>
+                        <h3 class="text-xl text-white font-semibold">Customizable Workspace</h3>
+                        <p class="text-neutral-400 leading-relaxed text-sm max-w-md">
+                            Create your own calculation environment with custom functions, saved formulas, and personalized settings for your specific needs.
+                        </p>
+                    </div>
+                    <!-- UI Mockup Miniature -->
+                    <div
+                        class="flex-1 w-full bg-neutral-900 border border-white/10 rounded-xl p-4 shadow-2xl skew-y-1 transform transition-transform group-hover:skew-y-0">
+                        <div class="flex items-center gap-2 mb-3">
+                            <div class="w-2 h-2 rounded-full bg-red-500"></div>
+                            <div class="w-2 h-2 rounded-full bg-yellow-500"></div>
+                            <div class="w-2 h-2 rounded-full bg-green-500"></div>
                         </div>
-                        <div class="badge fade-in delay-3">
-                            <i class="fas fa-mobile-alt badge-icon"></i>
-                            <span data-lang="badge-responsive">全平台适配</span>
+                        <div class="space-y-2">
+                            <div class="h-8 w-3/4 bg-neutral-800 rounded animate-pulse"></div>
+                            <div class="h-32 w-full bg-neutral-800 rounded animate-pulse opacity-50"></div>
                         </div>
                     </div>
-                    
-                    <div class="cta-buttons">
-                        <a href="#tools" class="btn btn-primary fade-in delay-1">
-                            <i class="fas fa-rocket"></i>
-                            <span data-lang="btn-explore">探索工具</span>
-                        </a>
-                        <a href="Down's Score Calculator.html" class="btn btn-secondary fade-in delay-2">
-                            <i class="fas fa-external-link-alt"></i>
-                            <span data-lang="btn-calculator">分数计算器</span>
-                        </a>
+                </div>
+
+                <div
+                    class="glass-panel p-8 rounded-3xl md:col-span-2 lg:col-span-2 reveal-on-scroll hover:bg-white/5 transition-colors duration-500 group flex flex-col md:flex-row gap-8 items-center lang-zh serif-zh">
+                    <div class="flex-1 space-y-4">
+                        <div
+                            class="w-12 h-12 bg-purple-500/10 rounded-2xl flex items-center justify-center text-purple-500 mb-2 group-hover:scale-110 transition-transform">
+                            <iconify-icon icon="lucide:settings" width="24"></iconify-icon>
+                        </div>
+                        <h3 class="text-xl text-white font-semibold">可定制工作区</h3>
+                        <p class="text-neutral-400 leading-relaxed text-sm max-w-md">
+                            创建自己的计算环境，包含自定义函数、保存的公式和个性化设置，满足您的特定需求。
+                        </p>
+                    </div>
+                    <!-- UI Mockup Miniature -->
+                    <div
+                        class="flex-1 w-full bg-neutral-900 border border-white/10 rounded-xl p-4 shadow-2xl skew-y-1 transform transition-transform group-hover:skew-y-0">
+                        <div class="flex items-center gap-2 mb-3">
+                            <div class="w-2 h-2 rounded-full bg-red-500"></div>
+                            <div class="w-2 h-2 rounded-full bg-yellow-500"></div>
+                            <div class="w-2 h-2 rounded-full bg-green-500"></div>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="h-8 w-3/4 bg-neutral-800 rounded animate-pulse"></div>
+                            <div class="h-32 w-full bg-neutral-800 rounded animate-pulse opacity-50"></div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Card 5 -->
+                <div
+                    class="glass-panel p-8 rounded-3xl reveal-on-scroll delay-100 hover:bg-white/5 transition-colors duration-500 group lang-en">
+                    <div
+                        class="w-12 h-12 bg-purple-500/10 rounded-2xl flex items-center justify-center text-purple-500 mb-6 group-hover:scale-110 transition-transform">
+                        <iconify-icon icon="lucide:download" width="24"></iconify-icon>
+                    </div>
+                    <h3 class="text-xl text-white font-semibold mb-3">Export Results</h3>
+                    <p class="text-neutral-400 leading-relaxed text-sm">
+                        Export your calculation results in multiple formats including CSV, PDF, and Excel for further analysis or sharing.
+                    </p>
+                </div>
+
+                <div
+                    class="glass-panel p-8 rounded-3xl reveal-on-scroll delay-100 hover:bg-white/5 transition-colors duration-500 group lang-zh serif-zh">
+                    <div
+                        class="w-12 h-12 bg-purple-500/10 rounded-2xl flex items-center justify-center text-purple-500 mb-6 group-hover:scale-110 transition-transform">
+                        <iconify-icon icon="lucide:download" width="24"></iconify-icon>
+                    </div>
+                    <h3 class="text-xl text-white font-semibold mb-3">结果导出</h3>
+                    <p class="text-neutral-400 leading-relaxed text-sm">
+                        以多种格式导出计算结果，包括 CSV、PDF 和 Excel，便于进一步分析或分享。
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Tools Demo Section -->
+    <section id="demo" class="py-32 px-4 relative z-10 bg-neutral-900/30">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-20 reveal-on-scroll lang-en">
+                <h2 class="text-3xl md:text-5xl text-white font-serif mb-6">Explore Our Tools</h2>
+                <p class="text-neutral-400">From basic calculations to complex data analysis</p>
+            </div>
+
+            <div class="text-center mb-20 reveal-on-scroll lang-zh">
+                <h2 class="text-3xl md:text-5xl text-white serif-zh mb-6">探索我们的工具</h2>
+                <p class="text-neutral-400">从基础计算到复杂数据分析</p>
+            </div>
+
+            <div class="relative border-l border-white/10 ml-6 md:ml-1/2 space-y-12 pb-12">
+                <!-- Step 1 -->
+                <div
+                    class="relative pl-12 md:pl-0 md:grid md:grid-cols-2 md:gap-16 items-center reveal-on-scroll lang-en">
+                    <div
+                        class="absolute -left-[5px] top-2 w-2.5 h-2.5 rounded-full bg-purple-500 ring-4 ring-neutral-900">
+                    </div>
+                    <div class="md:text-right md:order-1">
+                        <h4 class="text-xl text-white font-medium mb-2">Basic Calculator</h4>
+                        <p class="text-neutral-500 text-sm">Simple and intuitive interface for everyday calculations. Perfect for quick math operations and basic arithmetic.</p>
+                    </div>
+                    <div class="hidden md:block md:order-2">
+                        <div
+                            class="w-12 h-12 rounded-full bg-neutral-800 flex items-center justify-center text-neutral-400 border border-white/5">
+                            <iconify-icon icon="lucide:plus" width="20"></iconify-icon>
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    class="relative pl-12 md:pl-0 md:grid md:grid-cols-2 md:gap-16 items-center reveal-on-scroll lang-zh">
+                    <div
+                        class="absolute -left-[5px] top-2 w-2.5 h-2.5 rounded-full bg-purple-500 ring-4 ring-neutral-900">
+                    </div>
+                    <div class="md:text-right md:order-1">
+                        <h4 class="text-xl text-white font-medium mb-2">基础计算器</h4>
+                        <p class="text-neutral-500 text-sm">简洁直观的日常计算界面。完美适用于快速数学运算和基础算术。</p>
+                    </div>
+                    <div class="hidden md:block md:order-2">
+                        <div
+                            class="w-12 h-12 rounded-full bg-neutral-800 flex items-center justify-center text-neutral-400 border border-white/5">
+                            <iconify-icon icon="lucide:plus" width="20"></iconify-icon>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div
+                    class="relative pl-12 md:pl-0 md:grid md:grid-cols-2 md:gap-16 items-center reveal-on-scroll lang-en delay-100">
+                    <div
+                        class="absolute -left-[5px] top-2 w-2.5 h-2.5 rounded-full bg-neutral-700 ring-4 ring-neutral-900">
+                    </div>
+                    <div class="hidden md:flex md:justify-end md:order-1">
+                        <div
+                            class="w-12 h-12 rounded-full bg-neutral-800 flex items-center justify-center text-neutral-400 border border-white/5">
+                            <iconify-icon icon="lucide:function-square" width="20"></iconify-icon>
+                        </div>
+                    </div>
+                    <div class="md:order-2">
+                        <h4 class="text-xl text-white font-medium mb-2">Scientific Functions</h4>
+                        <p class="text-neutral-500 text-sm">Advanced mathematical functions including trigonometry, logarithms, exponentials, and statistical operations.</p>
+                    </div>
+                </div>
+
+                <div
+                    class="relative pl-12 md:pl-0 md:grid md:grid-cols-2 md:gap-16 items-center reveal-on-scroll lang-zh delay-100">
+                    <div
+                        class="absolute -left-[5px] top-2 w-2.5 h-2.5 rounded-full bg-neutral-700 ring-4 ring-neutral-900">
+                    </div>
+                    <div class="hidden md:flex md:justify-end md:order-1">
+                        <div
+                            class="w-12 h-12 rounded-full bg-neutral-800 flex items-center justify-center text-neutral-400 border border-white/5">
+                            <iconify-icon icon="lucide:function-square" width="20"></iconify-icon>
+                        </div>
+                    </div>
+                    <div class="md:order-2">
+                        <h4 class="text-xl text-white font-medium mb-2">科学函数</h4>
+                        <p class="text-neutral-500 text-sm">高级数学函数，包括三角函数、对数、指数和统计运算。</p>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div
+                    class="relative pl-12 md:pl-0 md:grid md:grid-cols-2 md:gap-16 items-center reveal-on-scroll lang-en delay-200">
+                    <div
+                        class="absolute -left-[5px] top-2 w-2.5 h-2.5 rounded-full bg-neutral-700 ring-4 ring-neutral-900">
+                    </div>
+                    <div class="md:text-right md:order-1">
+                        <h4 class="text-xl text-white font-medium mb-2">Formula Editor</h4>
+                        <p class="text-neutral-500 text-sm">Create and save custom formulas for repeated use. Supports variables, constants, and complex mathematical expressions.</p>
+                    </div>
+                    <div class="hidden md:block md:order-2">
+                        <div
+                            class="w-12 h-12 rounded-full bg-neutral-800 flex items-center justify-center text-neutral-400 border border-white/5">
+                            <iconify-icon icon="lucide:sigma" width="20"></iconify-icon>
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    class="relative pl-12 md:pl-0 md:grid md:grid-cols-2 md:gap-16 items-center reveal-on-scroll lang-zh delay-200">
+                    <div
+                        class="absolute -left-[5px] top-2 w-2.5 h-2.5 rounded-full bg-neutral-700 ring-4 ring-neutral-900">
+                    </div>
+                    <div class="md:text-right md:order-1">
+                        <h4 class="text-xl text-white font-medium mb-2">公式编辑器</h4>
+                        <p class="text-neutral-500 text-sm">创建并保存自定义公式以供重复使用。支持变量、常量和复杂数学表达式。</p>
+                    </div>
+                    <div class="hidden md:block md:order-2">
+                        <div
+                            class="w-12 h-12 rounded-full bg-neutral-800 flex items-center justify-center text-neutral-400 border border-white/5">
+                            <iconify-icon icon="lucide:sigma" width="20"></iconify-icon>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 4 -->
+                <div
+                    class="relative pl-12 md:pl-0 md:grid md:grid-cols-2 md:gap-16 items-center reveal-on-scroll lang-en delay-300">
+                    <div
+                        class="absolute -left-[5px] top-2 w-2.5 h-2.5 rounded-full bg-neutral-700 ring-4 ring-neutral-900">
+                    </div>
+                    <div class="hidden md:flex md:justify-end md:order-1">
+                        <div
+                            class="w-12 h-12 rounded-full bg-neutral-800 flex items-center justify-center text-neutral-400 border border-white/5">
+                            <iconify-icon icon="lucide:bar-chart-3" width="20"></iconify-icon>
+                        </div>
+                    </div>
+                    <div class="md:order-2">
+                        <h4 class="text-xl text-white font-medium mb-2">Data Visualization</h4>
+                        <p class="text-neutral-500 text-sm">Visualize your calculation results with interactive charts and graphs. Export visualizations for presentations and reports.</p>
+                    </div>
+                </div>
+
+                <div
+                    class="relative pl-12 md:pl-0 md:grid md:grid-cols-2 md:gap-16 items-center reveal-on-scroll lang-zh delay-300">
+                    <div
+                        class="absolute -left-[5px] top-2 w-2.5 h-2.5 rounded-full bg-neutral-700 ring-4 ring-neutral-900">
+                    </div>
+                    <div class="hidden md:flex md:justify-end md:order-1">
+                        <div
+                            class="w-12 h-12 rounded-full bg-neutral-800 flex items-center justify-center text-neutral-400 border border-white/5">
+                            <iconify-icon icon="lucide:bar-chart-3" width="20"></iconify-icon>
+                        </div>
+                    </div>
+                    <div class="md:order-2">
+                        <h4 class="text-xl text-white font-medium mb-2">数据可视化</h4>
+                        <p class="text-neutral-500 text-sm">通过交互式图表和图形可视化您的计算结果。导出可视化图表用于演示和报告。</p>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- 工具区域 -->
-        <section class="tools-section" id="tools">
-            <div class="container">
-                <h2 class="section-title fade-in" data-lang="tools-title">我们的工具</h2>
-                <p class="section-subtitle fade-in delay-1" data-lang="tools-subtitle">我们提供一系列专业计算工具，每个工具都经过精心设计，确保最佳的准确性和用户体验。</p>
-                
-                <div class="tools-grid">
-                    <!-- 分数计算器卡片 -->
-                    <div class="tool-card fade-in">
-                        <div class="tool-icon">
-                            <div class="tool-icon-bg"></div>
-                            <img src="https://img.icons8.com/color/96/calculator.png" alt="Score Calculator">
-                        </div>
-                        <div class="tool-content">
-                            <h3 class="tool-title" data-lang="tool1-title">Down's 分数计算器</h3>
-                            <p class="tool-desc" data-lang="tool1-desc">一款专为Down's相关游戏设计的精准分数和评级计算工具。支持多种游戏模式和复杂算法，提供实时计算结果和详细分析报告。</p>
-                            
-                            <div class="tool-features">
-                                <!-- 特征列表已清空 -->
+    <!-- Calculator Demo Section -->
+    <section id="calculator" class="py-32 px-4 relative z-10">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-20 reveal-on-scroll">
+                <h2 class="text-3xl md:text-5xl text-white font-serif mb-6 lang-en">Interactive Calculator Demo</h2>
+                <h2 class="text-3xl md:text-5xl text-white serif-zh mb-6 lang-zh">交互式计算器演示</h2>
+                <p class="text-neutral-400 lang-en">Try our powerful calculator with real-time computation</p>
+                <p class="text-neutral-400 lang-zh">试用我们的实时计算器</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-2 reveal-on-scroll">
+                    <div class="glass-panel rounded-3xl p-8">
+                        <div class="mb-6">
+                            <h3 class="text-xl text-white font-semibold mb-4 lang-en">Calculator</h3>
+                            <h3 class="text-xl text-white font-semibold mb-4 lang-zh">计算器</h3>
+                            <div class="bg-neutral-900 rounded-2xl p-4">
+                                <div class="text-right mb-4">
+                                    <div id="calc-display" class="text-3xl text-white font-mono py-4 px-2 min-h-[60px]">0</div>
+                                </div>
+                                <div class="grid grid-cols-4 gap-3">
+                                    <button class="calc-btn bg-neutral-800 hover:bg-neutral-700" onclick="clearCalc()">C</button>
+                                    <button class="calc-btn bg-neutral-800 hover:bg-neutral-700" onclick="backspace()">⌫</button>
+                                    <button class="calc-btn bg-purple-600 hover:bg-purple-500" onclick="appendToCalc('/')">/</button>
+                                    <button class="calc-btn bg-purple-600 hover:bg-purple-500" onclick="appendToCalc('*')">×</button>
+                                    
+                                    <button class="calc-btn" onclick="appendToCalc('7')">7</button>
+                                    <button class="calc-btn" onclick="appendToCalc('8')">8</button>
+                                    <button class="calc-btn" onclick="appendToCalc('9')">9</button>
+                                    <button class="calc-btn bg-purple-600 hover:bg-purple-500" onclick="appendToCalc('-')">-</button>
+                                    
+                                    <button class="calc-btn" onclick="appendToCalc('4')">4</button>
+                                    <button class="calc-btn" onclick="appendToCalc('5')">5</button>
+                                    <button class="calc-btn" onclick="appendToCalc('6')">6</button>
+                                    <button class="calc-btn bg-purple-600 hover:bg-purple-500" onclick="appendToCalc('+')">+</button>
+                                    
+                                    <button class="calc-btn" onclick="appendToCalc('1')">1</button>
+                                    <button class="calc-btn" onclick="appendToCalc('2')">2</button>
+                                    <button class="calc-btn" onclick="appendToCalc('3')">3</button>
+                                    <button class="calc-btn bg-purple-600 hover:bg-purple-500 row-span-2" onclick="calculate()">=</button>
+                                    
+                                    <button class="calc-btn col-span-2" onclick="appendToCalc('0')">0</button>
+                                    <button class="calc-btn" onclick="appendToCalc('.')">.</button>
+                                </div>
                             </div>
-                            
-                            <a href="Down's Score Calculator.html" class="tool-btn" data-lang="tool1-btn">打开计算器</a>
                         </div>
-                    </div>
-                    
-                    <!-- 敬请期待卡片 -->
-                    <div class="tool-card fade-in delay-1">
-                        <div class="tool-icon">
-                            <div class="tool-icon-bg" style="background: var(--gradient-2);"></div>
-                            <img src="https://img.icons8.com/color/96/coming-soon.png" alt="敬请期待">
-                        </div>
-                        <div class="tool-content">
-                            <h3 class="tool-title" data-lang="tool2-title">更多工具</h3>
-                            <p class="tool-desc" data-lang="tool2-desc">我们正在开发更多强大的计算工具，敬请期待！我们将不断扩展工具套件，为您提供更多专业解决方案。</p>
-                            
-                            <div class="tool-features">
-                                <!-- 特征列表已清空 -->
+                        
+                        <div>
+                            <h3 class="text-xl text-white font-semibold mb-4 lang-en">Scientific Functions</h3>
+                            <h3 class="text-xl text-white font-semibold mb-4 lang-zh">科学函数</h3>
+                            <div class="grid grid-cols-3 sm:grid-cols-6 gap-3">
+                                <button class="calc-btn-sm bg-blue-900/30 hover:bg-blue-800/50" onclick="scientificFunction('sin(')">sin</button>
+                                <button class="calc-btn-sm bg-blue-900/30 hover:bg-blue-800/50" onclick="scientificFunction('cos(')">cos</button>
+                                <button class="calc-btn-sm bg-blue-900/30 hover:bg-blue-800/50" onclick="scientificFunction('tan(')">tan</button>
+                                <button class="calc-btn-sm bg-blue-900/30 hover:bg-blue-800/50" onclick="scientificFunction('log(')">log</button>
+                                <button class="calc-btn-sm bg-blue-900/30 hover:bg-blue-800/50" onclick="scientificFunction('ln(')">ln</button>
+                                <button class="calc-btn-sm bg-blue-900/30 hover:bg-blue-800/50" onclick="scientificFunction('sqrt(')">√</button>
                             </div>
-                            
-                            <a href="#" class="tool-btn" data-lang="tool2-btn">敬请期待</a>
                         </div>
                     </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 特性区域 -->
-        <section class="features-section" id="features">
-            <div class="container">
-                <h2 class="section-title fade-in" data-lang="features-title">为什么选择 Down's Tools</h2>
-                <p class="section-subtitle fade-in delay-1" data-lang="features-subtitle">我们致力于提供最优质的计算工具体验，以下是我们的核心优势。</p>
-                
-                <div class="features-grid">
-                    <div class="feature-card fade-in">
-                        <div class="feature-icon">
-                            <i class="fas fa-tachometer-alt"></i>
-                        </div>
-                        <h3 class="feature-title" data-lang="feature1-title">极速计算</h3>
-                        <p class="feature-desc" data-lang="feature1-desc">采用优化算法和高效计算引擎，确保即使在复杂计算场景下也能获得即时结果。</p>
-                    </div>
-                    
-                    <div class="feature-card fade-in delay-1">
-                        <div class="feature-icon">
-                            <i class="fas fa-crosshairs"></i>
-                        </div>
-                        <h3 class="feature-title" data-lang="feature2-title">精准无误</h3>
-                        <p class="feature-desc" data-lang="feature2-desc">所有工具都经过严格测试和验证，确保计算结果的准确性和可靠性。</p>
-                    </div>
-                    
-                    <div class="feature-card fade-in delay-2">
-                        <div class="feature-icon">
-                            <i class="fas fa-laptop"></i>
-                        </div>
-                        <h3 class="feature-title" data-lang="feature3-title">全平台适配</h3>
-                        <p class="feature-desc" data-lang="feature3-desc">完美适配电脑、平板和手机，无论使用何种设备都能获得一致的良好体验。</p>
-                    </div>
-                    
-                    <div class="feature-card fade-in delay-3">
-                        <div class="feature-icon">
-                            <i class="fas fa-user-friends"></i>
-                        </div>
-                        <h3 class="feature-title" data-lang="feature4-title">用户友好</h3>
-                        <p class="feature-desc" data-lang="feature4-desc">直观的界面设计和清晰的指引，让所有用户都能轻松上手使用。</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <!-- 页脚 -->
-    <footer class="footer" id="about">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-about">
-                    <h3 class="footer-logo">Down's Tools</h3>
-                    <p class="footer-desc" data-lang="footer-desc">提供专业级计算工具套件，致力于帮助用户解决复杂计算问题，提升工作效率和游戏体验。</p>
                 </div>
                 
-                <div class="footer-links">
-                    <div class="footer-column">
-                        <h4 class="footer-column-title" data-lang="footer-links">链接</h4>
-                        <a href="#home" class="footer-link" data-lang="footer-home">主页</a>
-                        <a href="#tools" class="footer-link" data-lang="footer-tools">工具</a>
-                        <a href="#features" class="footer-link" data-lang="footer-features">特性</a>
-                        <a href="#about" class="footer-link" data-lang="footer-about">关于</a>
-                    </div>
-                    
-                    <div class="footer-column">
-                        <h4 class="footer-column-title" data-lang="footer-tools-title">工具</h4>
-                        <a href="Down's Score Calculator.html" class="footer-link" data-lang="footer-calculator">分数计算器</a>
-                        <a href="#" class="footer-link" data-lang="footer-upcoming">敬请期待</a>
-                    </div>
-                    
-                    <div class="footer-column">
-                        <h4 class="footer-column-title" data-lang="footer-contact">联系</h4>
-                        <a href="mailto:contact@tach.eu.org" class="footer-link">contact@tach.eu.org</a>
-                        <a href="#" class="footer-link" data-lang="footer-feedback">反馈建议</a>
-                        <a href="#" class="footer-link" data-lang="footer-support">技术支持</a>
+                <div class="reveal-on-scroll delay-100">
+                    <div class="glass-panel rounded-3xl p-8 h-full">
+                        <h3 class="text-xl text-white font-semibold mb-6 lang-en">Recent Calculations</h3>
+                        <h3 class="text-xl text-white font-semibold mb-6 lang-zh">最近计算</h3>
+                        
+                        <div id="history-list" class="space-y-4 mb-6">
+                            <div class="text-neutral-500 italic text-sm lang-en">No calculations yet</div>
+                            <div class="text-neutral-500 italic text-sm lang-zh">暂无计算记录</div>
+                        </div>
+                        
+                        <div class="mt-6">
+                            <h4 class="text-white font-medium mb-3 lang-en">Tips & Tricks</h4>
+                            <h4 class="text-white font-medium mb-3 lang-zh">使用技巧</h4>
+                            <ul class="text-neutral-400 text-sm space-y-2">
+                                <li class="flex items-start gap-2 lang-en">
+                                    <iconify-icon icon="lucide:check" class="text-green-500 mt-0.5"></iconify-icon>
+                                    <span>Use parentheses for complex expressions</span>
+                                </li>
+                                <li class="flex items-start gap-2 lang-zh">
+                                    <iconify-icon icon="lucide:check" class="text-green-500 mt-0.5"></iconify-icon>
+                                    <span>使用括号处理复杂表达式</span>
+                                </li>
+                                <li class="flex items-start gap-2 lang-en">
+                                    <iconify-icon icon="lucide:check" class="text-green-500 mt-0.5"></iconify-icon>
+                                    <span>Click 'C' to clear, '⌫' to backspace</span>
+                                </li>
+                                <li class="flex items-start gap-2 lang-zh">
+                                    <iconify-icon icon="lucide:check" class="text-green-500 mt-0.5"></iconify-icon>
+                                    <span>点击 'C' 清除，'⌫' 退格</span>
+                                </li>
+                                <li class="flex items-start gap-2 lang-en">
+                                    <iconify-icon icon="lucide:check" class="text-green-500 mt-0.5"></iconify-icon>
+                                    <span>Scientific functions work in radians</span>
+                                </li>
+                                <li class="flex items-start gap-2 lang-zh">
+                                    <iconify-icon icon="lucide:check" class="text-green500 mt-0.5"></iconify-icon>
+                                    <span>科学函数使用弧度制</span>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
-            
-            <div class="footer-bottom">
-                <p>Powered by <strong>Down`sicient</strong> | <span data-lang="footer-copyright">Copyright © 2026 Down`sicient Studio under Tach. </span></p>
+        </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="min-h-[80vh] flex flex-col items-center justify-center relative px-4 overflow-hidden">
+        <!-- Background Glow -->
+        <div
+            class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-tr from-purple-900/20 to-neutral-900/0 rounded-full blur-[100px] z-0 pointer-events-none">
+        </div>
+
+        <div class="relative z-10 text-center max-w-3xl space-y-10">
+            <h2 class="text-5xl md:text-7xl serif text-white tracking-tight leading-tight reveal-on-scroll lang-en">
+                Start calculating <br>
+                <span class="italic text-neutral-500">smarter, not harder.</span>
+            </h2>
+
+            <h2
+                class="text-5xl md:text-7xl serif text-white tracking-tight leading-tight reveal-on-scroll lang-zh title-zh">
+                开始更智能地计算<br>
+                <span class="italic text-neutral-500">而非更费力。</span>
+            </h2>
+
+            <div class="flex flex-col items-center gap-4 reveal-on-scroll delay-100 lang-en">
+                <button
+                    class="purple-glow px-10 py-5 bg-purple-500 text-black text-lg font-bold rounded-full hover:bg-purple-400 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_-10px_rgba(147,51,234,0.6)]">
+                    Try Our Calculator
+                </button>
+                <p class="text-neutral-500 text-sm">Free to use · No registration required</p>
+            </div>
+
+            <div class="flex flex-col items-center gap-4 reveal-on-scroll delay-100 lang-zh">
+                <button
+                    class="purple-glow px-10 py-5 bg-purple-500 text-black text-lg font-bold rounded-full hover:bg-purple-400 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_-10px_rgba(147,51,234,0.6)]">
+                    试用计算器
+                </button>
+                <p class="text-neutral-500 text-sm">免费使用 · 无需注册</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 px-6 border-t border-white/10 bg-black relative z-10">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-purple-500"></span>
+                <span class="text-white font-semibold text-lg">Down's Tools</span>
+            </div>
+            <div class="text-neutral-500 text-sm">
+                © 2024 Down's Tools Studio
+            </div>
+            <div class="flex gap-6 text-neutral-400">
+                <a href="#" class="hover:text-purple-500 transition-colors"><iconify-icon icon="lucide:earth"
+                        width="20"></iconify-icon></a>
+                <a href="https://github.com" class="hover:text-purple-500 transition-colors"><iconify-icon icon="lucide:github"
+                        width="20"></iconify-icon></a>
+                <a href="https://discord.com" class="hover:text-purple-500 transition-colors"><iconify-icon
+                        icon="lucide:message-circle" width="20"></iconify-icon></a>
             </div>
         </div>
     </footer>
 
     <script>
-        // 语言数据
-        const languageData = {
-            zh: {
-                // 导航
-                "nav-home": "主页",
-                "nav-tools": "工具",
-                "nav-features": "特性",
-                "nav-about": "关于",
-                
-                // 英雄区域
-                "hero-title": "专业计算工具套件",
-                "hero-subtitle": "Down's Tools 提供强大、精准的计算工具，专为游戏玩家、数据分析师和需要精确计算的用户设计。我们的工具结合了先进算法与直观界面，让复杂计算变得简单。",
-                "badge-fast": "快速计算",
-                "badge-accurate": "精准结果",
-                "badge-responsive": "全平台适配",
-                "btn-explore": "探索工具",
-                "btn-calculator": "分数计算器",
-                
-                // 工具区域
-                "tools-title": "我们的工具",
-                "tools-subtitle": "我们提供一系列专业计算工具，每个工具都经过精心设计，确保最佳的准确性和用户体验。",
-                "tool1-title": "Down's 分数计算器",
-                "tool1-desc": "一款专为Down's相关游戏设计的精准分数和评级计算工具。支持多种游戏模式和复杂算法，提供实时计算结果和详细分析报告。",
-                "tool1-btn": "打开计算器",
-                "tool2-title": "更多工具",
-                "tool2-desc": "我们正在开发更多强大的计算工具，敬请期待！我们将不断扩展工具套件，为您提供更多专业解决方案。",
-                "tool2-btn": "敬请期待",
-                
-                // 特性区域
-                "features-title": "为什么选择 Down's Tools",
-                "features-subtitle": "我们致力于提供最优质的计算工具体验，以下是我们的核心优势。",
-                "feature1-title": "极速计算",
-                "feature1-desc": "采用优化算法和高效计算引擎，确保即使在复杂计算场景下也能获得即时结果。",
-                "feature2-title": "精准无误",
-                "feature2-desc": "所有工具都经过严格测试和验证，确保计算结果的准确性和可靠性。",
-                "feature3-title": "全平台适配",
-                "feature3-desc": "完美适配电脑、平板和手机，无论使用何种设备都能获得一致的良好体验。",
-                "feature4-title": "用户友好",
-                "feature4-desc": "直观的界面设计和清晰的指引，让所有用户都能轻松上手使用。",
-                
-                // 页脚
-                "footer-desc": "提供专业级计算工具套件，致力于帮助用户解决复杂计算问题，提升工作效率和游戏体验。",
-                "footer-links": "链接",
-                "footer-home": "主页",
-                "footer-tools": "工具",
-                "footer-features": "特性",
-                "footer-about": "关于",
-                "footer-tools-title": "工具",
-                "footer-calculator": "分数计算器",
-                "footer-upcoming": "敬请期待",
-                "footer-contact": "联系",
-                "footer-feedback": "反馈建议",
-                "footer-support": "技术支持",
-                "footer-copyright": "版权所有 © 2026 Down`sicient Studio，Tach的附属工作室"
-            },
-            en: {
-                // Navigation
-                "nav-home": "Home",
-                "nav-tools": "Tools",
-                "nav-features": "Features",
-                "nav-about": "About",
-                
-                // Hero section
-                "hero-title": "Professional Calculation Tool Suite",
-                "hero-subtitle": "Down's Tools provides powerful, accurate calculation tools designed for gamers, data analysts, and users who need precise calculations. Our tools combine advanced algorithms with intuitive interfaces to simplify complex calculations.",
-                "badge-fast": "Fast Calculation",
-                "badge-accurate": "Accurate Results",
-                "badge-responsive": "Fully Responsive",
-                "btn-explore": "Explore Tools",
-                "btn-calculator": "Score Calculator",
-                
-                // Tools section
-                "tools-title": "Our Tools",
-                "tools-subtitle": "We offer a range of professional calculation tools, each meticulously designed to ensure optimal accuracy and user experience.",
-                "tool1-title": "Down's Score Calculator",
-                "tool1-desc": "A precise score and rating calculation tool designed specifically for Down's related games. Supports multiple game modes and complex algorithms, providing real-time calculation results and detailed analysis reports.",
-                "tool1-btn": "Open Calculator",
-                "tool2-title": "More Tools",
-                "tool2-desc": "We are developing more powerful calculation tools, stay tuned! We will continue to expand our tool suite to provide you with more professional solutions.",
-                "tool2-btn": "Stay Tuned",
-                
-                // Features section
-                "features-title": "Why Choose Down's Tools",
-                "features-subtitle": "We are committed to providing the best calculation tool experience. Here are our core advantages.",
-                "feature1-title": "Lightning Fast",
-                "feature1-desc": "Uses optimized algorithms and efficient computing engines to ensure instant results even in complex calculation scenarios.",
-                "feature2-title": "Precise & Accurate",
-                "feature2-desc": "All tools are rigorously tested and verified to ensure the accuracy and reliability of calculation results.",
-                "feature3-title": "Fully Responsive",
-                "feature3-desc": "Perfectly adapts to computers, tablets, and mobile phones, providing a consistent good experience regardless of device.",
-                "feature4-title": "User Friendly",
-                "feature4-desc": "Intuitive interface design and clear guidance make it easy for all users to get started.",
-                
-                // Footer
-                "footer-desc": "Providing professional-grade calculation tool suites dedicated to helping users solve complex calculation problems and improve work efficiency and gaming experience.",
-                "footer-links": "Links",
-                "footer-home": "Home",
-                "footer-tools": "Tools",
-                "footer-features": "Features",
-                "footer-about": "About",
-                "footer-tools-title": "Tools",
-                "footer-calculator": "Score Calculator",
-                "footer-upcoming": "Stay Tuned",
-                "footer-contact": "Contact",
-                "footer-feedback": "Feedback",
-                "footer-support": "Support",
-                "footer-copyright": "Copyright © 2026 Down`sicient Studio under Tach."
-            }
-        };
+        // 滚动动画
+        function LoadObserverAnimation() {
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.1
+            };
 
-        // 当前语言
-        let currentLang = 'zh';
-
-        // DOM元素
-        const loader = document.getElementById('loader');
-        const scrollProgress = document.getElementById('scrollProgress');
-        const navbar = document.getElementById('navbar');
-        const langZhBtn = document.getElementById('langZh');
-        const langEnBtn = document.getElementById('langEn');
-
-        // 页面加载完成后初始化
-        window.addEventListener('DOMContentLoaded', () => {
-            // 隐藏加载动画
-            setTimeout(() => {
-                loader.classList.add('hidden');
-            }, 800);
-
-            // 初始化语言
-            initLanguage();
-            
-            // 初始化滚动监听
-            initScrollEffects();
-            
-            // 初始化滚动动画
-            initScrollAnimations();
-            
-            // 设置事件监听器
-            setupEventListeners();
-        });
-
-        // 初始化语言
-        function initLanguage() {
-            // 从本地存储获取语言偏好
-            const savedLang = localStorage.getItem('downsToolsLang');
-            if (savedLang && (savedLang === 'zh' || savedLang === 'en')) {
-                currentLang = savedLang;
-            } else {
-                // 检测浏览器语言
-                const browserLang = navigator.language.toLowerCase();
-                currentLang = browserLang.startsWith('zh') ? 'zh' : 'en';
-            }
-            
-            // 更新语言按钮状态
-            updateLanguageButtons();
-            
-            // 应用语言
-            applyLanguage();
-        }
-
-        // 更新语言按钮状态
-        function updateLanguageButtons() {
-            if (currentLang === 'zh') {
-                langZhBtn.classList.add('active');
-                langEnBtn.classList.remove('active');
-            } else {
-                langEnBtn.classList.add('active');
-                langZhBtn.classList.remove('active');
-            }
-        }
-
-        // 应用语言到页面
-        function applyLanguage() {
-            const langData = languageData[currentLang];
-            
-            // 更新所有有data-lang属性的元素
-            document.querySelectorAll('[data-lang]').forEach(element => {
-                const key = element.getAttribute('data-lang');
-                if (langData[key]) {
-                    if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
-                        element.placeholder = langData[key];
-                    } else {
-                        element.textContent = langData[key];
-                    }
-                }
-            });
-        }
-
-        // 初始化滚动效果
-        function initScrollEffects() {
-            // 滚动进度条
-            window.addEventListener('scroll', () => {
-                const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-                const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-                const scrolled = (winScroll / height) * 100;
-                scrollProgress.style.width = scrolled + "%";
-                
-                // 导航栏效果
-                if (window.scrollY > 50) {
-                    navbar.classList.add('scrolled');
-                } else {
-                    navbar.classList.remove('scrolled');
-                }
-            });
-        }
-
-        // 初始化滚动动画
-        function initScrollAnimations() {
-            const fadeElements = document.querySelectorAll('.fade-in');
-            
-            const observer = new IntersectionObserver((entries) => {
+            const observer = new IntersectionObserver((entries, observer) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
-                        entry.target.classList.add('visible');
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target);
                     }
                 });
-            }, {
-                threshold: 0.1,
-                rootMargin: '0px 0px -50px 0px'
-            });
-            
-            fadeElements.forEach(element => {
-                observer.observe(element);
-            });
+            }, observerOptions);
+
+            const elements = document.querySelectorAll('.reveal-on-scroll');
+            elements.forEach(el => observer.observe(el));
         }
 
-        // 设置事件监听器
-        function setupEventListeners() {
-            // 语言切换按钮
-            langZhBtn.addEventListener('click', () => switchLanguage('zh'));
-            langEnBtn.addEventListener('click', () => switchLanguage('en'));
-            
-            // 导航链接点击
-            document.querySelectorAll('.nav-link').forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    
-                    // 移除所有活动状态
-                    document.querySelectorAll('.nav-link').forEach(item => {
-                        item.classList.remove('active');
-                    });
-                    
-                    // 添加当前活动状态
-                    this.classList.add('active');
-                    
-                    // 滚动到目标区域
-                    const targetId = this.getAttribute('href');
-                    const targetSection = document.querySelector(targetId);
-                    if (targetSection) {
-                        window.scrollTo({
-                            top: targetSection.offsetTop - 80,
-                            behavior: 'smooth'
-                        });
-                    }
-                });
-            });
-            
-            // 页脚链接点击
-            document.querySelectorAll('.footer-link').forEach(link => {
-                link.addEventListener('click', function(e) {
-                    const href = this.getAttribute('href');
-                    if (href && href.startsWith('#')) {
-                        e.preventDefault();
-                        
-                        const targetId = href;
-                        const targetSection = document.querySelector(targetId);
-                        if (targetSection) {
-                            // 更新导航活动状态
-                            document.querySelectorAll('.nav-link').forEach(item => {
-                                item.classList.remove('active');
-                                if (item.getAttribute('href') === targetId) {
-                                    item.classList.add('active');
-                                }
-                            });
-                            
-                            window.scrollTo({
-                                top: targetSection.offsetTop - 80,
-                                behavior: 'smooth'
-                            });
-                        }
-                    }
-                });
-            });
-        }
-
-        // 切换语言
-        function switchLanguage(lang) {
-            if (lang !== currentLang) {
-                currentLang = lang;
-                localStorage.setItem('downsToolsLang', lang);
-                updateLanguageButtons();
-                applyLanguage();
-                
-                // 添加语言切换动画效果
-                document.body.style.opacity = '0.8';
-                setTimeout(() => {
-                    document.body.style.opacity = '1';
-                }, 300);
+        // 导航栏背景效果
+        function scrollNavBackground() {
+            if (window.scrollY == 0) {
+                document.querySelector("nav").classList.remove("with-back")
+            }
+            else {
+                document.querySelector("nav").classList.add("with-back")
             }
         }
+
+        // 语言切换
+        function toggleLang() {
+            const body = document.body;
+            document.querySelectorAll(".is-visible").forEach((el) => { el.classList.remove("is-visible") })
+            LoadObserverAnimation();
+
+            if (body.classList.contains('lang-en')) {
+                body.classList.replace('lang-en', 'lang-zh');
+            } else {
+                body.classList.replace('lang-zh', 'lang-en');
+            }
+        }
+
+        // 计算器功能
+        let calcDisplay = document.getElementById('calc-display');
+        let calcHistory = [];
+        
+        function appendToCalc(value) {
+            if (calcDisplay.textContent === '0' && value !== '.') {
+                calcDisplay.textContent = value;
+            } else {
+                calcDisplay.textContent += value;
+            }
+        }
+        
+        function clearCalc() {
+            calcDisplay.textContent = '0';
+        }
+        
+        function backspace() {
+            if (calcDisplay.textContent.length > 1) {
+                calcDisplay.textContent = calcDisplay.textContent.slice(0, -1);
+            } else {
+                calcDisplay.textContent = '0';
+            }
+        }
+        
+        function scientificFunction(func) {
+            if (calcDisplay.textContent === '0') {
+                calcDisplay.textContent = func;
+            } else {
+                calcDisplay.textContent += func;
+            }
+        }
+        
+        function calculate() {
+            try {
+                let expression = calcDisplay.textContent
+                    .replace(/×/g, '*')
+                    .replace(/sin\(/g, 'Math.sin(')
+                    .replace(/cos\(/g, 'Math.cos(')
+                    .replace(/tan\(/g, 'Math.tan(')
+                    .replace(/log\(/g, 'Math.log10(')
+                    .replace(/ln\(/g, 'Math.log(')
+                    .replace(/sqrt\(/g, 'Math.sqrt(');
+                
+                // 添加缺失的右括号
+                let openParens = (expression.match(/\(/g) || []).length;
+                let closeParens = (expression.match(/\)/g) || []).length;
+                for (let i = 0; i < openParens - closeParens; i++) {
+                    expression += ')';
+                }
+                
+                let result = eval(expression);
+                if (isNaN(result) || !isFinite(result)) {
+                    throw new Error('Invalid calculation');
+                }
+                
+                // 添加到历史记录
+                addToHistory(calcDisplay.textContent, result);
+                
+                calcDisplay.textContent = result.toString();
+            } catch (error) {
+                calcDisplay.textContent = 'Error';
+                setTimeout(() => {
+                    calcDisplay.textContent = '0';
+                }, 1000);
+            }
+        }
+        
+        function addToHistory(expression, result) {
+            // 限制历史记录数量
+            if (calcHistory.length >= 5) {
+                calcHistory.shift();
+            }
+            
+            calcHistory.push({ expression, result });
+            updateHistoryDisplay();
+        }
+        
+        function updateHistoryDisplay() {
+            const historyList = document.getElementById('history-list');
+            historyList.innerHTML = '';
+            
+            if (calcHistory.length === 0) {
+                const emptyMsgEn = document.createElement('div');
+                emptyMsgEn.className = 'text-neutral-500 italic text-sm lang-en';
+                emptyMsgEn.textContent = 'No calculations yet';
+                historyList.appendChild(emptyMsgEn);
+                
+                const emptyMsgZh = document.createElement('div');
+                emptyMsgZh.className = 'text-neutral-500 italic text-sm lang-zh';
+                emptyMsgZh.textContent = '暂无计算记录';
+                historyList.appendChild(emptyMsgZh);
+            } else {
+                calcHistory.forEach(item => {
+                    const historyItem = document.createElement('div');
+                    historyItem.className = 'text-neutral-300';
+                    historyItem.innerHTML = `
+                        <div class="text-sm text-neutral-500">${item.expression}</div>
+                        <div class="text-lg font-mono">= ${item.result}</div>
+                    `;
+                    historyList.appendChild(historyItem);
+                });
+            }
+        }
+
+        // 初始化页面
+        document.addEventListener('DOMContentLoaded', () => {
+            LoadObserverAnimation();
+            scrollNavBackground();
+            
+            // 根据浏览器语言设置默认语言
+            if (navigator.language.startsWith("zh")) {
+                document.body.classList.replace('lang-en', 'lang-zh');
+            } else {
+                document.body.classList.replace('lang-zh', 'lang-en');
+            }
+            
+            // 为计算器按钮添加样式
+            const style = document.createElement('style');
+            style.textContent = `
+                .calc-btn {
+                    background: rgba(255, 255, 255, 0.05);
+                    color: white;
+                    border: none;
+                    border-radius: 12px;
+                    padding: 16px;
+                    font-size: 1.25rem;
+                    font-weight: 600;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+                
+                .calc-btn:hover {
+                    background: rgba(255, 255, 255, 0.1);
+                    transform: translateY(-2px);
+                }
+                
+                .calc-btn-sm {
+                    background: rgba(255, 255, 255, 0.05);
+                    color: white;
+                    border: none;
+                    border-radius: 8px;
+                    padding: 10px;
+                    font-size: 0.9rem;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+                
+                .calc-btn-sm:hover {
+                    background: rgba(255, 255, 255, 0.1);
+                    transform: translateY(-1px);
+                }
+            `;
+            document.head.appendChild(style);
+            
+            updateHistoryDisplay();
+        });
+
+        document.addEventListener("scroll", scrollNavBackground);
     </script>
+
 </body>
+
 </html>
