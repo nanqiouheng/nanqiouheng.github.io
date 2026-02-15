@@ -88,7 +88,7 @@
             margin: 20px 0;
         }
 
-        /* 头部区域 - 完全复制参考网站风格 */
+        /* 头部区域 - 完全复制参考网站布局 */
         .header-area {
             display: flex;
             justify-content: space-between;
@@ -443,6 +443,7 @@
             word-break: break-word;
         }
 
+        /* 页脚区域 */
         .footer-note {
             text-align: center;
             color: var(--text-tertiary);
@@ -450,6 +451,14 @@
             border-top: 1px solid var(--border-color);
             padding-top: 16px;
             margin-top: 20px;
+        }
+
+        .footer-copyright {
+            text-align: center;
+            color: var(--text-tertiary);
+            font-size: 0.8rem;
+            margin-top: 8px;
+            padding-bottom: 5px;
         }
 
         /* macOS风格模态窗口 */
@@ -631,9 +640,14 @@
         <!-- 卡片网格容器 -->
         <div class="card-grid" id="cardGrid"></div>
 
-        <div class="footer-note" id="footerText">
-            π = 3.14 · 输入已知量，点击计算 · 支持科学计数法 (如 6.67e-11)
-        </div>
+    <!-- 页脚：提示和版权信息 -->
+    <div class="footer-note" id="footerText">
+        π = 3.14 · 输入已知量，点击计算 · 支持科学计数法 (如 6.67e-11)
+    </div>
+    <!-- 版权信息 -->
+    <div class="footer-copyright" id="copyrightText">
+        <span class="lang-en">Powered by Down`sicient | Copyright © 2026 Down`sicient Studio, Tach's subsidiary studio</span>
+        <span class="lang-zh">Powered by Down`sicient | 版权所有 © 2026 Down`sicient Studio，Tach的附属工作室</span>
     </div>
 
     <!-- macOS风格模态窗口 -->
@@ -694,13 +708,14 @@
                 }
             });
 
-            // ----- 翻译字典 -----
+            // ----- 翻译字典 (包含版权信息) -----
             const translations = {
                 zh: {
                     infoTitle: "📐 六大核心公式 · 点击标签查看详情",
                     infoDesc: "每张卡片对应一个核心模块。输入已知量，点击“计算”求解未知量。",
                     topics: ["运动学 (匀加速)", "牛顿第二定律", "功能关系", "动量与冲量", "圆周运动/万有引力", "简谐运动"],
                     footer: "π = 3.14 · 输入已知量，点击计算 · 支持科学计数法 (如 6.67e-11)",
+                    copyright: "Powered by Down`sicient | 版权所有 © 2026 Down`sicient Studio，Tach的附属工作室",
                     cardTitles: {
                         kin: "运动学 (匀加速)",
                         newt: "牛顿第二定律",
@@ -789,6 +804,7 @@
                     infoDesc: "Each card corresponds to a core topic. Enter known values and click 'Solve' to find the unknown.",
                     topics: ["Kinematics (constant a)", "Newton's 2nd Law", "Work-Energy", "Momentum & Impulse", "Circular Motion / Gravity", "Simple Harmonic Motion"],
                     footer: "π = 3.14 · Enter known values, click Solve · Supports scientific notation (e.g., 6.67e-11)",
+                    copyright: "Powered by Down`sicient | Copyright © 2026 Down`sicient Studio, Tach's subsidiary studio",
                     cardTitles: {
                         kin: "Kinematics (constant acceleration)",
                         newt: "Newton's Second Law",
@@ -1062,6 +1078,7 @@
                 });
 
                 document.getElementById('footerText').innerText = t('footer');
+                document.getElementById('copyrightText').innerHTML = `<span class="lang-en">${translations.en.copyright}</span><span class="lang-zh">${translations.zh.copyright}</span>`;
 
                 // 更新语言按钮状态
                 document.querySelectorAll('.lang-btn').forEach(btn => {
