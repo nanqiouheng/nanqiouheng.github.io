@@ -1124,7 +1124,7 @@
                     </tr>
                 </thead>
                 <tbody id="grade-table-body">
-                    <!-- Table rows are managed by JavaScript -->
+                    <!-- 初始为空，无预制项目 -->
                 </tbody>
             </table>
         </div>
@@ -1282,393 +1282,7 @@
         let currentLang = 'zh';
         let gradeTableBody;
 
-        // 主要功能函数保持不变（与之前相同）
-        // 为了简洁，这里只保留核心逻辑，省略了部分重复代码
-        
-        // 初始化函数
-        function initApp() {
-            initTheme();
-            initLanguage();
-            updateTime();
-            gradeTableBody = document.getElementById('grade-table-body');
-            
-            // 绑定事件
-            bindEvents();
-            
-            // 初始化数据
-            initData();
-        }
-        
-        // 绑定所有事件
-        function bindEvents() {
-            // 主题切换
-            document.getElementById('themeToggle').addEventListener('change', toggleTheme);
-            
-            // 语言切换
-            document.querySelectorAll('.lang-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    switchLanguage(btn.dataset.lang);
-                });
-            });
-            
-            // 保存管理相关
-            document.getElementById('manageSavesBtn').addEventListener('click', openSaveModal);
-            document.getElementById('saveCurrentBtn').addEventListener('click', openSaveInputModal);
-            
-            // 模态框关闭按钮
-            document.getElementById('closeSaveModal').addEventListener('click', () => {
-                document.getElementById('saveModal').style.display = 'none';
-            });
-            
-            document.getElementById('closeSaveInputModal').addEventListener('click', () => {
-                document.getElementById('saveInputModal').style.display = 'none';
-            });
-            
-            document.getElementById('closeRenameModal').addEventListener('click', () => {
-                document.getElementById('renameModal').style.display = 'none';
-            });
-            
-            // 取消按钮
-            document.getElementById('cancelSaveBtn').addEventListener('click', () => {
-                document.getElementById('saveInputModal').style.display = 'none';
-            });
-            
-            document.getElementById('cancelRenameBtn').addEventListener('click', () => {
-                document.getElementById('renameModal').style.display = 'none';
-            });
-            
-            // 确认保存按钮
-            document.getElementById('confirmSaveBtn').addEventListener('click', () => {
-                const saveName = document.getElementById('saveNameInput').value.trim();
-                const currentData = getCurrentData();
-                
-                try {
-                    saveManager.addSave(saveName, currentData);
-                    document.getElementById('saveInputModal').style.display = 'none';
-                    document.getElementById('saveModal').style.display = 'none';
-                    renderSaveList();
-                    alert(translations[currentLang]['saveSuccess']);
-                } catch (error) {
-                    console.error('保存失败:', error);
-                    alert(translations[currentLang]['saveFailed']);
-                }
-            });
-            
-            // 确认重命名按钮
-            document.getElementById('confirmRenameBtn').addEventListener('click', () => {
-                const saveId = document.getElementById('renameSaveId').value;
-                const newName = document.getElementById('renameInput').value.trim();
-                if (newName) {
-                    if (saveManager.renameSave(saveId, newName)) {
-                        document.getElementById('renameModal').style.display = 'none';
-                        renderSaveList();
-                        alert(translations[currentLang]['renameSuccess']);
-                    }
-                } else {
-                    alert(translations[currentLang]['enterNewName']);
-                }
-            });
-
-            // 表格操作按钮事件（事件委托）
-            document.body.addEventListener('click', (e) => {
-                if (e.target.matches('#add-row-btn')) addTopLevelRow();
-                if (e.target.matches('.add-sub-btn')) addSubItem(e.target);
-                if (e.target.matches('.remove-row-btn')) removeRow(e.target);
-                if (e.target.matches('#solve-overall-btn')) calculateOverallScore();
-                if (e.target.matches('.solve-item-btn')) solveForItem(e.target);
-                
-                // 保存列表操作（事件委托）
-                if (e.target.matches('.btn-load')) {
-                    const saveId = e.target.dataset.saveId;
-                    const save = saveManager.getSave(saveId);
-                    if (save) {
-                        loadData(save.data);
-                        document.getElementById('saveModal').style.display = 'none';
-                        alert(translations[currentLang]['loadSuccess']);
-                    }
-                }
-                
-                if (e.target.matches('.btn-rename')) {
-                    const saveId = e.target.dataset.saveId;
-                    openRenameModal(saveId);
-                }
-                
-                if (e.target.matches('.btn-delete')) {
-                    const saveId = e.target.dataset.saveId;
-                    if (confirm(translations[currentLang]['confirmDeleteSave'])) {
-                        if (saveManager.deleteSave(saveId)) {
-                            renderSaveList();
-                            alert(translations[currentLang]['deleteSuccess']);
-                        }
-                    }
-                }
-            });
-
-            // 点击模态框外部关闭
-            window.addEventListener('click', (e) => {
-                if (e.target.classList.contains('modal')) {
-                    e.target.style.display = 'none';
-                }
-            });
-
-            document.body.addEventListener('blur', (e) => {
-                const target = e.target;
-                if (target.matches('.editable-weight') || target.matches('.editable-score')) {
-                    const num = parseFloat(target.textContent);
-                    if (target.matches('.editable-weight')) {
-                        const weightValue = Math.max(0, Math.min(100, isNaN(num) ? 0 : num));
-                        target.textContent = weightValue + '%';
-                    }
-                    if (target.matches('.editable-score')) {
-                        const scoreValue = Math.max(0, Math.min(1000, isNaN(num) ? 0 : num));
-                        target.textContent = scoreValue;
-                        updateGradeForScore(target);
-                    }
-                    const parentId = target.closest('tr').dataset.parentId;
-                    if(parentId) updateParentScore(parentId);
-                }
-                 if (target.matches('.overall-score')) {
-                    const num = parseFloat(target.textContent);
-                    const scoreValue = Math.max(0, Math.min(1000, isNaN(num) ? 0 : num));
-                    target.textContent = scoreValue;
-                }
-            }, true);
-
-            document.body.addEventListener('keydown', (e) => {
-                if (e.target.isContentEditable && e.key === 'Enter') {
-                    e.preventDefault();
-                    e.target.blur();
-                }
-                
-                if (e.key === 'Escape') {
-                    const modals = document.querySelectorAll('.modal');
-                    modals.forEach(modal => {
-                        if (modal.style.display === 'flex') {
-                            modal.style.display = 'none';
-                        }
-                    });
-                }
-                
-                if (e.ctrlKey && e.key === 's') {
-                    e.preventDefault();
-                    openSaveInputModal();
-                }
-                
-                // 主题切换快捷键: Ctrl+Shift+T
-                if (e.ctrlKey && e.shiftKey && e.key === 'T') {
-                    e.preventDefault();
-                    document.getElementById('themeToggle').click();
-                }
-            });
-        }
-        
-        // 初始化数据
-        function initData() {
-            const initialData = [
-                {
-                    id: generateId(), name: currentLang === 'zh' ? '期中考试' : 'Midterm Exam', weight: '30%',
-                    subItems: [
-                        { id: generateId(), name: currentLang === 'zh' ? '选择题' : 'Multiple Choice', weight: '60%', score: '95' },
-                        { id: generateId(), name: currentLang === 'zh' ? '简答题' : 'Short Answer', weight: '40%', score: '88' }
-                    ]
-                },
-                { id: generateId(), name: currentLang === 'zh' ? '期末考试' : 'Final Exam', weight: '40%', score: '92' },
-                { id: generateId(), name: currentLang === 'zh' ? '平时作业' : 'Homework', weight: '15%', score: '100' },
-                { id: generateId(), name: currentLang === 'zh' ? '课堂参与' : 'Class Participation', weight: '15%', score: '85' }
-            ];
-            initialData.forEach(item => renderRow(item));
-            
-            // 初始化计算总分
-            setTimeout(calculateOverallScore, 100);
-        }
-        
-        // 初始化语言
-        function initLanguage() {
-            const savedLang = localStorage.getItem(LANGUAGE_STORAGE_KEY);
-            if (savedLang && (savedLang === 'zh' || savedLang === 'en')) {
-                currentLang = savedLang;
-            } else {
-                const browserLang = navigator.language || navigator.userLanguage;
-                if (browserLang.startsWith('zh')) {
-                    currentLang = 'zh';
-                } else {
-                    currentLang = 'en';
-                }
-                localStorage.setItem(LANGUAGE_STORAGE_KEY, currentLang);
-            }
-            
-            updateLanguageButtons();
-            applyLanguage();
-        }
-        
-        // 切换语言
-        function switchLanguage(lang) {
-            if (lang !== currentLang && (lang === 'zh' || lang === 'en')) {
-                showLanguageAnimation(lang);
-                
-                setTimeout(() => {
-                    currentLang = lang;
-                    localStorage.setItem(LANGUAGE_STORAGE_KEY, currentLang);
-                    updateLanguageButtons();
-                    applyLanguage();
-                }, 400);
-            }
-        }
-        
-        // 显示语言切换动画
-        function showLanguageAnimation(targetLang) {
-            const animationElement = document.getElementById('languageAnimation');
-            const animationText = document.getElementById('animationText');
-            
-            if (targetLang === 'zh') {
-                animationText.textContent = translations['en']['switchingToChinese'];
-            } else {
-                animationText.textContent = translations['zh']['switchingToEnglish'];
-            }
-            
-            animationElement.style.opacity = '1';
-            animationElement.style.pointerEvents = 'auto';
-            
-            setTimeout(() => {
-                animationElement.style.opacity = '0';
-                setTimeout(() => {
-                    animationElement.style.pointerEvents = 'none';
-                }, 200);
-            }, 800);
-        }
-        
-        // 更新语言按钮状态
-        function updateLanguageButtons() {
-            document.querySelectorAll('.lang-btn').forEach(btn => {
-                if (btn.dataset.lang === currentLang) {
-                    btn.classList.add('active');
-                } else {
-                    btn.classList.remove('active');
-                }
-            });
-        }
-        
-        // 应用语言到页面
-        function applyLanguage() {
-            document.querySelectorAll('[data-i18n]').forEach(element => {
-                const key = element.getAttribute('data-i18n');
-                if (translations[currentLang][key]) {
-                    element.textContent = translations[currentLang][key];
-                }
-            });
-            
-            document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
-                const key = element.getAttribute('data-i18n-placeholder');
-                if (translations[currentLang][key]) {
-                    element.placeholder = translations[currentLang][key];
-                }
-            });
-            
-            updateTableButtonTexts();
-        }
-        
-        // 更新表格中的按钮文本
-        function updateTableButtonTexts() {
-            document.querySelectorAll('.add-sub-btn').forEach(btn => {
-                btn.textContent = translations[currentLang]['addSubItem'];
-            });
-            
-            document.querySelectorAll('.solve-item-btn').forEach(btn => {
-                btn.textContent = translations[currentLang]['solveItem'];
-            });
-            
-            document.querySelectorAll('.remove-row-btn').forEach(btn => {
-                btn.textContent = translations[currentLang]['removeItem'];
-            });
-            
-            document.querySelectorAll('.btn-load').forEach(btn => {
-                btn.textContent = translations[currentLang]['load'];
-            });
-            
-            document.querySelectorAll('.btn-rename').forEach(btn => {
-                btn.textContent = translations[currentLang]['rename'];
-            });
-            
-            document.querySelectorAll('.btn-delete').forEach(btn => {
-                btn.textContent = translations[currentLang]['delete'];
-            });
-        }
-        
-        // 保存管理功能
-        class SaveManager {
-            constructor() {
-                this.saves = this.loadSaves();
-            }
-            
-            loadSaves() {
-                try {
-                    const savesJson = localStorage.getItem(SAVE_STORAGE_KEY);
-                    return savesJson ? JSON.parse(savesJson) : [];
-                } catch (e) {
-                    console.error('加载保存记录失败:', e);
-                    return [];
-                }
-            }
-            
-            saveSaves() {
-                try {
-                    localStorage.setItem(SAVE_STORAGE_KEY, JSON.stringify(this.saves));
-                } catch (e) {
-                    console.error('保存记录失败:', e);
-                    alert(translations[currentLang]['saveFailed']);
-                }
-            }
-            
-            addSave(name, data) {
-                const timestamp = new Date().toISOString();
-                const formattedDate = new Date().toLocaleString(currentLang === 'zh' ? 'zh-CN' : 'en-US');
-                const save = {
-                    id: 'save_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
-                    name: name || translations[currentLang]['saveCurrentState'] + ' ' + formattedDate,
-                    timestamp: timestamp,
-                    formattedDate: formattedDate,
-                    data: data
-                };
-                this.saves.unshift(save);
-                this.saveSaves();
-                return save;
-            }
-            
-            renameSave(id, newName) {
-                const saveIndex = this.saves.findIndex(save => save.id === id);
-                if (saveIndex !== -1) {
-                    this.saves[saveIndex].name = newName;
-                    this.saves[saveIndex].timestamp = new Date().toISOString();
-                    this.saves[saveIndex].formattedDate = new Date().toLocaleString(currentLang === 'zh' ? 'zh-CN' : 'en-US');
-                    this.saveSaves();
-                    return true;
-                }
-                return false;
-            }
-            
-            deleteSave(id) {
-                const initialLength = this.saves.length;
-                this.saves = this.saves.filter(save => save.id !== id);
-                if (this.saves.length !== initialLength) {
-                    this.saveSaves();
-                    return true;
-                }
-                return false;
-            }
-            
-            getSave(id) {
-                return this.saves.find(save => save.id === id);
-            }
-            
-            getAllSaves() {
-                return [...this.saves];
-            }
-        }
-        
-        // 初始化保存管理器
-        const saveManager = new SaveManager();
-
-        // --- 主要函数定义 ---
+        // --- 主要函数定义 (与之前相同) ---
         function getGrade(score) {
             if (score >= 93) return 'A'; 
             if (score >= 90) return 'A−'; 
@@ -2015,9 +1629,379 @@
             }
         }
 
+        // 保存管理功能
+        class SaveManager {
+            constructor() {
+                this.saves = this.loadSaves();
+            }
+            
+            loadSaves() {
+                try {
+                    const savesJson = localStorage.getItem(SAVE_STORAGE_KEY);
+                    return savesJson ? JSON.parse(savesJson) : [];
+                } catch (e) {
+                    console.error('加载保存记录失败:', e);
+                    return [];
+                }
+            }
+            
+            saveSaves() {
+                try {
+                    localStorage.setItem(SAVE_STORAGE_KEY, JSON.stringify(this.saves));
+                } catch (e) {
+                    console.error('保存记录失败:', e);
+                    alert(translations[currentLang]['saveFailed']);
+                }
+            }
+            
+            addSave(name, data) {
+                const timestamp = new Date().toISOString();
+                const formattedDate = new Date().toLocaleString(currentLang === 'zh' ? 'zh-CN' : 'en-US');
+                const save = {
+                    id: 'save_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+                    name: name || translations[currentLang]['saveCurrentState'] + ' ' + formattedDate,
+                    timestamp: timestamp,
+                    formattedDate: formattedDate,
+                    data: data
+                };
+                this.saves.unshift(save);
+                this.saveSaves();
+                return save;
+            }
+            
+            renameSave(id, newName) {
+                const saveIndex = this.saves.findIndex(save => save.id === id);
+                if (saveIndex !== -1) {
+                    this.saves[saveIndex].name = newName;
+                    this.saves[saveIndex].timestamp = new Date().toISOString();
+                    this.saves[saveIndex].formattedDate = new Date().toLocaleString(currentLang === 'zh' ? 'zh-CN' : 'en-US');
+                    this.saveSaves();
+                    return true;
+                }
+                return false;
+            }
+            
+            deleteSave(id) {
+                const initialLength = this.saves.length;
+                this.saves = this.saves.filter(save => save.id !== id);
+                if (this.saves.length !== initialLength) {
+                    this.saveSaves();
+                    return true;
+                }
+                return false;
+            }
+            
+            getSave(id) {
+                return this.saves.find(save => save.id === id);
+            }
+            
+            getAllSaves() {
+                return [...this.saves];
+            }
+        }
+        
+        // 初始化保存管理器
+        const saveManager = new SaveManager();
+
+        // --- 修改后的初始化数据函数：清空表格，总分归零，无预制项目 ---
+        function initData() {
+            gradeTableBody.innerHTML = '';          // 清空表格
+            const overallEl = document.querySelector('.overall-score');
+            if (overallEl) overallEl.textContent = '0'; // 总分默认0
+            calculateOverallScore();                // 确保总分显示为0
+        }
+        
+        // 初始化语言
+        function initLanguage() {
+            const savedLang = localStorage.getItem(LANGUAGE_STORAGE_KEY);
+            if (savedLang && (savedLang === 'zh' || savedLang === 'en')) {
+                currentLang = savedLang;
+            } else {
+                const browserLang = navigator.language || navigator.userLanguage;
+                if (browserLang.startsWith('zh')) {
+                    currentLang = 'zh';
+                } else {
+                    currentLang = 'en';
+                }
+                localStorage.setItem(LANGUAGE_STORAGE_KEY, currentLang);
+            }
+            
+            updateLanguageButtons();
+            applyLanguage();
+        }
+        
+        // 切换语言
+        function switchLanguage(lang) {
+            if (lang !== currentLang && (lang === 'zh' || lang === 'en')) {
+                showLanguageAnimation(lang);
+                
+                setTimeout(() => {
+                    currentLang = lang;
+                    localStorage.setItem(LANGUAGE_STORAGE_KEY, currentLang);
+                    updateLanguageButtons();
+                    applyLanguage();
+                }, 400);
+            }
+        }
+        
+        // 显示语言切换动画
+        function showLanguageAnimation(targetLang) {
+            const animationElement = document.getElementById('languageAnimation');
+            const animationText = document.getElementById('animationText');
+            
+            if (targetLang === 'zh') {
+                animationText.textContent = translations['en']['switchingToChinese'];
+            } else {
+                animationText.textContent = translations['zh']['switchingToEnglish'];
+            }
+            
+            animationElement.style.opacity = '1';
+            animationElement.style.pointerEvents = 'auto';
+            
+            setTimeout(() => {
+                animationElement.style.opacity = '0';
+                setTimeout(() => {
+                    animationElement.style.pointerEvents = 'none';
+                }, 200);
+            }, 800);
+        }
+        
+        // 更新语言按钮状态
+        function updateLanguageButtons() {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                if (btn.dataset.lang === currentLang) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+        }
+        
+        // 应用语言到页面
+        function applyLanguage() {
+            document.querySelectorAll('[data-i18n]').forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                if (translations[currentLang][key]) {
+                    element.textContent = translations[currentLang][key];
+                }
+            });
+            
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
+                const key = element.getAttribute('data-i18n-placeholder');
+                if (translations[currentLang][key]) {
+                    element.placeholder = translations[currentLang][key];
+                }
+            });
+            
+            updateTableButtonTexts();
+        }
+        
+        // 更新表格中的按钮文本
+        function updateTableButtonTexts() {
+            document.querySelectorAll('.add-sub-btn').forEach(btn => {
+                btn.textContent = translations[currentLang]['addSubItem'];
+            });
+            
+            document.querySelectorAll('.solve-item-btn').forEach(btn => {
+                btn.textContent = translations[currentLang]['solveItem'];
+            });
+            
+            document.querySelectorAll('.remove-row-btn').forEach(btn => {
+                btn.textContent = translations[currentLang]['removeItem'];
+            });
+            
+            document.querySelectorAll('.btn-load').forEach(btn => {
+                btn.textContent = translations[currentLang]['load'];
+            });
+            
+            document.querySelectorAll('.btn-rename').forEach(btn => {
+                btn.textContent = translations[currentLang]['rename'];
+            });
+            
+            document.querySelectorAll('.btn-delete').forEach(btn => {
+                btn.textContent = translations[currentLang]['delete'];
+            });
+        }
+        
+        // 绑定所有事件
+        function bindEvents() {
+            // 主题切换
+            document.getElementById('themeToggle').addEventListener('change', toggleTheme);
+            
+            // 语言切换
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    switchLanguage(btn.dataset.lang);
+                });
+            });
+            
+            // 保存管理相关
+            document.getElementById('manageSavesBtn').addEventListener('click', openSaveModal);
+            document.getElementById('saveCurrentBtn').addEventListener('click', openSaveInputModal);
+            
+            // 模态框关闭按钮
+            document.getElementById('closeSaveModal').addEventListener('click', () => {
+                document.getElementById('saveModal').style.display = 'none';
+            });
+            
+            document.getElementById('closeSaveInputModal').addEventListener('click', () => {
+                document.getElementById('saveInputModal').style.display = 'none';
+            });
+            
+            document.getElementById('closeRenameModal').addEventListener('click', () => {
+                document.getElementById('renameModal').style.display = 'none';
+            });
+            
+            // 取消按钮
+            document.getElementById('cancelSaveBtn').addEventListener('click', () => {
+                document.getElementById('saveInputModal').style.display = 'none';
+            });
+            
+            document.getElementById('cancelRenameBtn').addEventListener('click', () => {
+                document.getElementById('renameModal').style.display = 'none';
+            });
+            
+            // 确认保存按钮
+            document.getElementById('confirmSaveBtn').addEventListener('click', () => {
+                const saveName = document.getElementById('saveNameInput').value.trim();
+                const currentData = getCurrentData();
+                
+                try {
+                    saveManager.addSave(saveName, currentData);
+                    document.getElementById('saveInputModal').style.display = 'none';
+                    document.getElementById('saveModal').style.display = 'none';
+                    renderSaveList();
+                    alert(translations[currentLang]['saveSuccess']);
+                } catch (error) {
+                    console.error('保存失败:', error);
+                    alert(translations[currentLang]['saveFailed']);
+                }
+            });
+            
+            // 确认重命名按钮
+            document.getElementById('confirmRenameBtn').addEventListener('click', () => {
+                const saveId = document.getElementById('renameSaveId').value;
+                const newName = document.getElementById('renameInput').value.trim();
+                if (newName) {
+                    if (saveManager.renameSave(saveId, newName)) {
+                        document.getElementById('renameModal').style.display = 'none';
+                        renderSaveList();
+                        alert(translations[currentLang]['renameSuccess']);
+                    }
+                } else {
+                    alert(translations[currentLang]['enterNewName']);
+                }
+            });
+
+            // 表格操作按钮事件（事件委托）
+            document.body.addEventListener('click', (e) => {
+                if (e.target.matches('#add-row-btn')) addTopLevelRow();
+                if (e.target.matches('.add-sub-btn')) addSubItem(e.target);
+                if (e.target.matches('.remove-row-btn')) removeRow(e.target);
+                if (e.target.matches('#solve-overall-btn')) calculateOverallScore();
+                if (e.target.matches('.solve-item-btn')) solveForItem(e.target);
+                
+                // 保存列表操作（事件委托）
+                if (e.target.matches('.btn-load')) {
+                    const saveId = e.target.dataset.saveId;
+                    const save = saveManager.getSave(saveId);
+                    if (save) {
+                        loadData(save.data);
+                        document.getElementById('saveModal').style.display = 'none';
+                        alert(translations[currentLang]['loadSuccess']);
+                    }
+                }
+                
+                if (e.target.matches('.btn-rename')) {
+                    const saveId = e.target.dataset.saveId;
+                    openRenameModal(saveId);
+                }
+                
+                if (e.target.matches('.btn-delete')) {
+                    const saveId = e.target.dataset.saveId;
+                    if (confirm(translations[currentLang]['confirmDeleteSave'])) {
+                        if (saveManager.deleteSave(saveId)) {
+                            renderSaveList();
+                            alert(translations[currentLang]['deleteSuccess']);
+                        }
+                    }
+                }
+            });
+
+            // 点击模态框外部关闭
+            window.addEventListener('click', (e) => {
+                if (e.target.classList.contains('modal')) {
+                    e.target.style.display = 'none';
+                }
+            });
+
+            document.body.addEventListener('blur', (e) => {
+                const target = e.target;
+                if (target.matches('.editable-weight') || target.matches('.editable-score')) {
+                    const num = parseFloat(target.textContent);
+                    if (target.matches('.editable-weight')) {
+                        const weightValue = Math.max(0, Math.min(100, isNaN(num) ? 0 : num));
+                        target.textContent = weightValue + '%';
+                    }
+                    if (target.matches('.editable-score')) {
+                        const scoreValue = Math.max(0, Math.min(1000, isNaN(num) ? 0 : num));
+                        target.textContent = scoreValue;
+                        updateGradeForScore(target);
+                    }
+                    const parentId = target.closest('tr').dataset.parentId;
+                    if(parentId) updateParentScore(parentId);
+                }
+                 if (target.matches('.overall-score')) {
+                    const num = parseFloat(target.textContent);
+                    const scoreValue = Math.max(0, Math.min(1000, isNaN(num) ? 0 : num));
+                    target.textContent = scoreValue;
+                }
+            }, true);
+
+            document.body.addEventListener('keydown', (e) => {
+                if (e.target.isContentEditable && e.key === 'Enter') {
+                    e.preventDefault();
+                    e.target.blur();
+                }
+                
+                if (e.key === 'Escape') {
+                    const modals = document.querySelectorAll('.modal');
+                    modals.forEach(modal => {
+                        if (modal.style.display === 'flex') {
+                            modal.style.display = 'none';
+                        }
+                    });
+                }
+                
+                if (e.ctrlKey && e.key === 's') {
+                    e.preventDefault();
+                    openSaveInputModal();
+                }
+                
+                // 主题切换快捷键: Ctrl+Shift+T
+                if (e.ctrlKey && e.shiftKey && e.key === 'T') {
+                    e.preventDefault();
+                    document.getElementById('themeToggle').click();
+                }
+            });
+        }
+        
         // 初始化应用
+        function initApp() {
+            initTheme();
+            initLanguage();
+            updateTime();
+            gradeTableBody = document.getElementById('grade-table-body');
+            
+            // 绑定事件
+            bindEvents();
+            
+            // 初始化数据（空白无预制项目）
+            initData();
+        }
+
+        // 启动
         document.addEventListener('DOMContentLoaded', initApp);
     </script>
 </body>
 </html>
-
