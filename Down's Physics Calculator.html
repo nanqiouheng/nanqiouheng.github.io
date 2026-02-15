@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
     <title>AP Physics 1 · 专业计算器 | Professional Solver</title>
+    <!-- 图标库 (与参考网站一致) -->
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -12,25 +14,57 @@
         }
 
         :root {
-            --bg-primary: #1a202c;
-            --bg-secondary: #2d3748;
-            --bg-tertiary: #4a5568;
-            --text-primary: #f7fafc;
-            --text-secondary: #e2e8f0;
-            --text-tertiary: #a0aec0;
+            /* 浅色主题变量 (参考网站) */
             --primary-color: #7289da;
             --primary-dark: #5865f2;
             --success-color: #43b581;
             --warning-color: #faa61a;
+            --danger-color: #f04747;
+            --text-primary: #2d3748;
+            --text-secondary: #4a5568;
+            --text-tertiary: #718096;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f7fafc;
+            --bg-tertiary: #edf2f7;
+            --border-color: #e2e8f0;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --overlay-bg: rgba(255, 255, 255, 0.95);
+            --table-header-bg: rgba(114, 137, 218, 0.05);
+            --table-row-hover: rgba(114, 137, 218, 0.03);
+            --modal-bg: rgba(0, 0, 0, 0.3);
+            --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            --transition-speed: 0.3s;
+            --modal-bg: #2d3748;
+            --modal-header: #1e2a3a;
+        }
+
+        .dark-theme {
+            /* 深色主题变量 (参考网站) */
+            --primary-color: #5865f2;
+            --primary-dark: #4752c4;
+            --success-color: #3ca374;
+            --warning-color: #f1a10e;
+            --danger-color: #d84040;
+            --text-primary: #f7fafc;
+            --text-secondary: #e2e8f0;
+            --text-tertiary: #a0aec0;
+            --bg-primary: #1a202c;
+            --bg-secondary: #2d3748;
+            --bg-tertiary: #4a5568;
             --border-color: #4a5568;
-            --card-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+            --shadow-color: rgba(0, 0, 0, 0.3);
+            --overlay-bg: rgba(26, 32, 44, 0.95);
+            --table-header-bg: rgba(88, 101, 242, 0.1);
+            --table-row-hover: rgba(88, 101, 242, 0.05);
+            --modal-bg: rgba(0, 0, 0, 0.5);
+            --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
             --modal-bg: #2d3748;
             --modal-header: #1e2a3a;
         }
 
         body {
             font-family: 'Segoe UI', 'Roboto', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-            background-color: var(--bg-primary);
+            background-color: var(--bg-secondary);
             color: var(--text-primary);
             line-height: 1.5;
             min-height: 100vh;
@@ -38,71 +72,192 @@
             flex-direction: column;
             align-items: center;
             padding: 16px;
+            transition: background-color var(--transition-speed), color var(--transition-speed);
+            background-image: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+            background-attachment: fixed;
         }
 
         .container {
             max-width: 1400px;
             width: 100%;
+            background: var(--bg-primary);
+            border-radius: 24px;
+            padding: 20px 25px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--card-shadow);
+            margin: 20px 0;
         }
 
-        /* 头部 */
-        .header {
+        /* 头部区域 - 完全复制参考网站风格 */
+        .header-area {
             display: flex;
-            flex-wrap: wrap;
-            align-items: center;
             justify-content: space-between;
-            padding: 12px 0 16px;
-            border-bottom: 1px solid var(--border-color);
+            align-items: center;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 15px;
             margin-bottom: 20px;
-            gap: 12px;
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
-        h1 {
-            font-size: 1.7rem;
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            flex: 1;
+        }
+
+        .home-btn {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            padding: 9px 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(114, 137, 218, 0.2);
+            white-space: nowrap;
+        }
+        .home-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(114, 137, 218, 0.3);
+        }
+        .home-btn::before {
+            content: '←';
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        h2 {
+            font-size: 26px;
             font-weight: 600;
-            background: linear-gradient(135deg, var(--primary-color), #b794f4);
+            background: linear-gradient(135deg, var(--primary-color), var(--success-color));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            line-height: 1.2;
+            margin: 0;
+            white-space: nowrap;
         }
 
-        .control-group {
+        .header-center {
             display: flex;
             align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
+            gap: 20px;
+            flex: 1;
+            justify-content: center;
         }
 
-        /* 语言切换 */
-        .lang-switch {
+        .header-right {
+            flex: 1;
             display: flex;
-            background: var(--bg-secondary);
+            justify-content: flex-end;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* 语言切换器 */
+        .language-switcher {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: var(--bg-tertiary);
+            padding: 4px;
             border-radius: 40px;
             border: 1px solid var(--border-color);
-            overflow: hidden;
         }
         .lang-btn {
             background: transparent;
             border: none;
             color: var(--text-tertiary);
-            padding: 8px 18px;
-            font-weight: 600;
+            padding: 6px 14px;
+            border-radius: 30px;
             cursor: pointer;
-            transition: 0.2s;
+            font-weight: 600;
             font-size: 0.9rem;
+            transition: 0.2s;
         }
         .lang-btn.active {
-            background: var(--primary-color);
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
             color: white;
         }
 
-        /* g值选择器 */
+        /* 主题切换 - 与参考网站完全一致 */
+        .theme-switch-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: var(--text-secondary);
+            background: var(--bg-tertiary);
+            padding: 4px 12px;
+            border-radius: 40px;
+            border: 1px solid var(--border-color);
+        }
+        .switch-label {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            white-space: nowrap;
+        }
+        .sun-icon, .moon-icon {
+            font-size: 16px;
+            line-height: 1;
+        }
+        .switch {
+            font-size: 17px;
+            position: relative;
+            display: inline-block;
+            width: 3.5em;
+            height: 2em;
+            flex-shrink: 0;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 30px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 1.4em;
+            width: 1.4em;
+            border-radius: 50%;
+            left: 10%;
+            bottom: 15%;
+            box-shadow: inset 8px -4px 0px 0px #fff;
+            background: #ccc;
+            transition: .4s;
+        }
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+        input:checked + .slider:before {
+            transform: translateX(100%);
+            box-shadow: inset 15px -4px 0px 15px #ffd000;
+        }
+
+        /* g值选择器 (融入右侧) */
         .g-selector {
             display: flex;
             align-items: center;
             gap: 6px;
-            background: var(--bg-secondary);
+            background: var(--bg-tertiary);
             padding: 5px 12px;
             border-radius: 40px;
             border: 1px solid var(--border-color);
@@ -121,13 +276,15 @@
             cursor: pointer;
             font-weight: 600;
             font-size: 0.9rem;
+            transition: 0.15s;
         }
         .g-option.active {
             background: var(--primary-color);
             border-color: var(--primary-color);
+            color: white;
         }
 
-        /* 公式说明区域 */
+        /* 公式说明区域 (可点击标签) */
         .info-panel {
             background: var(--bg-secondary);
             border-radius: 20px;
@@ -199,12 +356,11 @@
             color: var(--primary-color);
             margin-bottom: 6px;
         }
-        /* 公式字体优化：使用专业数学字体 */
         .card-equation {
             background: var(--bg-tertiary);
             padding: 12px 8px;
             border-radius: 14px;
-            font-family: 'Cambria Math', 'STIX Two Math', 'Times New Roman', 'Segoe UI Symbol', 'Arial Unicode MS', serif;
+            font-family: 'Cambria Math', 'STIX Two Math', 'Times New Roman', serif;
             font-size: 1rem;
             text-align: center;
             margin: 12px 0;
@@ -242,7 +398,7 @@
         .input-row input:focus {
             outline: none;
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(114, 137, 218, 0.3);
+            box-shadow: 0 0 0 3px rgba(114, 137, 218, 0.2);
         }
 
         .button-group {
@@ -252,7 +408,7 @@
         }
         .btn {
             flex: 1;
-            background: var(--primary-color);
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
             border: none;
             color: white;
             font-weight: 600;
@@ -263,7 +419,8 @@
             transition: 0.15s;
         }
         .btn:hover {
-            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(114, 137, 218, 0.3);
         }
         .btn.reset {
             background: var(--bg-tertiary);
@@ -286,7 +443,7 @@
             word-break: break-word;
         }
 
-        .footer {
+        .footer-note {
             text-align: center;
             color: var(--text-tertiary);
             font-size: 0.85rem;
@@ -399,33 +556,67 @@
         }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* 小屏幕优化 */
+        /* 响应式 */
+        @media (max-width: 1100px) {
+            .header-area {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .header-left, .header-center, .header-right {
+                width: 100%;
+                justify-content: flex-start;
+            }
+            .header-center {
+                justify-content: center;
+                order: 3;
+                margin-top: 10px;
+            }
+            .header-right {
+                justify-content: flex-start;
+                order: 2;
+            }
+        }
         @media (max-width: 480px) {
             body { padding: 10px; }
-            h1 { font-size: 1.4rem; }
-            .lang-btn { padding: 6px 12px; font-size: 0.85rem; }
+            h2 { font-size: 22px; }
+            .home-btn { padding: 6px 12px; font-size: 12px; }
+            .lang-btn { padding: 4px 10px; font-size: 0.8rem; }
             .g-selector { padding: 4px 8px; }
-            .g-option { padding: 3px 8px; font-size: 0.85rem; }
+            .g-option { padding: 3px 8px; font-size: 0.8rem; }
             .card { padding: 15px; }
             .input-row label { width: 75px; font-size: 0.85rem; }
             .btn { font-size: 0.9rem; padding: 10px 4px; }
         }
     </style>
 </head>
-<body>
+<body class="dark-theme">
     <div id="loading"><div class="spinner"></div></div>
 
     <div class="container">
-        <!-- 头部 -->
-        <div class="header">
-            <h1 id="main-title">⚛️ AP Physics 1 · 专业计算器</h1>
-            <div class="control-group">
-                <!-- 语言切换 -->
-                <div class="lang-switch">
+        <!-- 头部区域 - 完全复制参考网站布局 -->
+        <div class="header-area">
+            <div class="header-left">
+                <a href="https://joe666.dpdns.org" class="home-btn" target="_blank">返回主页</a>
+                <h2>⚛️ AP Physics 1 · 专业计算器</h2>
+            </div>
+            <div class="header-center">
+                <!-- 语言切换器 -->
+                <div class="language-switcher">
                     <button class="lang-btn active" data-lang="zh">中文</button>
                     <button class="lang-btn" data-lang="en">English</button>
                 </div>
-                <!-- g值选择 -->
+                <!-- 主题切换 (参考网站滑块) -->
+                <div class="theme-switch-wrapper">
+                    <span class="switch-label"><span class="sun-icon">☀️</span><span class="lang-en">Light</span><span class="lang-zh">浅色</span></span>
+                    <label class="switch">
+                        <input type="checkbox" id="themeToggle" checked>
+                        <span class="slider"></span>
+                    </label>
+                    <span class="switch-label"><span class="moon-icon">🌙</span><span class="lang-en">Dark</span><span class="lang-zh">深色</span></span>
+                </div>
+            </div>
+            <div class="header-right">
+                <!-- g值选择器 (融入右侧) -->
                 <div class="g-selector">
                     <span>g =</span>
                     <button class="g-option active" id="g9_8">9.8</button>
@@ -434,18 +625,18 @@
             </div>
         </div>
 
-        <!-- 公式说明区域（可点击的标签） -->
+        <!-- 公式说明区域（可点击标签） -->
         <div class="info-panel" id="infoPanel"></div>
 
         <!-- 卡片网格容器 -->
         <div class="card-grid" id="cardGrid"></div>
 
-        <div class="footer" id="footerText">
+        <div class="footer-note" id="footerText">
             π = 3.14 · 输入已知量，点击计算 · 支持科学计数法 (如 6.67e-11)
         </div>
     </div>
 
-    <!-- macOS风格模态窗口（只有一个红色关闭按钮） -->
+    <!-- macOS风格模态窗口 -->
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal-window" id="modalWindow">
             <div class="modal-header">
@@ -475,6 +666,7 @@
             let currentLang = 'zh';
             let gValue = 9.8;
             const PI = 3.14;
+            let isDark = true; // 默认深色
 
             // 模态窗口元素
             const modalOverlay = document.getElementById('modalOverlay');
@@ -491,12 +683,22 @@
                 if (e.target === modalOverlay) closeModal();
             });
 
-            // ----- 专业英语词汇翻译字典（包含详细解释）-----
+            // 主题切换
+            const themeToggle = document.getElementById('themeToggle');
+            themeToggle.addEventListener('change', () => {
+                isDark = themeToggle.checked;
+                if (isDark) {
+                    document.body.classList.add('dark-theme');
+                } else {
+                    document.body.classList.remove('dark-theme');
+                }
+            });
+
+            // ----- 翻译字典 -----
             const translations = {
                 zh: {
-                    mainTitle: "⚛️ AP Physics 1 · 专业计算器",
                     infoTitle: "📐 六大核心公式 · 点击标签查看详情",
-                    infoDesc: "每张卡片对应一个核心模块，包含主要公式。输入已知量，点击“计算”求解未知量。",
+                    infoDesc: "每张卡片对应一个核心模块。输入已知量，点击“计算”求解未知量。",
                     topics: ["运动学 (匀加速)", "牛顿第二定律", "功能关系", "动量与冲量", "圆周运动/万有引力", "简谐运动"],
                     footer: "π = 3.14 · 输入已知量，点击计算 · 支持科学计数法 (如 6.67e-11)",
                     cardTitles: {
@@ -525,7 +727,6 @@
                     buttons: { calc: "计算", reset: "重置" },
                     result: "结果：",
                     insufficient: "⚠️ 输入不足或无法计算",
-                    // 增强的详细解释
                     modalDetails: {
                         kin: {
                             title: "运动学 (匀加速直线运动)",
@@ -584,7 +785,6 @@
                     }
                 },
                 en: {
-                    mainTitle: "⚛️ AP Physics 1 · Professional Solver",
                     infoTitle: "📐 Six Core Formulas · Click Tags for Details",
                     infoDesc: "Each card corresponds to a core topic. Enter known values and click 'Solve' to find the unknown.",
                     topics: ["Kinematics (constant a)", "Newton's 2nd Law", "Work-Energy", "Momentum & Impulse", "Circular Motion / Gravity", "Simple Harmonic Motion"],
@@ -674,7 +874,7 @@
                 }
             };
 
-            // 卡片数据
+            // 卡片数据 (与之前相同)
             const cardsData = [
                 { id: 'kin', inputs: ['v0','v','a','t','dx'],
                   solve: (vals) => {
@@ -737,11 +937,10 @@
                 return key.split('.').reduce((obj, k) => obj?.[k], translations[currentLang]) || key;
             };
 
-            // 显示模态窗口并填充内容（使用丰富格式）
+            // 显示模态窗口
             function showModal(topicKey) {
                 const details = translations[currentLang].modalDetails[topicKey];
                 modalTitle.innerText = details.title;
-                // 构建详细内容，包括定律、描述、变量、条件、提示、例题
                 const contentHtml = `
                     <p><strong>📌 定律</strong><br>${details.law}</p>
                     <p><strong>🔍 描述</strong><br>${details.desc}</p>
@@ -755,7 +954,7 @@
                 modalOverlay.style.display = 'flex';
             }
 
-            // 渲染信息面板（可点击标签）
+            // 渲染信息面板
             function renderInfoPanel() {
                 const panel = document.getElementById('infoPanel');
                 const topics = translations[currentLang].topics;
@@ -767,7 +966,6 @@
                         ${topics.map((topic, idx) => `<span class="topic-tag" data-topic="${topicKeys[idx]}">${topic}</span>`).join('')}
                     </div>
                 `;
-                // 绑定点击事件
                 document.querySelectorAll('.topic-tag').forEach(tag => {
                     tag.addEventListener('click', () => {
                         const topic = tag.dataset.topic;
@@ -809,7 +1007,6 @@
                     grid.appendChild(cardDiv);
                 });
 
-                // 绑定计算事件
                 document.querySelectorAll('.btn[data-card]').forEach(btn => {
                     btn.addEventListener('click', (e) => {
                         const cardId = e.target.dataset.card;
@@ -836,7 +1033,6 @@
                     });
                 });
 
-                // 重置事件
                 document.querySelectorAll('.btn.reset').forEach(btn => {
                     btn.addEventListener('click', (e) => {
                         const cardId = e.target.dataset.reset;
@@ -865,11 +1061,22 @@
                     if (input) input.value = inputValues[id];
                 });
 
-                document.getElementById('main-title').innerText = t('mainTitle');
                 document.getElementById('footerText').innerText = t('footer');
 
+                // 更新语言按钮状态
                 document.querySelectorAll('.lang-btn').forEach(btn => {
                     btn.classList.toggle('active', btn.dataset.lang === currentLang);
+                });
+
+                // 更新主题切换按钮中的文字
+                document.querySelectorAll('.theme-switch-wrapper .lang-en, .theme-switch-wrapper .lang-zh').forEach(el => {
+                    if (currentLang === 'en') {
+                        if (el.classList.contains('lang-en')) el.style.display = 'inline';
+                        else el.style.display = 'none';
+                    } else {
+                        if (el.classList.contains('lang-zh')) el.style.display = 'inline';
+                        else el.style.display = 'none';
+                    }
                 });
             }
 
@@ -893,6 +1100,9 @@
                 document.querySelectorAll('.lang-btn').forEach(btn => {
                     btn.addEventListener('click', () => setLanguage(btn.dataset.lang));
                 });
+
+                // 初始设置主题切换中的语言显示
+                setLanguage('zh');
 
                 // 首次渲染
                 renderInfoPanel();
