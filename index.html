@@ -17,7 +17,6 @@
         href="https://cdn.jsdelivr.net/npm/misans@4.1.0/lib/Normal/MiSans-Regular.min.css" />
     <link rel="stylesheet" crossorigin="anonymous"
         href="https://cdn.jsdelivr.net/npm/misans@4.1.0/lib/Normal/MiSans-Semibold.min.css" />
-    <!-- 修改这里：添加新的 favicon -->
     <link rel="icon" href="https://raw.githubusercontent.com/nanqiouheng/nanqiouheng.github.io/main/DownsicientLoge.ico" type="image/x-icon" />
     <style>
         :root {
@@ -218,10 +217,18 @@
                 <span class="lang-en">EN</span>
                 <span class="lang-zh">中</span>
             </button>
+            <!-- 原有分数计算器按钮 -->
             <a href="https://nanqiouheng.github.io/Down's%20Score%20Calculator.html"
                 class="text-sm font-medium text-white border border-white/20 px-4 py-2 rounded-full hover:bg-white hover:text-black transition-all duration-300">
-                <span class="lang-en">Calculator</span>
-                <span class="lang-zh">计算器</span>
+                <span class="lang-en">Score Calc</span>
+                <span class="lang-zh">分数计算器</span>
+            </a>
+            <!-- 新增物理计算器按钮（蓝色原子图标） -->
+            <a href="https://nanqiouheng.github.io/Down's%20Physics%20Calculator.html"
+                class="text-sm font-medium text-white border border-white/20 px-4 py-2 rounded-full hover:bg-white hover:text-black transition-all duration-300 ml-3">
+                <iconify-icon icon="lucide:atom" class="inline mr-1" width="16"></iconify-icon>
+                <span class="lang-en">Physics Solver</span>
+                <span class="lang-zh">物理计算器</span>
             </a>
         </div>
     </nav>
@@ -277,12 +284,21 @@
                 为游戏玩家、数据分析师及需要精确计算的用户提供高级计算工具。节省时间，立即获得准确结果。
             </p>
 
-            <div
-                class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6 reveal-on-scroll delay-300 lang-en">
+            <!-- 英雄区域行动按钮组（增加物理计算器） -->
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6 reveal-on-scroll delay-300 lang-en">
+                <!-- 原有分数计算器 -->
                 <button onclick="window.location.href='https://nanqiouheng.github.io/Down\'s%20Score%20Calculator.html'"
                     class="group relative px-8 py-4 bg-purple-500 hover:bg-purple-400 text-black font-semibold rounded-full transition-all duration-300 hover:scale-105">
-                    Try Calculator Now
+                    Score Calculator
                     <iconify-icon icon="lucide:arrow-right"
+                        class="inline-block ml-2 -mr-1 transition-transform group-hover:translate-x-1"
+                        width="18"></iconify-icon>
+                </button>
+                <!-- 新增物理计算器（使用蓝色以区分） -->
+                <button onclick="window.location.href='https://nanqiouheng.github.io/Down\'s%20Physics%20Calculator.html'"
+                    class="group relative px-8 py-4 bg-blue-500 hover:bg-blue-400 text-black font-semibold rounded-full transition-all duration-300 hover:scale-105">
+                    Physics Solver
+                    <iconify-icon icon="lucide:atom"
                         class="inline-block ml-2 -mr-1 transition-transform group-hover:translate-x-1"
                         width="18"></iconify-icon>
                 </button>
@@ -293,12 +309,20 @@
                 </button>
             </div>
 
-            <div
-                class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6 reveal-on-scroll delay-300 lang-zh">
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6 reveal-on-scroll delay-300 lang-zh">
+                <!-- 原有分数计算器 -->
                 <button onclick="window.location.href='https://nanqiouheng.github.io/Down\'s%20Score%20Calculator.html'"
                     class="group relative px-8 py-4 bg-purple-500 hover:bg-purple-400 text-black font-semibold rounded-full transition-all duration-300 hover:scale-105">
-                    立即试用计算器
+                    分数计算器
                     <iconify-icon icon="lucide:arrow-right"
+                        class="inline-block ml-2 -mr-1 transition-transform group-hover:translate-x-1"
+                        width="18"></iconify-icon>
+                </button>
+                <!-- 新增物理计算器（使用蓝色） -->
+                <button onclick="window.location.href='https://nanqiouheng.github.io/Down\'s%20Physics%20Calculator.html'"
+                    class="group relative px-8 py-4 bg-blue-500 hover:bg-blue-400 text-black font-semibold rounded-full transition-all duration-300 hover:scale-105">
+                    物理计算器
+                    <iconify-icon icon="lucide:atom"
                         class="inline-block ml-2 -mr-1 transition-transform group-hover:translate-x-1"
                         width="18"></iconify-icon>
                 </button>
@@ -387,17 +411,20 @@
         <div class="max-w-6xl mx-auto">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
-                <!-- Card 1 -->
+                <!-- Card 1: 高级计算器（原分数计算器） -->
                 <div
                     class="glass-panel p-8 rounded-3xl reveal-on-scroll hover:bg-white/5 transition-colors duration-500 group lang-en">
                     <div
                         class="w-12 h-12 bg-purple-500/10 rounded-2xl flex items-center justify-center text-purple-500 mb-6 group-hover:scale-110 transition-transform">
                         <iconify-icon icon="lucide:calculator" width="24"></iconify-icon>
                     </div>
-                    <h3 class="text-xl text-white font-semibold mb-3">Advanced Calculator</h3>
+                    <h3 class="text-xl text-white font-semibold mb-3">Score Calculator</h3>
                     <p class="text-neutral-400 leading-relaxed text-sm">
-                        Powerful calculator with scientific functions, formula support, and real-time computation. Perfect for complex calculations.
+                        Powerful calculator for grade calculations, with multi-level sub-items and real-time updates. Perfect for students.
                     </p>
+                    <a href="https://nanqiouheng.github.io/Down's%20Score%20Calculator.html" class="mt-4 inline-flex items-center text-purple-400 hover:text-purple-300 text-sm">
+                        Try now <iconify-icon icon="lucide:arrow-right" class="ml-1" width="14"></iconify-icon>
+                    </a>
                 </div>
 
                 <div
@@ -406,16 +433,50 @@
                         class="w-12 h-12 bg-purple-500/10 rounded-2xl flex items-center justify-center text-purple-500 mb-6 group-hover:scale-110 transition-transform">
                         <iconify-icon icon="lucide:calculator" width="24"></iconify-icon>
                     </div>
-                    <h3 class="text-xl text-white font-semibold mb-3">高级计算器</h3>
+                    <h3 class="text-xl text-white font-semibold mb-3">分数计算器</h3>
                     <p class="text-neutral-400 leading-relaxed text-sm">
-                        功能强大的计算器，支持科学函数、公式计算和实时计算。完美处理复杂计算需求。
+                        强大的分数计算器，支持多级子项目、实时更新，非常适合学生使用。
                     </p>
+                    <a href="https://nanqiouheng.github.io/Down's%20Score%20Calculator.html" class="mt-4 inline-flex items-center text-purple-400 hover:text-purple-300 text-sm">
+                        立即试用 <iconify-icon icon="lucide:arrow-right" class="ml-1" width="14"></iconify-icon>
+                    </a>
                 </div>
 
-
-                <!-- Card 2 -->
+                <!-- Card 2: 物理计算器（新增） -->
                 <div
                     class="glass-panel p-8 rounded-3xl reveal-on-scroll delay-100 hover:bg-white/5 transition-colors duration-500 group lang-en">
+                    <div
+                        class="w-12 h-12 bg-blue-500/10 rounded-2xl flex items-center justify-center text-blue-500 mb-6 group-hover:scale-110 transition-transform">
+                        <iconify-icon icon="lucide:atom" width="24"></iconify-icon>
+                    </div>
+                    <h3 class="text-xl text-white font-semibold mb-3">Physics Solver</h3>
+                    <p class="text-neutral-400 leading-relaxed text-sm">
+                        AP Physics 1 formula solver with six core topics, g-value selection, and detailed explanations. Solve kinematics, dynamics, energy, momentum, circular motion, and SHM.
+                    </p>
+                    <a href="https://nanqiouheng.github.io/Down's%20Physics%20Calculator.html" class="mt-4 inline-flex items-center text-blue-400 hover:text-blue-300 text-sm">
+                        Try now <iconify-icon icon="lucide:arrow-right" class="ml-1" width="14"></iconify-icon>
+                    </a>
+                </div>
+
+                <div
+                    class="glass-panel p-8 rounded-3xl reveal-on-scroll delay-100 hover:bg-white/5 transition-colors duration-500 group lang-zh serif-zh">
+                    <div
+                        class="w-12 h-12 bg-blue-500/10 rounded-2xl flex items-center justify-center text-blue-500 mb-6 group-hover:scale-110 transition-transform">
+                        <iconify-icon icon="lucide:atom" width="24"></iconify-icon>
+                    </div>
+                    <h3 class="text-xl text-white font-semibold mb-3">物理计算器</h3>
+                    <p class="text-neutral-400 leading-relaxed text-sm">
+                        AP物理1公式计算器，涵盖六大核心主题、g值选择、详细解释。解决运动学、动力学、能量、动量、圆周运动和简谐运动问题。
+                    </p>
+                    <a href="https://nanqiouheng.github.io/Down's%20Physics%20Calculator.html" class="mt-4 inline-flex items-center text-blue-400 hover:text-blue-300 text-sm">
+                        立即试用 <iconify-icon icon="lucide:arrow-right" class="ml-1" width="14"></iconify-icon>
+                    </a>
+                </div>
+
+                <!-- 其余卡片保持不变（数据分析、快速计算、可定制工作区、结果导出） -->
+                <!-- Card 3: Data Analysis -->
+                <div
+                    class="glass-panel p-8 rounded-3xl reveal-on-scroll delay-200 hover:bg-white/5 transition-colors duration-500 group lang-en">
                     <div
                         class="w-12 h-12 bg-purple-500/10 rounded-2xl flex items-center justify-center text-purple-500 mb-6 group-hover:scale-110 transition-transform">
                         <iconify-icon icon="lucide:bar-chart" width="24"></iconify-icon>
@@ -427,7 +488,7 @@
                 </div>
 
                 <div
-                    class="glass-panel p-8 rounded-3xl reveal-on-scroll delay-100 hover:bg-white/5 transition-colors duration-500 group lang-zh serif-zh">
+                    class="glass-panel p-8 rounded-3xl reveal-on-scroll delay-200 hover:bg-white/5 transition-colors duration-500 group lang-zh serif-zh">
                     <div
                         class="w-12 h-12 bg-purple-500/10 rounded-2xl flex items-center justify-center text-purple-500 mb-6 group-hover:scale-110 transition-transform">
                         <iconify-icon icon="lucide:bar-chart" width="24"></iconify-icon>
@@ -438,10 +499,9 @@
                     </p>
                 </div>
 
-
-                <!-- Card 3 -->
+                <!-- Card 4: Fast Computation -->
                 <div
-                    class="glass-panel p-8 rounded-3xl reveal-on-scroll delay-200 hover:bg-white/5 transition-colors duration-500 group lang-en">
+                    class="glass-panel p-8 rounded-3xl reveal-on-scroll hover:bg-white/5 transition-colors duration-500 group lang-en">
                     <div
                         class="w-12 h-12 bg-purple-500/10 rounded-2xl flex items-center justify-center text-purple-500 mb-6 group-hover:scale-110 transition-transform">
                         <iconify-icon icon="lucide:zap" width="24"></iconify-icon>
@@ -453,7 +513,7 @@
                 </div>
 
                 <div
-                    class="glass-panel p-8 rounded-3xl reveal-on-scroll delay-200 hover:bg-white/5 transition-colors duration-500 group lang-zh serif-zh">
+                    class="glass-panel p-8 rounded-3xl reveal-on-scroll hover:bg-white/5 transition-colors duration-500 group lang-zh serif-zh">
                     <div
                         class="w-12 h-12 bg-purple-500/10 rounded-2xl flex items-center justify-center text-purple-500 mb-6 group-hover:scale-110 transition-transform">
                         <iconify-icon icon="lucide:zap" width="24"></iconify-icon>
@@ -464,8 +524,7 @@
                     </p>
                 </div>
 
-
-                <!-- Card 4 (Wide) -->
+                <!-- Card 5: Customizable Workspace (wide) -->
                 <div
                     class="glass-panel p-8 rounded-3xl md:col-span-2 lg:col-span-2 reveal-on-scroll hover:bg-white/5 transition-colors duration-500 group flex flex-col md:flex-row gap-8 items-center lang-en">
                     <div class="flex-1 space-y-4">
@@ -520,8 +579,7 @@
                     </div>
                 </div>
 
-
-                <!-- Card 5 -->
+                <!-- Card 6: Export Results -->
                 <div
                     class="glass-panel p-8 rounded-3xl reveal-on-scroll delay-100 hover:bg-white/5 transition-colors duration-500 group lang-en">
                     <div
@@ -545,12 +603,11 @@
                         以多种格式导出计算结果，包括 CSV、PDF 和 Excel，便于进一步分析或分享。
                     </p>
                 </div>
-
             </div>
         </div>
     </section>
 
-    <!-- Tools Demo Section -->
+    <!-- Tools Demo Section (保持不变) -->
     <section id="demo" class="py-32 px-4 relative z-10 bg-neutral-900/30">
         <div class="max-w-4xl mx-auto">
             <div class="text-center mb-20 reveal-on-scroll lang-en">
@@ -564,20 +621,20 @@
             </div>
 
             <div class="relative border-l border-white/10 ml-6 md:ml-1/2 space-y-12 pb-12">
-                <!-- Step 1 -->
+                <!-- Step 1: Basic Calculator -->
                 <div
                     class="relative pl-12 md:pl-0 md:grid md:grid-cols-2 md:gap-16 items-center reveal-on-scroll lang-en">
                     <div
                         class="absolute -left-[5px] top-2 w-2.5 h-2.5 rounded-full bg-purple-500 ring-4 ring-neutral-900">
                     </div>
                     <div class="md:text-right md:order-1">
-                        <h4 class="text-xl text-white font-medium mb-2">Basic Calculator</h4>
-                        <p class="text-neutral-500 text-sm">Simple and intuitive interface for everyday calculations. Perfect for quick math operations and basic arithmetic.</p>
+                        <h4 class="text-xl text-white font-medium mb-2">Score Calculator</h4>
+                        <p class="text-neutral-500 text-sm">Simple and intuitive interface for grade calculations. Perfect for students and teachers.</p>
                     </div>
                     <div class="hidden md:block md:order-2">
                         <div
                             class="w-12 h-12 rounded-full bg-neutral-800 flex items-center justify-center text-neutral-400 border border-white/5">
-                            <iconify-icon icon="lucide:plus" width="20"></iconify-icon>
+                            <iconify-icon icon="lucide:calculator" width="20"></iconify-icon>
                         </div>
                     </div>
                 </div>
@@ -588,20 +645,55 @@
                         class="absolute -left-[5px] top-2 w-2.5 h-2.5 rounded-full bg-purple-500 ring-4 ring-neutral-900">
                     </div>
                     <div class="md:text-right md:order-1">
-                        <h4 class="text-xl text-white font-medium mb-2">基础计算器</h4>
-                        <p class="text-neutral-500 text-sm">简洁直观的日常计算界面。完美适用于快速数学运算和基础算术。</p>
+                        <h4 class="text-xl text-white font-medium mb-2">分数计算器</h4>
+                        <p class="text-neutral-500 text-sm">简洁直观的分数计算界面，适合学生和教师使用。</p>
                     </div>
                     <div class="hidden md:block md:order-2">
                         <div
                             class="w-12 h-12 rounded-full bg-neutral-800 flex items-center justify-center text-neutral-400 border border-white/5">
-                            <iconify-icon icon="lucide:plus" width="20"></iconify-icon>
+                            <iconify-icon icon="lucide:calculator" width="20"></iconify-icon>
                         </div>
                     </div>
                 </div>
 
-                <!-- Step 2 -->
+                <!-- Step 2: Physics Solver -->
                 <div
                     class="relative pl-12 md:pl-0 md:grid md:grid-cols-2 md:gap-16 items-center reveal-on-scroll lang-en delay-100">
+                    <div
+                        class="absolute -left-[5px] top-2 w-2.5 h-2.5 rounded-full bg-blue-500 ring-4 ring-neutral-900">
+                    </div>
+                    <div class="hidden md:flex md:justify-end md:order-1">
+                        <div
+                            class="w-12 h-12 rounded-full bg-neutral-800 flex items-center justify-center text-neutral-400 border border-white/5">
+                            <iconify-icon icon="lucide:atom" width="20"></iconify-icon>
+                        </div>
+                    </div>
+                    <div class="md:order-2">
+                        <h4 class="text-xl text-white font-medium mb-2">Physics Solver</h4>
+                        <p class="text-neutral-500 text-sm">AP Physics 1 formula solver with detailed explanations and real-time calculation.</p>
+                    </div>
+                </div>
+
+                <div
+                    class="relative pl-12 md:pl-0 md:grid md:grid-cols-2 md:gap-16 items-center reveal-on-scroll lang-zh delay-100">
+                    <div
+                        class="absolute -left-[5px] top-2 w-2.5 h-2.5 rounded-full bg-blue-500 ring-4 ring-neutral-900">
+                    </div>
+                    <div class="hidden md:flex md:justify-end md:order-1">
+                        <div
+                            class="w-12 h-12 rounded-full bg-neutral-800 flex items-center justify-center text-neutral-400 border border-white/5">
+                            <iconify-icon icon="lucide:atom" width="20"></iconify-icon>
+                        </div>
+                    </div>
+                    <div class="md:order-2">
+                        <h4 class="text-xl text-white font-medium mb-2">物理计算器</h4>
+                        <p class="text-neutral-500 text-sm">AP物理1公式计算器，提供详细解释和实时计算。</p>
+                    </div>
+                </div>
+
+                <!-- Step 3: Scientific Functions (原有) -->
+                <div
+                    class="relative pl-12 md:pl-0 md:grid md:grid-cols-2 md:gap-16 items-center reveal-on-scroll lang-en delay-200">
                     <div
                         class="absolute -left-[5px] top-2 w-2.5 h-2.5 rounded-full bg-neutral-700 ring-4 ring-neutral-900">
                     </div>
@@ -618,7 +710,7 @@
                 </div>
 
                 <div
-                    class="relative pl-12 md:pl-0 md:grid md:grid-cols-2 md:gap-16 items-center reveal-on-scroll lang-zh delay-100">
+                    class="relative pl-12 md:pl-0 md:grid md:grid-cols-2 md:gap-16 items-center reveal-on-scroll lang-zh delay-200">
                     <div
                         class="absolute -left-[5px] top-2 w-2.5 h-2.5 rounded-full bg-neutral-700 ring-4 ring-neutral-900">
                     </div>
@@ -634,9 +726,9 @@
                     </div>
                 </div>
 
-                <!-- Step 3 -->
+                <!-- Step 4: Formula Editor -->
                 <div
-                    class="relative pl-12 md:pl-0 md:grid md:grid-cols-2 md:gap-16 items-center reveal-on-scroll lang-en delay-200">
+                    class="relative pl-12 md:pl-0 md:grid md:grid-cols-2 md:gap-16 items-center reveal-on-scroll lang-en delay-300">
                     <div
                         class="absolute -left-[5px] top-2 w-2.5 h-2.5 rounded-full bg-neutral-700 ring-4 ring-neutral-900">
                     </div>
@@ -653,7 +745,7 @@
                 </div>
 
                 <div
-                    class="relative pl-12 md:pl-0 md:grid md:grid-cols-2 md:gap-16 items-center reveal-on-scroll lang-zh delay-200">
+                    class="relative pl-12 md:pl-0 md:grid md:grid-cols-2 md:gap-16 items-center reveal-on-scroll lang-zh delay-300">
                     <div
                         class="absolute -left-[5px] top-2 w-2.5 h-2.5 rounded-full bg-neutral-700 ring-4 ring-neutral-900">
                     </div>
@@ -669,7 +761,7 @@
                     </div>
                 </div>
 
-                <!-- Step 4 -->
+                <!-- Step 5: Data Visualization -->
                 <div
                     class="relative pl-12 md:pl-0 md:grid md:grid-cols-2 md:gap-16 items-center reveal-on-scroll lang-en delay-300">
                     <div
@@ -715,8 +807,8 @@
                     <iconify-icon icon="lucide:calculator" width="40"></iconify-icon>
                 </div>
                 
-                <h2 class="text-3xl md:text-5xl text-white font-serif mb-6 lang-en">Ready to Try Our Calculator?</h2>
-                <h2 class="text-3xl md:text-5xl text-white serif-zh mb-6 lang-zh">准备好试用我们的计算器了吗？</h2>
+                <h2 class="text-3xl md:text-5xl text-white font-serif mb-6 lang-en">Ready to Try Our Tools?</h2>
+                <h2 class="text-3xl md:text-5xl text-white serif-zh mb-6 lang-zh">准备好试用我们的工具了吗？</h2>
                 
                 <p class="text-neutral-400 text-lg mb-8 max-w-2xl mx-auto lang-en">
                     Experience the power of our advanced calculation tools. Get instant results, save time, and eliminate calculation errors with our intuitive interface.
@@ -729,15 +821,20 @@
                 <div class="flex flex-col sm:flex-row items-center justify-center gap-6">
                     <a href="https://nanqiouheng.github.io/Down's%20Score%20Calculator.html" 
                        class="px-10 py-4 bg-purple-500 hover:bg-purple-400 text-black font-bold rounded-full transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_-10px_rgba(147,51,234,0.6)]">
-                        <span class="lang-en">Open Full Calculator</span>
-                        <span class="lang-zh">打开完整计算器</span>
+                        <span class="lang-en">Score Calculator</span>
+                        <span class="lang-zh">分数计算器</span>
                     </a>
-                    
+                    <a href="https://nanqiouheng.github.io/Down's%20Physics%20Calculator.html" 
+                       class="px-10 py-4 bg-blue-500 hover:bg-blue-400 text-black font-bold rounded-full transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_-10px_rgba(59,130,246,0.6)]">
+                        <iconify-icon icon="lucide:atom" class="inline mr-2" width="20"></iconify-icon>
+                        <span class="lang-en">Physics Solver</span>
+                        <span class="lang-zh">物理计算器</span>
+                    </a>
                     <a href="#features" 
                        class="px-10 py-4 text-white hover:text-purple-200 font-medium transition-colors flex items-center gap-2">
                         <iconify-icon icon="lucide:info" width="20"></iconify-icon>
-                        <span class="lang-en">Learn More Features</span>
-                        <span class="lang-zh">了解更多特性</span>
+                        <span class="lang-en">Learn More</span>
+                        <span class="lang-zh">了解更多</span>
                     </a>
                 </div>
                 
@@ -786,18 +883,32 @@
             </h2>
 
             <div class="flex flex-col items-center gap-4 reveal-on-scroll delay-100 lang-en">
-                <button onclick="window.location.href='https://nanqiouheng.github.io/Down\'s%20Score%20Calculator.html'"
-                    class="purple-glow px-10 py-5 bg-purple-500 text-black text-lg font-bold rounded-full hover:bg-purple-400 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_-10px_rgba(147,51,234,0.6)]">
-                    Try Our Calculator
-                </button>
+                <div class="flex flex-wrap justify-center gap-4">
+                    <button onclick="window.location.href='https://nanqiouheng.github.io/Down\'s%20Score%20Calculator.html'"
+                        class="purple-glow px-10 py-5 bg-purple-500 text-black text-lg font-bold rounded-full hover:bg-purple-400 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_-10px_rgba(147,51,234,0.6)]">
+                        Score Calculator
+                    </button>
+                    <button onclick="window.location.href='https://nanqiouheng.github.io/Down\'s%20Physics%20Calculator.html'"
+                        class="purple-glow px-10 py-5 bg-blue-500 text-black text-lg font-bold rounded-full hover:bg-blue-400 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_-10px_rgba(59,130,246,0.6)]">
+                        <iconify-icon icon="lucide:atom" class="inline mr-2" width="20"></iconify-icon>
+                        Physics Solver
+                    </button>
+                </div>
                 <p class="text-neutral-500 text-sm">Free to use · No registration required</p>
             </div>
 
             <div class="flex flex-col items-center gap-4 reveal-on-scroll delay-100 lang-zh">
-                <button onclick="window.location.href='https://nanqiouheng.github.io/Down\'s%20Score%20Calculator.html'"
-                    class="purple-glow px-10 py-5 bg-purple-500 text-black text-lg font-bold rounded-full hover:bg-purple-400 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_-10px_rgba(147,51,234,0.6)]">
-                    试用计算器
-                </button>
+                <div class="flex flex-wrap justify-center gap-4">
+                    <button onclick="window.location.href='https://nanqiouheng.github.io/Down\'s%20Score%20Calculator.html'"
+                        class="purple-glow px-10 py-5 bg-purple-500 text-black text-lg font-bold rounded-full hover:bg-purple-400 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_-10px_rgba(147,51,234,0.6)]">
+                        分数计算器
+                    </button>
+                    <button onclick="window.location.href='https://nanqiouheng.github.io/Down\'s%20Physics%20Calculator.html'"
+                        class="purple-glow px-10 py-5 bg-blue-500 text-black text-lg font-bold rounded-full hover:bg-blue-400 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_-10px_rgba(59,130,246,0.6)]">
+                        <iconify-icon icon="lucide:atom" class="inline mr-2" width="20"></iconify-icon>
+                        物理计算器
+                    </button>
+                </div>
                 <p class="text-neutral-500 text-sm">免费使用 · 无需注册</p>
             </div>
         </div>
@@ -818,10 +929,11 @@
                             width="20"></iconify-icon></a>
                     <a href="https://nanqiouheng.github.io/Down's%20Score%20Calculator.html" class="hover:text-purple-500 transition-colors"><iconify-icon
                             icon="lucide:calculator" width="20"></iconify-icon></a>
+                    <a href="https://nanqiouheng.github.io/Down's%20Physics%20Calculator.html" class="hover:text-purple-500 transition-colors"><iconify-icon
+                            icon="lucide:atom" width="20"></iconify-icon></a>
                 </div>
             </div>
             
-            <!-- 修改这里：添加中英文版权信息 -->
             <div class="text-center text-neutral-500 text-sm">
                 <span class="lang-en">Powered by Down`sicient | Copyright © 2026 Down`sicient Studio, Tach's subsidiary studio</span>
                 <span class="lang-zh">Powered by Down`sicient | 版权所有 © 2026 Down`sicient Studio，Tach的附属工作室</span>
