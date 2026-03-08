@@ -210,8 +210,8 @@
             filter: blur(0);
         }
 
-        /* 加载动画 */
-        #loading-overlay {
+        /* 加载动画 - 与 index.html 完全一致 */
+        #loading {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background: var(--bg-primary);
@@ -617,8 +617,6 @@
             margin: 0;
         }
 
-        /* 时间容器已被移除 */
-
         .table-container {
             width: 100%;
             overflow-x: auto;
@@ -799,13 +797,8 @@
     </style>
 </head>
 <body class="lang-en">
-    <!-- 加载动画 -->
-    <div id="loading-overlay">
-        <div>
-            <div class="spinner"></div>
-            <div class="loading-text" id="loadingText" style="margin-top:1rem; color:var(--text-secondary);">加载中... | Loading...</div>
-        </div>
-    </div>
+    <!-- 加载动画 (与 index.html 一致) -->
+    <div id="loading"><div class="spinner"></div></div>
 
     <!-- 语言切换动画 -->
     <div id="languageAnimation" class="language-switch-animation">
@@ -818,7 +811,7 @@
         <div class="absolute inset-0 bg-grid-pattern opacity-30"></div>
     </div>
 
-    <!-- 导航栏（与主页一致） -->
+    <!-- 导航栏 (物理链接图标已移除) -->
     <nav class="fixed top-0 left-0 right-0 z-50 px-6 py-6 flex justify-between items-center transition">
         <a href="index.html" class="text-xl font-semibold tracking-tight text-white flex items-center gap-2">
             <span class="w-6 h-6"><img src="https://raw.githubusercontent.com/nanqiouheng/nanqiouheng.github.io/main/DownsicientLoge.ico" alt="Down's Tools Logo"></span>
@@ -836,8 +829,8 @@
                 <span class="lang-en">EN</span>
                 <span class="lang-zh">中</span>
             </button>
+            <!-- 物理计算器链接：图标已移除，只保留文字 -->
             <a href="Down's%20Physics%20Calculator.html" class="text-sm font-medium text-white border border-white/20 px-4 py-2 rounded-full hover:bg-white hover:text-black transition-all duration-300">
-                <iconify-icon icon="lucide:atom" class="inline mr-1" width="16"></iconify-icon>
                 <span class="lang-en">Physics Solver</span><span class="lang-zh">物理计算器</span>
             </a>
         </div>
@@ -928,7 +921,6 @@
                     <span data-i18n="instructionsText">输入成绩和权重进行计算，支持多层级的子项目</span>
                 </p>
             </div>
-            <!-- 时间容器已移除 -->
         </div>
 
         <div class="table-container">
@@ -959,14 +951,13 @@
     </footer>
 
     <script>
-        // 加载动画控制
+        // 加载动画控制 (与 index.html 一致)
         window.addEventListener('load', function() {
-            setTimeout(function() {
-                document.getElementById('loading-overlay').style.opacity = '0';
-                setTimeout(function() {
-                    document.getElementById('loading-overlay').style.display = 'none';
-                }, 300);
-            }, 500);
+            const loading = document.getElementById('loading');
+            if (loading) {
+                loading.style.opacity = '0';
+                setTimeout(() => loading.style.display = 'none', 300);
+            }
         });
 
         // 保存管理相关变量
