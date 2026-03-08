@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Down's Tools | 唐氏工具集</title>
+    <!-- Tailwind + Iconify + 字体 (保留, 与自定义样式互补) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
     <link rel="preconnect" href="https://fonts.loli.net">
@@ -12,47 +13,945 @@
     <link href="https://fonts.loli.net/css2?family=Noto+Serif+SC:wght@200..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/misans@4.1.0/lib/Normal/MiSans-Regular.min.css" />
     <link rel="stylesheet" crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/misans@4.1.0/lib/Normal/MiSans-Semibold.min.css" />
-    <!-- 替换为新的图标链接 -->
+    <!-- 新图标 favicon -->
     <link rel="icon" href="https://raw.githubusercontent.com/nanqiouheng/nanqiouheng.github.io/main/DownsicientLoge.ico" type="image/x-icon" />
+
+    <!-- 完整的 Down's Tools 统一样式表 (来自 index.css) -->
     <style>
-        /* 样式部分与之前完全一致，此处省略以节省篇幅 */
-        /* 实际使用时请保留原有完整样式 */
+        /* ========================================
+           Down's Tools 统一样式表（完整版）
+           ======================================== */
+
+        /* ----------------------------------------
+           1. 全局变量与基础样式
+           ---------------------------------------- */
+        :root {
+            --accent: #8b5cf6;
+            --accent-light: #a78bfa;
+            --accent-dark: #7c3aed;
+            --bg-primary: #050505;
+            --bg-secondary: rgba(22, 22, 22, 0.5);
+            --bg-tertiary: rgba(255, 255, 255, 0.03);
+            --text-primary: #e5e5e5;
+            --text-secondary: #a3a3a3;
+            --text-tertiary: #6b7280;
+            --border-light: rgba(255, 255, 255, 0.08);
+            --border-medium: rgba(255, 255, 255, 0.15);
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --blurness: 15px;
+            --transition-speed: 0.3s;
+            --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        body {
+            font-family: 'MiSans', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            line-height: 1.5;
+            min-height: 100vh;
+            transition: background-color var(--transition-speed), color var(--transition-speed);
+        }
+
+        h1, h2, h3, .serif {
+            font-family: 'Newsreader', serif;
+        }
+
+        @font-face {
+            font-family: KangxiDict;
+            src: url('https://fonts.gstatic.com/ea/kangxidict/v5/KangXiDict.ttf');
+        }
+
+        .lang-zh .title-zh {
+            font-family: KangxiDict, serif;
+        }
+
+        .lang-zh .serif-zh {
+            font-family: 'Noto Serif SC', serif;
+            font-weight: 500;
+        }
+
+        .lang-zh {
+            font-family: 'MiSans', sans-serif;
+        }
+
+        /* 语言切换显示规则 (内联 style 确保生效) */
+        body.lang-en .lang-zh {
+            display: none !important;
+        }
+        body.lang-zh .lang-en {
+            display: none !important;
+        }
+
+        /* ----------------------------------------
+           2. 语言切换系统
+           ---------------------------------------- */
+        .language-switch-animation {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9998;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+        }
+
+        .language-animation-text {
+            font-size: 48px;
+            font-weight: bold;
+            background: linear-gradient(135deg, var(--accent), var(--success-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: languageFadeInOut 0.8s ease-in-out;
+        }
+
+        @keyframes languageFadeInOut {
+            0% { opacity: 0; transform: scale(0.8); }
+            30% { opacity: 1; transform: scale(1.1); }
+            70% { opacity: 1; transform: scale(1.1); }
+            100% { opacity: 0; transform: scale(1.5); }
+        }
+
+        /* ----------------------------------------
+           3. 背景装饰元素
+           ---------------------------------------- */
+        .fixed-bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .bg-grid-pattern {
+            background-image: 
+                linear-gradient(to right, #ffffff05 1px, transparent 1px),
+                linear-gradient(to bottom, #ffffff05 1px, transparent 1px);
+            background-size: 40px 40px;
+            mask-image: radial-gradient(circle at center, black, transparent 80%);
+            -webkit-mask-image: radial-gradient(circle at center, black, transparent 80%);
+        }
+
+        .background-circle {
+            background: radial-gradient(circle at center, var(--accent) 0%, #4f46e5 100%);
+            animation: background-radiant 60s linear infinite;
+        }
+
+        @keyframes background-radiant {
+            0% { background-size: 100%; }
+            50% { background-size: 500%; }
+            100% { background-size: 100%; }
+        }
+
+        /* ----------------------------------------
+           4. 公用组件
+           ---------------------------------------- */
+        nav {
+            transition: background-color 0.5s ease-in-out, backdrop-filter 0.5s;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+            padding: 1.5rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav.with-back {
+            background: var(--bg-secondary);
+            backdrop-filter: blur(var(--blurness));
+            -webkit-backdrop-filter: blur(var(--blurness));
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .glass-panel {
+            background: var(--bg-tertiary);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-light);
+            border-radius: 1.5rem;
+            transition: background-color 0.5s;
+        }
+
+        .glass-panel:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .purple-glow {
+            box-shadow: 0 0 60px -20px rgba(147, 51, 234, 0.15);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+            color: white;
+            border: none;
+            border-radius: 9999px;
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            border: 1px solid var(--border-light);
+            color: var(--text-primary);
+            border-radius: 9999px;
+            padding: 0.75rem 2rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-ghost:hover {
+            background: white;
+            color: black;
+            border-color: white;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-light);
+            color: var(--text-secondary);
+            border-radius: 9999px;
+            padding: 0.5rem 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .delay-100 { transition-delay: 100ms; }
+        .delay-200 { transition-delay: 200ms; }
+        .delay-300 { transition-delay: 300ms; }
+
+        /* ----------------------------------------
+           5. 动画系统
+           ---------------------------------------- */
+        .reveal-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            filter: blur(10px);
+            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal-on-scroll.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+            filter: blur(0);
+        }
+
+        .char-reveal {
+            display: inline-block;
+            clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
+            transform: translateY(100%);
+            animation: text-slide-up 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes text-slide-up {
+            to {
+                clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+                transform: translateY(0);
+            }
+        }
+
+        .marquee-container {
+            mask-image: linear-gradient(to right, transparent, black 20%, black 80%, transparent);
+            -webkit-mask-image: linear-gradient(to right, transparent, black 20%, black 80%, transparent);
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .marquee-content {
+            animation: scroll 40s linear infinite;
+            white-space: nowrap;
+            display: flex;
+            gap: 3rem;
+        }
+
+        @keyframes scroll {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
+        }
+
+        .pulse-dot {
+            width: 0.5rem;
+            height: 0.5rem;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ----------------------------------------
+           6. 物理计算器专用样式（保留，主页无需但无妨）
+           ---------------------------------------- */
+        .container-custom {
+            max-width: 1400px;
+            width: 100%;
+            margin: 20px 0;
+            position: relative;
+            z-index: 10;
+            padding: 0 1rem;
+        }
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .card {
+            background: var(--bg-tertiary);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-light);
+            border-radius: 1.5rem;
+            transition: background-color 0.5s, transform 0.2s, border-color 0.2s;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+        }
+        .card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--accent);
+            transform: translateY(-3px);
+        }
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+        .card-equation {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-light);
+            border-radius: 1rem;
+            padding: 0.75rem;
+            font-family: 'Cambria Math', 'STIX Two Math', 'Times New Roman', serif;
+            text-align: center;
+            margin: 1rem 0;
+            color: var(--text-primary);
+            white-space: pre-wrap;
+            word-break: break-word;
+            font-weight: 500;
+        }
+        .input-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+        .input-row label {
+            width: 80px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+        .input-row input {
+            flex: 1;
+            min-width: 0;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-light);
+            border-radius: 0.75rem;
+            padding: 0.6rem 0.75rem;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            font-family: 'Segoe UI', monospace;
+        }
+        .input-row input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+        }
+        .button-group {
+            display: flex;
+            gap: 0.75rem;
+            margin: 1rem 0 0.5rem;
+        }
+        .btn {
+            flex: 1;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+            border: none;
+            color: white;
+            font-weight: 600;
+            padding: 0.7rem;
+            border-radius: 9999px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+        }
+        .btn.reset {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-light);
+            color: var(--text-secondary);
+        }
+        .btn.reset:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        .result-box {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid var(--success-color);
+            padding: 0.75rem;
+            border-radius: 0.75rem;
+            min-height: 2.5rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            word-break: break-word;
+            margin-top: 0.5rem;
+        }
+        .info-panel {
+            background: var(--bg-tertiary);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-light);
+            border-radius: 1.5rem;
+            transition: background-color 0.5s;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .info-panel:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .info-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+        .info-desc {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+        .topic-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem 1rem;
+        }
+        .topic-tag {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.4rem 1.2rem;
+            border-radius: 9999px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-light);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .topic-tag:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: white;
+            transform: scale(1.05);
+        }
+        .g-selector {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-light);
+            border-radius: 9999px;
+            padding: 0.25rem;
+        }
+        .g-option {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            padding: 0.3rem 1rem;
+            border-radius: 9999px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.15s;
+        }
+        .g-option.active {
+            background: var(--accent);
+            color: white;
+        }
+
+        /* ----------------------------------------
+           7. 分数计算器专用样式（保留）
+           ---------------------------------------- */
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            margin-top: 1.5rem;
+            border: 1px solid var(--border-light);
+            border-radius: 0.75rem;
+            background: var(--bg-tertiary);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+        th, td {
+            padding: 1rem 1.2rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-light);
+            vertical-align: middle;
+            color: var(--text-primary);
+        }
+        th {
+            background: rgba(139, 92, 246, 0.1);
+            font-weight: 600;
+            color: var(--accent);
+        }
+        tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        [contenteditable="true"] {
+            outline: 1px solid var(--border-light);
+            cursor: text;
+            padding: 0.3rem 0.5rem;
+            border-radius: 0.25rem;
+            background: rgba(0, 0, 0, 0.2);
+            transition: all 0.2s;
+            min-width: 50px;
+            display: inline-block;
+        }
+        [contenteditable="true"]:focus {
+            outline: 2px solid var(--accent);
+            background: rgba(0, 0, 0, 0.3);
+        }
+        .project-name-cell {
+            display: flex;
+            align-items: center;
+        }
+        .sub-item-indicator {
+            display: inline-block;
+            width: 20px;
+            text-align: center;
+            margin-right: 8px;
+            color: var(--accent);
+            font-weight: bold;
+        }
+        .grade-cell {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .letter-grade {
+            font-weight: bold;
+            color: var(--warning-color);
+            transition: color 0.2s;
+        }
+        .action-btn {
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            cursor: pointer;
+            color: white;
+            font-size: 0.85rem;
+            margin: 0 0.25rem;
+            transition: all 0.15s;
+            font-weight: 500;
+            min-width: 70px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .action-btn:hover {
+            transform: translateY(-1px);
+            filter: brightness(1.1);
+        }
+        .remove-row-btn {
+            background: linear-gradient(135deg, var(--danger-color) 0%, #dc2626 100%);
+        }
+        .solve-item-btn {
+            background: linear-gradient(135deg, var(--success-color) 0%, #059669 100%);
+        }
+        .add-sub-btn {
+            background: linear-gradient(135deg, var(--warning-color) 0%, #d97706 100%);
+        }
+        #solve-overall-btn {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+            padding: 0.6rem 1.5rem;
+            border-radius: 9999px;
+            border: none;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        #solve-overall-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(139, 92, 246, 0.3);
+        }
+        #add-row-btn {
+            margin-top: 1.5rem;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+            color: white;
+            border: none;
+            padding: 1rem 1.5rem;
+            border-radius: 9999px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            box-shadow: 0 2px 8px rgba(139, 92, 246, 0.2);
+        }
+        #add-row-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+        }
+        .overall-score {
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--success-color);
+            transition: transform 0.15s;
+            min-width: 120px;
+            text-align: center;
+        }
+        .overall-score:hover {
+            transform: scale(1.03);
+        }
+        .save-manage-btn {
+            background: linear-gradient(135deg, var(--accent-dark) 0%, #5b21b6 100%);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 9999px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .save-manage-btn:hover {
+            transform: translateY(-1px);
+            filter: brightness(1.1);
+        }
+        .save-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-light);
+            border-radius: 0.75rem;
+            margin-bottom: 0.5rem;
+            transition: all 0.2s;
+        }
+        .save-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateX(3px);
+        }
+        .save-item-name {
+            font-weight: 600;
+            color: white;
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .save-item-meta {
+            color: var(--text-tertiary);
+            font-size: 0.8rem;
+            margin-left: 1rem;
+            white-space: nowrap;
+        }
+        .save-item-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-shrink: 0;
+        }
+        .save-action-btn {
+            padding: 0.3rem 0.8rem;
+            border: none;
+            border-radius: 9999px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: white;
+            transition: all 0.15s;
+        }
+        .save-action-btn:hover {
+            filter: brightness(1.1);
+        }
+        .btn-load {
+            background: linear-gradient(135deg, var(--success-color) 0%, #059669 100%);
+        }
+        .btn-rename {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+        }
+        .btn-delete {
+            background: linear-gradient(135deg, var(--danger-color) 0%, #dc2626 100%);
+        }
+        #timeStr {
+            color: var(--success-color);
+            font-weight: bold;
+            background: rgba(16, 185, 129, 0.1);
+            padding: 0.3rem 0.8rem;
+            border-radius: 9999px;
+            font-size: 0.9rem;
+            display: inline-block;
+        }
+
+        /* ----------------------------------------
+           8. 模态框系统（共用）
+           ---------------------------------------- */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            backdrop-filter: blur(3px);
+        }
+        .modal-window {
+            background: rgba(22, 22, 22, 0.95);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--border-light);
+            border-radius: 1rem;
+            width: 90%;
+            max-width: 550px;
+            max-height: 80vh;
+            overflow-y: auto;
+            animation: modalFadeIn 0.2s ease-out;
+        }
+        .modal-header {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid var(--border-light);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .modal-close {
+            width: 16px; height: 16px;
+            border-radius: 50%;
+            background: #ff5f56;
+            border: none;
+            cursor: pointer;
+            margin-right: 12px;
+            transition: background 0.1s;
+        }
+        .modal-close:hover {
+            background: #ff3b30;
+        }
+        .modal-title {
+            font-weight: 600;
+            color: white;
+            font-size: 1.1rem;
+        }
+        .modal-content {
+            padding: 1.5rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        .modal-content .formula-detail {
+            font-family: 'Cambria Math', serif;
+            font-size: 1.2rem;
+            text-align: center;
+            margin: 1rem 0;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 0.75rem;
+            border-radius: 0.75rem;
+            color: var(--text-primary);
+        }
+        .modal-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-light);
+            border-radius: 0.75rem;
+            color: white;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            transition: all 0.2s;
+        }
+        .modal-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+        }
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-tertiary);
+        }
+
+        /* ----------------------------------------
+           9. 加载动画
+           ---------------------------------------- */
+        #loading {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.3s;
+        }
+        .spinner {
+            width: 45px; height: 45px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        /* ----------------------------------------
+           10. 主页专用样式
+           ---------------------------------------- */
+        .version-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.25rem 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-light);
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            color: var(--accent);
+        }
+        .mockup-ui {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border-light);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            transform: skewY(1deg);
+            transition: transform 0.3s;
+        }
+        .group:hover .mockup-ui {
+            transform: skewY(0deg);
+        }
+        .mockup-dot {
+            width: 0.5rem; height: 0.5rem; border-radius: 50%; background: #ef4444;
+        }
+        .mockup-dot:nth-child(2) { background: #f59e0b; }
+        .mockup-dot:nth-child(3) { background: #10b981; }
+        .mockup-bar {
+            height: 2rem; width: 75%; background: rgba(38, 38, 38, 0.8); border-radius: 0.25rem; animation: pulse 2s infinite;
+        }
+        .mockup-bar-large {
+            height: 8rem; width: 100%; background: rgba(38, 38, 38, 0.8); border-radius: 0.25rem; opacity: 0.5;
+        }
+        .timeline-line {
+            height: 4rem; width: 1px; background: linear-gradient(to bottom, transparent, var(--accent), transparent); margin: 3rem auto;
+        }
+        .timeline-dot {
+            position: absolute; left: -5px; top: 0.5rem; width: 0.625rem; height: 0.625rem; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 4px rgba(22, 22, 22, 1);
+        }
+        .timeline-dot-blue { background: #3b82f6; }
+        .timeline-dot-gray { background: #525252; }
+
+        /* ----------------------------------------
+           11. 页脚样式
+           ---------------------------------------- */
+        footer {
+            padding: 3rem 1.5rem;
+            border-top: 1px solid var(--border-light);
+            background: black;
+            position: relative;
+            z-index: 10;
+        }
+        .footer-icon {
+            color: var(--text-tertiary);
+            transition: color 0.2s;
+        }
+        .footer-icon:hover {
+            color: var(--accent);
+        }
+        .footer-copyright {
+            text-align: center;
+            color: var(--text-tertiary);
+            font-size: 0.875rem;
+        }
+
+        /* ----------------------------------------
+           12. 响应式设计
+           ---------------------------------------- */
+        @media (max-width: 1100px) {
+            nav { flex-direction: column; align-items: flex-start; gap: 1rem; }
+            nav .nav-links { width: 100%; justify-content: center; }
+            nav .nav-actions { width: 100%; justify-content: flex-start; }
+        }
+        @media (max-width: 768px) {
+            .container-custom { padding: 0 0.5rem; }
+            .card-grid { grid-template-columns: 1fr; }
+            th, td { padding: 0.75rem; }
+            .action-btn { padding: 0.4rem 0.6rem; font-size: 0.75rem; min-width: 60px; }
+            .overall-score { font-size: 2rem; }
+            h2 { font-size: 1.5rem; }
+        }
+        @media (max-width: 480px) {
+            .btn-primary, .btn-ghost { padding: 0.6rem 1rem; font-size: 0.9rem; }
+            .input-row label { width: 70px; font-size: 0.8rem; }
+            .g-option { padding: 0.2rem 0.6rem; font-size: 0.8rem; }
+        }
     </style>
 </head>
 <body class="antialiased selection:bg-purple-500/30 selection:text-purple-200 lang-en">
-    <!-- 加载动画（可选） -->
-    <div id="loading" style="display: none;"><div class="spinner"></div></div>
+    <!-- 加载动画 -->
+    <div id="loading"><div class="spinner"></div></div>
 
-    <!-- 背景元素 -->
+    <!-- 语言切换动画容器 (由 index.css 定义) -->
+    <div id="languageAnimation" class="language-switch-animation">
+        <div class="language-animation-text" id="animationText">Switching...</div>
+    </div>
+
+    <!-- 背景元素 (固定) -->
     <div class="fixed inset-0 z-0 pointer-events-none">
         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-purple-900/10 background-circle rounded-full blur-[120px] opacity-40"></div>
         <div class="absolute inset-0 bg-grid-pattern opacity-30"></div>
     </div>
 
-    <!-- 导航栏（左侧图标已替换，物理链接图标已移除） -->
+    <!-- 导航栏 (图标已替换，物理链接无图标) -->
     <nav class="fixed top-0 left-0 right-0 z-50 px-6 py-6 flex justify-between items-center transition">
         <a href="#" class="text-xl font-semibold tracking-tight text-white flex items-center gap-2">
-            <!-- 替换为新的图标 -->
             <span class="w-6 h-6"><img src="https://raw.githubusercontent.com/nanqiouheng/nanqiouheng.github.io/main/DownsicientLoge.ico" alt="Down's Tools Logo"></span>
             Down's Tools
         </a>
         <div class="hidden md:flex gap-8 text-sm font-medium text-neutral-300">
-            <a href="#" class="hover:text-white transition-colors">
-                <span class="lang-en">Home</span>
-                <span class="lang-zh">主页</span>
-            </a>
-            <a href="#features" class="hover:text-white transition-colors">
-                <span class="lang-en">Features</span>
-                <span class="lang-zh">特性</span>
-            </a>
-            <a href="#demo" class="hover:text-white transition-colors">
-                <span class="lang-en">Demo</span>
-                <span class="lang-zh">演示</span>
-            </a>
-            <a href="#about" class="hover:text-white transition-colors">
-                <span class="lang-en">About</span>
-                <span class="lang-zh">关于</span>
-            </a>
+            <a href="#" class="hover:text-white transition-colors"><span class="lang-en">Home</span><span class="lang-zh">主页</span></a>
+            <a href="#features" class="hover:text-white transition-colors"><span class="lang-en">Features</span><span class="lang-zh">特性</span></a>
+            <a href="#demo" class="hover:text-white transition-colors"><span class="lang-en">Demo</span><span class="lang-zh">演示</span></a>
+            <a href="#about" class="hover:text-white transition-colors"><span class="lang-en">About</span><span class="lang-zh">关于</span></a>
         </div>
         <div class="flex items-center gap-4">
             <button onclick="toggleLang()" class="text-xs font-medium text-neutral-400 hover:text-white transition-colors flex items-center gap-1.5 uppercase tracking-wider">
@@ -60,20 +959,18 @@
                 <span class="lang-en">EN</span>
                 <span class="lang-zh">中</span>
             </button>
-            <!-- 分数计算器链接（保留） -->
+            <!-- 分数计算器链接 (保留) -->
             <a href="Down's%20Score%20Calculator.html" class="text-sm font-medium text-white border border-white/20 px-4 py-2 rounded-full hover:bg-white hover:text-black transition-all duration-300">
-                <span class="lang-en">Score Calc</span>
-                <span class="lang-zh">分数计算器</span>
+                <span class="lang-en">Score Calc</span><span class="lang-zh">分数计算器</span>
             </a>
-            <!-- 物理计算器链接（图标已移除，只保留文字） -->
+            <!-- 物理计算器链接 (无图标) -->
             <a href="Down's%20Physics%20Calculator.html" class="text-sm font-medium text-white border border-white/20 px-4 py-2 rounded-full hover:bg-white hover:text-black transition-all duration-300 ml-3">
-                <span class="lang-en">Physics Solver</span>
-                <span class="lang-zh">物理计算器</span>
+                <span class="lang-en">Physics Solver</span><span class="lang-zh">物理计算器</span>
             </a>
         </div>
     </nav>
 
-    <!-- 英雄区（物理按钮图标已移除） -->
+    <!-- 英雄区 -->
     <section class="relative min-h-screen flex flex-col items-center justify-center overflow-hidden px-4 z-10">
         <div class="relative z-10 max-w-4xl w-full text-center space-y-8">
             <!-- 版本徽章 -->
@@ -86,25 +983,24 @@
             <!-- 英文标题 -->
             <h1 class="text-6xl lang-en md:text-8xl lg:text-9xl font-medium tracking-tight leading-[0.9] text-white">
                 <span class="block overflow-hidden">
-                    <span class="char-reveal lang-en" style="animation-delay: 0.1s;">Powerful</span>
-                    <span class="char-reveal lang-en italic text-purple-500/90" style="animation-delay: 0.2s;">Tools</span>
-                    <span class="char-reveal lang-en" style="animation-delay: 0.3s;">for</span>
+                    <span class="char-reveal lang-en" style="animation-delay:0.1s;">Powerful</span>
+                    <span class="char-reveal lang-en italic text-purple-500/90" style="animation-delay:0.2s;">Tools</span>
+                    <span class="char-reveal lang-en" style="animation-delay:0.3s;">for</span>
                 </span>
                 <span class="block overflow-hidden">
-                    <span class="char-reveal lang-en" style="animation-delay: 0.4s;">Smart</span>
-                    <span class="char-reveal lang-en text-blue-500/90" style="animation-delay: 0.5s;">Calculation</span>
+                    <span class="char-reveal lang-en" style="animation-delay:0.4s;">Smart</span>
+                    <span class="char-reveal lang-en text-blue-500/90" style="animation-delay:0.5s;">Calculation</span>
                 </span>
             </h1>
-
             <!-- 中文标题 -->
             <h1 class="text-6xl lang-zh md:text-8xl lg:text-9xl font-medium tracking-tight leading-[0.9] text-white">
                 <span class="block overflow-hidden">
-                    <span class="char-reveal title-zh" style="animation-delay: 0.1s;">智能计算</span>
-                    <span class="char-reveal title-zh text-purple-500/90" style="animation-delay: 0.2s;">工具集</span>
+                    <span class="char-reveal title-zh" style="animation-delay:0.1s;">智能计算</span>
+                    <span class="char-reveal title-zh text-purple-500/90" style="animation-delay:0.2s;">工具集</span>
                 </span>
                 <span class="block overflow-hidden">
-                    <span class="char-reveal title-zh" style="animation-delay: 0.4s;">为您</span>
-                    <span class="char-reveal title-zh text-blue-500/90" style="animation-delay: 0.5s;">赋能</span>
+                    <span class="char-reveal title-zh" style="animation-delay:0.4s;">为您</span>
+                    <span class="char-reveal title-zh text-blue-500/90" style="animation-delay:0.5s;">赋能</span>
                 </span>
             </h1>
 
@@ -117,7 +1013,7 @@
                 为游戏玩家、数据分析师及需要精确计算的用户提供高级计算工具。节省时间，立即获得准确结果。
             </p>
 
-            <!-- 英文按钮组（物理按钮图标已移除） -->
+            <!-- 英文按钮组 (物理按钮无图标) -->
             <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6 reveal-on-scroll delay-300 lang-en">
                 <button onclick="window.location.href='Down\'s%20Score%20Calculator.html'" class="group relative px-8 py-4 bg-purple-500 hover:bg-purple-400 text-black font-semibold rounded-full transition-all duration-300 hover:scale-105">
                     Score Calculator
@@ -127,12 +1023,10 @@
                     Physics Solver
                 </button>
                 <button onclick="window.location.href='#features'" class="px-8 py-4 text-white hover:text-purple-200 font-medium transition-colors flex items-center gap-2">
-                    <iconify-icon icon="lucide:sparkles" width="20"></iconify-icon>
-                    View Features
+                    <iconify-icon icon="lucide:sparkles" width="20"></iconify-icon> View Features
                 </button>
             </div>
-
-            <!-- 中文按钮组（物理按钮图标已移除） -->
+            <!-- 中文按钮组 -->
             <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6 reveal-on-scroll delay-300 lang-zh">
                 <button onclick="window.location.href='Down\'s%20Score%20Calculator.html'" class="group relative px-8 py-4 bg-purple-500 hover:bg-purple-400 text-black font-semibold rounded-full transition-all duration-300 hover:scale-105">
                     分数计算器
@@ -142,53 +1036,38 @@
                     物理计算器
                 </button>
                 <button onclick="window.location.href='#features'" class="px-8 py-4 text-white hover:text-purple-200 font-medium transition-colors flex items-center gap-2">
-                    <iconify-icon icon="lucide:sparkles" width="20"></iconify-icon>
-                    查看特性
+                    <iconify-icon icon="lucide:sparkles" width="20"></iconify-icon> 查看特性
                 </button>
             </div>
         </div>
-
         <!-- 向下滚动指示器 -->
         <div class="absolute bottom-10 left-1/2 -translate-x-1/2 text-neutral-500 animate-bounce">
             <iconify-icon icon="lucide:arrow-down" width="24"></iconify-icon>
         </div>
     </section>
 
-    <!-- 跑马灯区域（无物理图标，保持不变） -->
+    <!-- 跑马灯区域 -->
     <section class="py-12 border-y border-white/5 bg-black/50 relative z-20 overflow-hidden">
         <div class="marquee-container w-full">
             <div class="marquee-content flex gap-12 whitespace-nowrap text-lg text-neutral-500 font-medium tracking-wide">
-                <!-- 中英文交替显示，内容不变 -->
-                <span class="lang-en">Real-time Calculation</span> ✦
-                <span class="lang-zh">实时计算</span>
-                <span class="lang-en">Precise Results</span> ✦
-                <span class="lang-zh">精确结果</span>
-                <span class="lang-en">No Installation Required</span> ✦
-                <span class="lang-zh">无需安装</span>
-                <span class="lang-en">Cross-Platform</span> ✦
-                <span class="lang-zh">跨平台</span>
-                <span class="lang-en">User-Friendly Interface</span> ✦
-                <span class="lang-zh">用户友好界面</span>
-                <span class="lang-en">Free to Use</span> ✦
-                <span class="lang-zh">完全免费</span>
+                <span class="lang-en">Real-time Calculation</span> ✦ <span class="lang-zh">实时计算</span>
+                <span class="lang-en">Precise Results</span> ✦ <span class="lang-zh">精确结果</span>
+                <span class="lang-en">No Installation Required</span> ✦ <span class="lang-zh">无需安装</span>
+                <span class="lang-en">Cross-Platform</span> ✦ <span class="lang-zh">跨平台</span>
+                <span class="lang-en">User-Friendly Interface</span> ✦ <span class="lang-zh">用户友好界面</span>
+                <span class="lang-en">Free to Use</span> ✦ <span class="lang-zh">完全免费</span>
                 <!-- 重复一次以形成循环 -->
-                <span class="lang-en">Real-time Calculation</span> ✦
-                <span class="lang-zh">实时计算</span>
-                <span class="lang-en">Precise Results</span> ✦
-                <span class="lang-zh">精确结果</span>
-                <span class="lang-en">No Installation Required</span> ✦
-                <span class="lang-zh">无需安装</span>
-                <span class="lang-en">Cross-Platform</span> ✦
-                <span class="lang-zh">跨平台</span>
-                <span class="lang-en">User-Friendly Interface</span> ✦
-                <span class="lang-zh">用户友好界面</span>
-                <span class="lang-en">Free to Use</span> ✦
-                <span class="lang-zh">完全免费</span>
+                <span class="lang-en">Real-time Calculation</span> ✦ <span class="lang-zh">实时计算</span>
+                <span class="lang-en">Precise Results</span> ✦ <span class="lang-zh">精确结果</span>
+                <span class="lang-en">No Installation Required</span> ✦ <span class="lang-zh">无需安装</span>
+                <span class="lang-en">Cross-Platform</span> ✦ <span class="lang-zh">跨平台</span>
+                <span class="lang-en">User-Friendly Interface</span> ✦ <span class="lang-zh">用户友好界面</span>
+                <span class="lang-en">Free to Use</span> ✦ <span class="lang-zh">完全免费</span>
             </div>
         </div>
     </section>
 
-    <!-- 问题 -> 解决方案区域（无物理图标，保持不变） -->
+    <!-- 问题 -> 解决方案区域 -->
     <section class="py-32 px-4 relative z-10">
         <div class="max-w-4xl mx-auto text-center space-y-24">
             <div class="space-y-6">
@@ -205,7 +1084,6 @@
                     <span class="lang-zh serif-zh">计算错误代价高昂。</span>
                 </p>
             </div>
-
             <div class="reveal-on-scroll delay-300">
                 <div class="h-16 w-px bg-gradient-to-b from-transparent via-purple-500 to-transparent mx-auto mb-12"></div>
                 <h2 class="text-4xl md:text-6xl text-white font-medium tracking-tight">
@@ -220,80 +1098,63 @@
         </div>
     </section>
 
-    <!-- 特性网格（物理卡片左上角图标已移除） -->
+    <!-- 特性网格 (物理卡片无图标) -->
     <section id="features" class="py-32 px-4 relative z-10">
         <div class="max-w-6xl mx-auto">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- 卡片1: 分数计算器（保留） -->
+                <!-- 卡片1: 分数计算器 (保留图标) -->
                 <div class="glass-panel p-8 rounded-3xl reveal-on-scroll hover:bg-white/5 transition-colors duration-500 group lang-en">
                     <div class="w-12 h-12 bg-purple-500/10 rounded-2xl flex items-center justify-center text-purple-500 mb-6 group-hover:scale-110 transition-transform">
                         <iconify-icon icon="lucide:calculator" width="24"></iconify-icon>
                     </div>
                     <h3 class="text-xl text-white font-semibold mb-3">Score Calculator</h3>
-                    <p class="text-neutral-400 leading-relaxed text-sm">
-                        Powerful calculator for grade calculations, with multi-level sub-items and real-time updates. Perfect for students.
-                    </p>
-                    <a href="Down's%20Score%20Calculator.html" class="mt-4 inline-flex items-center text-purple-400 hover:text-purple-300 text-sm">
-                        Try now <iconify-icon icon="lucide:arrow-right" class="ml-1" width="14"></iconify-icon>
-                    </a>
+                    <p class="text-neutral-400 leading-relaxed text-sm">Powerful calculator for grade calculations, with multi-level sub-items and real-time updates. Perfect for students.</p>
+                    <a href="Down's%20Score%20Calculator.html" class="mt-4 inline-flex items-center text-purple-400 hover:text-purple-300 text-sm">Try now <iconify-icon icon="lucide:arrow-right" class="ml-1" width="14"></iconify-icon></a>
                 </div>
-
                 <div class="glass-panel p-8 rounded-3xl reveal-on-scroll hover:bg-white/5 transition-colors duration-500 group lang-zh serif-zh">
                     <div class="w-12 h-12 bg-purple-500/10 rounded-2xl flex items-center justify-center text-purple-500 mb-6 group-hover:scale-110 transition-transform">
                         <iconify-icon icon="lucide:calculator" width="24"></iconify-icon>
                     </div>
                     <h3 class="text-xl text-white font-semibold mb-3">分数计算器</h3>
-                    <p class="text-neutral-400 leading-relaxed text-sm">
-                        强大的分数计算器，支持多级子项目、实时更新，非常适合学生使用。
-                    </p>
-                    <a href="Down's%20Score%20Calculator.html" class="mt-4 inline-flex items-center text-purple-400 hover:text-purple-300 text-sm">
-                        立即试用 <iconify-icon icon="lucide:arrow-right" class="ml-1" width="14"></iconify-icon>
-                    </a>
+                    <p class="text-neutral-400 leading-relaxed text-sm">强大的分数计算器，支持多级子项目、实时更新，非常适合学生使用。</p>
+                    <a href="Down's%20Score%20Calculator.html" class="mt-4 inline-flex items-center text-purple-400 hover:text-purple-300 text-sm">立即试用 <iconify-icon icon="lucide:arrow-right" class="ml-1" width="14"></iconify-icon></a>
                 </div>
 
-                <!-- 卡片2: 物理计算器（图标已移除） -->
+                <!-- 卡片2: 物理计算器 (无图标) -->
                 <div class="glass-panel p-8 rounded-3xl reveal-on-scroll delay-100 hover:bg-white/5 transition-colors duration-500 group lang-en">
-                    <!-- 无图标 -->
                     <h3 class="text-xl text-white font-semibold mb-3">Physics Solver</h3>
-                    <p class="text-neutral-400 leading-relaxed text-sm">
-                        AP Physics 1 formula solver with six core topics, g-value selection, and detailed explanations.
-                    </p>
-                    <a href="Down's%20Physics%20Calculator.html" class="mt-4 inline-flex items-center text-blue-400 hover:text-blue-300 text-sm">
-                        Try now <iconify-icon icon="lucide:arrow-right" class="ml-1" width="14"></iconify-icon>
-                    </a>
+                    <p class="text-neutral-400 leading-relaxed text-sm">AP Physics 1 formula solver with six core topics, g-value selection, and detailed explanations.</p>
+                    <a href="Down's%20Physics%20Calculator.html" class="mt-4 inline-flex items-center text-blue-400 hover:text-blue-300 text-sm">Try now <iconify-icon icon="lucide:arrow-right" class="ml-1" width="14"></iconify-icon></a>
                 </div>
-
                 <div class="glass-panel p-8 rounded-3xl reveal-on-scroll delay-100 hover:bg-white/5 transition-colors duration-500 group lang-zh serif-zh">
-                    <!-- 无图标 -->
                     <h3 class="text-xl text-white font-semibold mb-3">物理计算器</h3>
-                    <p class="text-neutral-400 leading-relaxed text-sm">
-                        AP物理1公式计算器，涵盖六大核心主题、g值选择、详细解释。
-                    </p>
-                    <a href="Down's%20Physics%20Calculator.html" class="mt-4 inline-flex items-center text-blue-400 hover:text-blue-300 text-sm">
-                        立即试用 <iconify-icon icon="lucide:arrow-right" class="ml-1" width="14"></iconify-icon>
-                    </a>
+                    <p class="text-neutral-400 leading-relaxed text-sm">AP物理1公式计算器，涵盖六大核心主题、g值选择、详细解释。</p>
+                    <a href="Down's%20Physics%20Calculator.html" class="mt-4 inline-flex items-center text-blue-400 hover:text-blue-300 text-sm">立即试用 <iconify-icon icon="lucide:arrow-right" class="ml-1" width="14"></iconify-icon></a>
                 </div>
 
-                <!-- 其他卡片（保持不变，均无物理图标） -->
-                <!-- 卡片3: 数据分析 -->
+                <!-- 卡片3: 数据分析 (保留图标) -->
                 <div class="glass-panel p-8 rounded-3xl reveal-on-scroll delay-200 hover:bg-white/5 transition-colors duration-500 group lang-en">
                     <div class="w-12 h-12 bg-purple-500/10 rounded-2xl flex items-center justify-center text-purple-500 mb-6 group-hover:scale-110 transition-transform">
                         <iconify-icon icon="lucide:bar-chart" width="24"></iconify-icon>
                     </div>
                     <h3 class="text-xl text-white font-semibold mb-3">Data Analysis</h3>
-                    <p class="text-neutral-400 leading-relaxed text-sm">
-                        Analyze your data with statistical tools, generate reports, and visualize results.
-                    </p>
+                    <p class="text-neutral-400 leading-relaxed text-sm">Analyze your data with statistical tools, generate reports, and visualize results.</p>
                 </div>
-                <!-- ... 其余卡片保持不变，此处省略以节省篇幅，实际使用时请保留完整卡片内容 ... -->
+                <!-- 为保持网格完整，补一个空白卡片(语言对应) -->
+                <div class="glass-panel p-8 rounded-3xl reveal-on-scroll delay-200 hover:bg-white/5 transition-colors duration-500 group lang-zh serif-zh">
+                    <div class="w-12 h-12 bg-purple-500/10 rounded-2xl flex items-center justify-center text-purple-500 mb-6 group-hover:scale-110 transition-transform">
+                        <iconify-icon icon="lucide:bar-chart" width="24"></iconify-icon>
+                    </div>
+                    <h3 class="text-xl text-white font-semibold mb-3">数据分析</h3>
+                    <p class="text-neutral-400 leading-relaxed text-sm">使用统计工具分析数据，生成报告并可视化结果。</p>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- 工具演示区域（物理步骤中的图标已移除） -->
+    <!-- 工具演示区域 (物理步骤图标已移除) -->
     <section id="demo" class="py-32 px-4 relative z-10 bg-neutral-900/30">
         <div class="max-w-4xl mx-auto">
-            <!-- 标题部分不变 -->
             <div class="text-center mb-20 reveal-on-scroll lang-en">
                 <h2 class="text-3xl md:text-5xl text-white font-serif mb-6">Explore Our Tools</h2>
                 <p class="text-neutral-400">From basic calculations to complex data analysis</p>
@@ -304,7 +1165,7 @@
             </div>
 
             <div class="relative border-l border-white/10 ml-6 md:ml-1/2 space-y-12 pb-12">
-                <!-- 步骤1（分数计算器）保持不变 -->
+                <!-- 步骤1 分数计算器 -->
                 <div class="relative pl-12 md:pl-0 md:grid md:grid-cols-2 md:gap-16 items-center reveal-on-scroll lang-en">
                     <div class="timeline-dot"></div>
                     <div class="md:text-right md:order-1">
@@ -330,12 +1191,10 @@
                     </div>
                 </div>
 
-                <!-- 步骤2（物理计算器，图标已移除） -->
+                <!-- 步骤2 物理计算器 (无图标) -->
                 <div class="relative pl-12 md:pl-0 md:grid md:grid-cols-2 md:gap-16 items-center reveal-on-scroll lang-en delay-100">
                     <div class="timeline-dot timeline-dot-blue"></div>
-                    <div class="hidden md:flex md:justify-end md:order-1">
-                        <!-- 无图标 -->
-                    </div>
+                    <div class="hidden md:flex md:justify-end md:order-1"><!-- 无图标 --></div>
                     <div class="md:order-2">
                         <h4 class="text-xl text-white font-medium mb-2">Physics Solver</h4>
                         <p class="text-neutral-500 text-sm">AP Physics 1 formula solver with detailed explanations.</p>
@@ -343,22 +1202,43 @@
                 </div>
                 <div class="relative pl-12 md:pl-0 md:grid md:grid-cols-2 md:gap-16 items-center reveal-on-scroll lang-zh delay-100">
                     <div class="timeline-dot timeline-dot-blue"></div>
-                    <div class="hidden md:flex md:justify-end md:order-1">
-                        <!-- 无图标 -->
-                    </div>
+                    <div class="hidden md:flex md:justify-end md:order-1"><!-- 无图标 --></div>
                     <div class="md:order-2">
                         <h4 class="text-xl text-white font-medium mb-2">物理计算器</h4>
                         <p class="text-neutral-500 text-sm">AP物理1公式计算器，提供详细解释。</p>
                     </div>
                 </div>
 
-                <!-- 其余步骤保持不变（无物理图标） -->
-                <!-- ... -->
+                <!-- 步骤3 数据分析 (有图标) 丰富演示 -->
+                <div class="relative pl-12 md:pl-0 md:grid md:grid-cols-2 md:gap-16 items-center reveal-on-scroll lang-en delay-200">
+                    <div class="timeline-dot timeline-dot-gray"></div>
+                    <div class="hidden md:flex md:justify-end md:order-1">
+                        <div class="w-12 h-12 rounded-full bg-neutral-800 flex items-center justify-center text-neutral-400 border border-white/5">
+                            <iconify-icon icon="lucide:bar-chart" width="20"></iconify-icon>
+                        </div>
+                    </div>
+                    <div class="md:order-2">
+                        <h4 class="text-xl text-white font-medium mb-2">Data Analysis</h4>
+                        <p class="text-neutral-500 text-sm">Visualize and export your data with one click.</p>
+                    </div>
+                </div>
+                <div class="relative pl-12 md:pl-0 md:grid md:grid-cols-2 md:gap-16 items-center reveal-on-scroll lang-zh delay-200">
+                    <div class="timeline-dot timeline-dot-gray"></div>
+                    <div class="hidden md:flex md:justify-end md:order-1">
+                        <div class="w-12 h-12 rounded-full bg-neutral-800 flex items-center justify-center text-neutral-400 border border-white/5">
+                            <iconify-icon icon="lucide:bar-chart" width="20"></iconify-icon>
+                        </div>
+                    </div>
+                    <div class="md:order-2">
+                        <h4 class="text-xl text-white font-medium mb-2">数据分析</h4>
+                        <p class="text-neutral-500 text-sm">一键可视化并导出数据。</p>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- CTA 区域（物理按钮图标已移除） -->
+    <!-- CTA 区域 (物理按钮无图标) -->
     <section id="calculator" class="py-32 px-4 relative z-10">
         <div class="max-w-4xl mx-auto text-center">
             <div class="glass-panel rounded-3xl p-12 reveal-on-scroll">
@@ -367,65 +1247,44 @@
                 </div>
                 <h2 class="text-3xl md:text-5xl text-white font-serif mb-6 lang-en">Ready to Try Our Tools?</h2>
                 <h2 class="text-3xl md:text-5xl text-white serif-zh mb-6 lang-zh">准备好试用我们的工具了吗？</h2>
-                <p class="text-neutral-400 text-lg mb-8 max-w-2xl mx-auto lang-en">
-                    Experience the power of our advanced calculation tools. Get instant results, save time, and eliminate calculation errors.
-                </p>
-                <p class="text-neutral-400 text-lg mb-8 max-w-2xl mx-auto lang-zh">
-                    体验高级计算工具的强大功能。即时结果，节省时间，消除错误。
-                </p>
+                <p class="text-neutral-400 text-lg mb-8 max-w-2xl mx-auto lang-en">Experience the power of our advanced calculation tools. Get instant results, save time, and eliminate calculation errors.</p>
+                <p class="text-neutral-400 text-lg mb-8 max-w-2xl mx-auto lang-zh">体验高级计算工具的强大功能。即时结果，节省时间，消除错误。</p>
                 <div class="flex flex-col sm:flex-row items-center justify-center gap-6">
                     <a href="Down's%20Score%20Calculator.html" class="px-10 py-4 bg-purple-500 hover:bg-purple-400 text-black font-bold rounded-full transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_-10px_rgba(147,51,234,0.6)]">
-                        <span class="lang-en">Score Calculator</span>
-                        <span class="lang-zh">分数计算器</span>
+                        <span class="lang-en">Score Calculator</span><span class="lang-zh">分数计算器</span>
                     </a>
                     <a href="Down's%20Physics%20Calculator.html" class="px-10 py-4 bg-blue-500 hover:bg-blue-400 text-black font-bold rounded-full transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_-10px_rgba(59,130,246,0.6)]">
-                        <span class="lang-en">Physics Solver</span>
-                        <span class="lang-zh">物理计算器</span>
+                        <span class="lang-en">Physics Solver</span><span class="lang-zh">物理计算器</span>
                     </a>
                 </div>
-                <!-- 其他内容保持不变 -->
             </div>
         </div>
     </section>
 
-    <!-- 最终 CTA（物理按钮图标已移除） -->
+    <!-- 最终 CTA -->
     <section class="min-h-[80vh] flex flex-col items-center justify-center relative px-4 overflow-hidden">
         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-tr from-purple-900/20 to-neutral-900/0 rounded-full blur-[100px] z-0 pointer-events-none"></div>
         <div class="relative z-10 text-center max-w-3xl space-y-10">
-            <h2 class="text-5xl md:text-7xl serif text-white tracking-tight leading-tight reveal-on-scroll lang-en">
-                Start calculating <br>
-                <span class="italic text-neutral-500">smarter, not harder.</span>
-            </h2>
-            <h2 class="text-5xl md:text-7xl serif text-white tracking-tight leading-tight reveal-on-scroll lang-zh title-zh">
-                开始更智能地计算<br>
-                <span class="italic text-neutral-500">而非更费力。</span>
-            </h2>
+            <h2 class="text-5xl md:text-7xl serif text-white tracking-tight leading-tight reveal-on-scroll lang-en">Start calculating <br><span class="italic text-neutral-500">smarter, not harder.</span></h2>
+            <h2 class="text-5xl md:text-7xl serif text-white tracking-tight leading-tight reveal-on-scroll lang-zh title-zh">开始更智能地计算<br><span class="italic text-neutral-500">而非更费力。</span></h2>
             <div class="flex flex-col items-center gap-4 reveal-on-scroll delay-100 lang-en">
                 <div class="flex flex-wrap justify-center gap-4">
-                    <button onclick="window.location.href='Down\'s%20Score%20Calculator.html'" class="purple-glow px-10 py-5 bg-purple-500 text-black text-lg font-bold rounded-full hover:bg-purple-400 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_-10px_rgba(147,51,234,0.6)]">
-                        Score Calculator
-                    </button>
-                    <button onclick="window.location.href='Down\'s%20Physics%20Calculator.html'" class="purple-glow px-10 py-5 bg-blue-500 text-black text-lg font-bold rounded-full hover:bg-blue-400 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_-10px_rgba(59,130,246,0.6)]">
-                        Physics Solver
-                    </button>
+                    <button onclick="window.location.href='Down\'s%20Score%20Calculator.html'" class="purple-glow px-10 py-5 bg-purple-500 text-black text-lg font-bold rounded-full hover:bg-purple-400 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_-10px_rgba(147,51,234,0.6)]">Score Calculator</button>
+                    <button onclick="window.location.href='Down\'s%20Physics%20Calculator.html'" class="purple-glow px-10 py-5 bg-blue-500 text-black text-lg font-bold rounded-full hover:bg-blue-400 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_-10px_rgba(59,130,246,0.6)]">Physics Solver</button>
                 </div>
                 <p class="text-neutral-500 text-sm">Free to use · No registration required</p>
             </div>
             <div class="flex flex-col items-center gap-4 reveal-on-scroll delay-100 lang-zh">
                 <div class="flex flex-wrap justify-center gap-4">
-                    <button onclick="window.location.href='Down\'s%20Score%20Calculator.html'" class="purple-glow px-10 py-5 bg-purple-500 text-black text-lg font-bold rounded-full hover:bg-purple-400 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_-10px_rgba(147,51,234,0.6)]">
-                        分数计算器
-                    </button>
-                    <button onclick="window.location.href='Down\'s%20Physics%20Calculator.html'" class="purple-glow px-10 py-5 bg-blue-500 text-black text-lg font-bold rounded-full hover:bg-blue-400 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_-10px_rgba(59,130,246,0.6)]">
-                        物理计算器
-                    </button>
+                    <button onclick="window.location.href='Down\'s%20Score%20Calculator.html'" class="purple-glow px-10 py-5 bg-purple-500 text-black text-lg font-bold rounded-full hover:bg-purple-400 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_-10px_rgba(147,51,234,0.6)]">分数计算器</button>
+                    <button onclick="window.location.href='Down\'s%20Physics%20Calculator.html'" class="purple-glow px-10 py-5 bg-blue-500 text-black text-lg font-bold rounded-full hover:bg-blue-400 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_-10px_rgba(59,130,246,0.6)]">物理计算器</button>
                 </div>
                 <p class="text-neutral-500 text-sm">免费使用 · 无需注册</p>
             </div>
         </div>
     </section>
 
-    <!-- 页脚（物理图标链接已移除） -->
+    <!-- 页脚 (物理链接仅保留文字) -->
     <footer id="about" class="py-12 px-6 border-t border-white/10 bg-black relative z-10">
         <div class="max-w-6xl mx-auto">
             <div class="flex flex-col md:flex-row justify-between items-center gap-6 mb-8">
@@ -437,7 +1296,8 @@
                     <a href="https://nanqiouheng.github.io" class="hover:text-purple-500 transition-colors"><iconify-icon icon="lucide:earth" width="20"></iconify-icon></a>
                     <a href="https://github.com/nanqiouheng" class="hover:text-purple-500 transition-colors"><iconify-icon icon="lucide:github" width="20"></iconify-icon></a>
                     <a href="Down's%20Score%20Calculator.html" class="hover:text-purple-500 transition-colors"><iconify-icon icon="lucide:calculator" width="20"></iconify-icon></a>
-                    <!-- 物理链接移除，保留其他 -->
+                    <!-- 物理链接仅保留文字（无图标） -->
+                    <a href="Down's%20Physics%20Calculator.html" class="hover:text-purple-500 transition-colors text-sm">物理</a>
                 </div>
             </div>
             <div class="text-center text-neutral-500 text-sm">
@@ -447,9 +1307,66 @@
         </div>
     </footer>
 
+    <!-- 完整的脚本：语言切换、导航背景、滚动动画、加载隐藏 -->
     <script>
-        // JavaScript 部分与之前完全一致，此处省略以节省篇幅
-        // 实际使用时请保留原有完整脚本
+        (function() {
+            // 隐藏加载动画
+            const loading = document.getElementById('loading');
+            if (loading) {
+                loading.style.opacity = '0';
+                setTimeout(() => loading.style.display = 'none', 300);
+            }
+
+            // 语言切换函数 (全局)
+            window.toggleLang = function() {
+                const body = document.body;
+                const animation = document.getElementById('languageAnimation');
+                const text = document.getElementById('animationText');
+                
+                if (body.classList.contains('lang-en')) {
+                    text.innerText = '切换到中文';
+                    body.classList.replace('lang-en', 'lang-zh');
+                } else {
+                    text.innerText = 'Switching to English';
+                    body.classList.replace('lang-zh', 'lang-en');
+                }
+
+                // 显示动画
+                animation.style.opacity = '1';
+                animation.style.pointerEvents = 'auto';
+                setTimeout(() => {
+                    animation.style.opacity = '0';
+                    animation.style.pointerEvents = 'none';
+                }, 800);
+            };
+
+            // 导航栏滚动背景
+            const nav = document.querySelector('nav');
+            function updateNav() {
+                if (window.scrollY === 0) nav.classList.remove('with-back');
+                else nav.classList.add('with-back');
+            }
+            window.addEventListener('scroll', updateNav);
+            updateNav();
+
+            // 滚动显示动画 (reveal-on-scroll)
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1, rootMargin: '0px 0px -20px 0px' });
+            document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
+
+            // 根据浏览器语言设置初始语言 (可选)
+            if (navigator.language.startsWith('zh')) {
+                document.body.classList.replace('lang-en', 'lang-zh');
+            } else {
+                document.body.classList.replace('lang-zh', 'lang-en');
+            }
+        })();
     </script>
 </body>
 </html>
