@@ -1,832 +1,110 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Down's Score Calculator | 唐氏分数计算器</title>
-    <link rel="icon" href="https://raw.githubusercontent.com/nanqiouheng/nanqiouheng.github.io/main/DownsicientLoge.ico" type="image/x-icon" />
-    <!-- 字体与图标库（与主页一致） -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
+    <title>AP Physics 1 · 专业计算器 | 唐氏物理求解器</title>
+    <!-- 公共资源 (与主页保持一致) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
     <link rel="preconnect" href="https://fonts.loli.net">
     <link rel="preconnect" href="https://gstatic.loli.net" crossorigin="">
-    <link href="https://fonts.loli.net/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&amp;family=Geist:wght@100..900&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.loli.net/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&family=Geist:wght@100..900&display=swap" rel="stylesheet">
     <link href="https://fonts.loli.net/css2?family=Noto+Serif+SC:wght@200..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/misans@4.1.0/lib/Normal/MiSans-Regular.min.css" />
     <link rel="stylesheet" crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/misans@4.1.0/lib/Normal/MiSans-Semibold.min.css" />
-    <style>
-        /* ========================================
-           完整统一样式表（与主页一致）
-           ======================================== */
-        :root {
-            --accent: #8b5cf6;
-            --accent-light: #a78bfa;
-            --accent-dark: #7c3aed;
-            --bg-primary: #050505;
-            --bg-secondary: rgba(22, 22, 22, 0.5);
-            --bg-tertiary: rgba(255, 255, 255, 0.03);
-            --text-primary: #e5e5e5;
-            --text-secondary: #a3a3a3;
-            --text-tertiary: #6b7280;
-            --border-light: rgba(255, 255, 255, 0.08);
-            --border-medium: rgba(255, 255, 255, 0.15);
-            --success-color: #10b981;
-            --warning-color: #f59e0b;
-            --danger-color: #ef4444;
-            --blurness: 15px;
-            --transition-speed: 0.3s;
-            --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-        }
-
-        body {
-            font-family: 'MiSans', sans-serif;
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
-            overflow-x: hidden;
-            line-height: 1.5;
-            min-height: 100vh;
-            transition: background-color var(--transition-speed), color var(--transition-speed);
-        }
-
-        h1, h2, h3, .serif {
-            font-family: 'Newsreader', serif;
-        }
-
-        @font-face {
-            font-family: KangxiDict;
-            src: url('https://fonts.gstatic.com/ea/kangxidict/v5/KangXiDict.ttf');
-        }
-
-        .lang-zh .title-zh {
-            font-family: KangxiDict, serif;
-        }
-
-        .lang-zh .serif-zh {
-            font-family: 'Noto Serif SC', serif;
-            font-weight: 500;
-        }
-
-        .lang-zh {
-            font-family: 'MiSans', sans-serif;
-        }
-
-        /* 语言切换类 */
-        body.lang-en .lang-zh {
-            display: none !important;
-        }
-        body.lang-zh .lang-en {
-            display: none !important;
-        }
-
-        /* 背景装饰 */
-        .fixed-bg {
-            position: fixed;
-            inset: 0;
-            z-index: 0;
-            pointer-events: none;
-        }
-
-        .bg-grid-pattern {
-            background-image: 
-                linear-gradient(to right, #ffffff05 1px, transparent 1px),
-                linear-gradient(to bottom, #ffffff05 1px, transparent 1px);
-            background-size: 40px 40px;
-            mask-image: radial-gradient(circle at center, black, transparent 80%);
-            -webkit-mask-image: radial-gradient(circle at center, black, transparent 80%);
-        }
-
-        .background-circle {
-            background: radial-gradient(circle at center, var(--accent) 0%, #4f46e5 100%);
-            animation: background-radiant 60s linear infinite;
-        }
-
-        @keyframes background-radiant {
-            0% { background-size: 100%; }
-            50% { background-size: 500%; }
-            100% { background-size: 100%; }
-        }
-
-        /* 导航栏 */
-        nav {
-            transition: background-color 0.5s ease-in-out, backdrop-filter 0.5s;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 50;
-            padding: 1.5rem 1.5rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        nav.with-back {
-            background: var(--bg-secondary);
-            backdrop-filter: blur(var(--blurness));
-            -webkit-backdrop-filter: blur(var(--blurness));
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-        }
-
-        /* 玻璃面板 */
-        .glass-panel {
-            background: var(--bg-tertiary);
-            backdrop-filter: blur(12px);
-            border: 1px solid var(--border-light);
-            border-radius: 1.5rem;
-            transition: background-color 0.5s;
-        }
-
-        .glass-panel:hover {
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        /* 按钮 */
-        .btn-primary {
-            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
-            color: white;
-            border: none;
-            border-radius: 9999px;
-            padding: 0.75rem 2rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
-        }
-
-        .btn-ghost {
-            background: transparent;
-            border: 1px solid var(--border-light);
-            color: var(--text-primary);
-            border-radius: 9999px;
-            padding: 0.75rem 2rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .btn-ghost:hover {
-            background: white;
-            color: black;
-            border-color: white;
-        }
-
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border-light);
-            color: var(--text-secondary);
-            border-radius: 9999px;
-            padding: 0.5rem 1rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.15s;
-        }
-
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-        }
-
-        .delay-100 { transition-delay: 100ms; }
-        .delay-200 { transition-delay: 200ms; }
-        .delay-300 { transition-delay: 300ms; }
-
-        /* 滚动触发动画 */
-        .reveal-on-scroll {
-            opacity: 0;
-            transform: translateY(30px);
-            filter: blur(10px);
-            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .reveal-on-scroll.is-visible {
-            opacity: 1;
-            transform: translateY(0);
-            filter: blur(0);
-        }
-
-        /* 加载动画 */
-        #loading {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--bg-primary);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            transition: opacity 0.3s;
-        }
-
-        .spinner {
-            width: 45px; height: 45px;
-            border: 4px solid rgba(255, 255, 255, 0.1);
-            border-top-color: var(--accent);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* 语言切换动画已移除 */
-
-        /* 模态框 */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.7);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-            backdrop-filter: blur(3px);
-        }
-
-        .modal-content {
-            background: rgba(22,22,22,0.95);
-            backdrop-filter: blur(15px);
-            border: 1px solid var(--border-light);
-            border-radius: 1rem;
-            width: 90%;
-            max-width: 600px;
-            max-height: 80vh;
-            overflow-y: auto;
-            animation: modalFadeIn 0.2s ease-out;
-        }
-
-        @keyframes modalFadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 1.5rem;
-            border-bottom: 1px solid var(--border-light);
-            background: rgba(0,0,0,0.3);
-            position: sticky;
-            top: 0;
-        }
-
-        .modal-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: white;
-        }
-
-        .close-modal {
-            background: none;
-            border: none;
-            color: var(--text-tertiary);
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-
-        .close-modal:hover {
-            color: white;
-        }
-
-        .modal-body {
-            padding: 1.5rem;
-        }
-
-        .modal-footer {
-            display: flex;
-            justify-content: flex-end;
-            gap: 1rem;
-            padding: 1rem 1.5rem;
-            border-top: 1px solid var(--border-light);
-        }
-
-        .modal-input {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            background: rgba(0,0,0,0.3);
-            border: 1px solid var(--border-light);
-            border-radius: 0.75rem;
-            color: white;
-            font-size: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .modal-input:focus {
-            outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(139,92,246,0.2);
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 2rem;
-            color: var(--text-tertiary);
-        }
-
-        /* 保存列表项 */
-        .save-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.75rem 1rem;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid var(--border-light);
-            border-radius: 0.75rem;
-            margin-bottom: 0.5rem;
-            transition: all 0.2s;
-        }
-
-        .save-item:hover {
-            background: rgba(255,255,255,0.05);
-            transform: translateX(3px);
-        }
-
-        .save-item-name {
-            font-weight: 600;
-            color: white;
-            flex: 1;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .save-item-meta {
-            color: var(--text-tertiary);
-            font-size: 0.8rem;
-            margin-left: 1rem;
-            white-space: nowrap;
-        }
-
-        .save-item-actions {
-            display: flex;
-            gap: 0.5rem;
-            flex-shrink: 0;
-        }
-
-        .save-action-btn {
-            padding: 0.3rem 0.8rem;
-            border: none;
-            border-radius: 9999px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            font-weight: 500;
-            color: white;
-            transition: all 0.15s;
-        }
-
-        .save-action-btn:hover {
-            filter: brightness(1.1);
-        }
-
-        .btn-load {
-            background: linear-gradient(135deg, var(--success-color) 0%, #059669 100%);
-        }
-
-        .btn-rename {
-            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
-        }
-
-        .btn-delete {
-            background: linear-gradient(135deg, var(--danger-color) 0%, #dc2626 100%);
-        }
-
-        /* 表格样式（分数计算器核心） */
-        .container {
-            width: 1200px;
-            max-width: 95%;
-            margin: 20px 0;
-            position: relative;
-            z-index: 10;
-            padding: 2rem;
-            background: var(--bg-tertiary);
-            backdrop-filter: blur(12px);
-            border: 1px solid var(--border-light);
-            border-radius: 1.5rem;
-            box-shadow: var(--card-shadow);
-        }
-
-        .header-area {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid var(--accent);
-            padding-bottom: 1rem;
-            margin-bottom: 1.5rem;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-            flex: 1;
-        }
-
-        .home-btn {
-            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
-            color: white;
-            border: none;
-            padding: 0.6rem 1.2rem;
-            border-radius: 9999px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: all 0.2s;
-            white-space: nowrap;
-        }
-
-        .home-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(139,92,246,0.4);
-        }
-
-        .home-btn::before {
-            content: '←';
-            font-weight: bold;
-            margin-right: 0.25rem;
-        }
-
-        h2 {
-            font-size: 1.8rem;
-            font-weight: 600;
-            background: linear-gradient(135deg, var(--accent), var(--success-color));
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin: 0;
-            white-space: nowrap;
-        }
-
-        .header-center {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            flex: 1;
-            justify-content: center;
-        }
-
-        .save-manage-btn {
-            background: linear-gradient(135deg, var(--accent-dark) 0%, #5b21b6 100%);
-            color: white;
-            border: none;
-            padding: 0.6rem 1.2rem;
-            border-radius: 9999px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            font-weight: 500;
-            transition: all 0.2s;
-            white-space: nowrap;
-        }
-
-        .save-manage-btn:hover {
-            transform: translateY(-2px);
-            filter: brightness(1.1);
-        }
-
-        .header-right {
-            flex: 1;
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .overall-score-container {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 0.5rem;
-        }
-
-        .overall-score {
-            font-size: 3rem;
-            font-weight: bold;
-            color: var(--success-color);
-            transition: transform 0.15s;
-            min-width: 120px;
-            text-align: center;
-            background: rgba(0,0,0,0.2);
-            border-radius: 0.5rem;
-            padding: 0 0.5rem;
-        }
-
-        .overall-score:hover {
-            transform: scale(1.03);
-        }
-
-        #solve-overall-btn {
-            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
-            color: white;
-            border: none;
-            padding: 0.6rem 1.5rem;
-            border-radius: 9999px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.15s;
-        }
-
-        #solve-overall-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(139,92,246,0.4);
-        }
-
-        h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            border-bottom: 1px solid var(--border-light);
-            padding-bottom: 0.5rem;
-        }
-
-        .instructions-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .instructions-text p {
-            color: var(--text-secondary);
-            margin: 0;
-        }
-
-        .table-container {
-            width: 100%;
-            overflow-x: auto;
-            margin-top: 1.5rem;
-            border: 1px solid var(--border-light);
-            border-radius: 1rem;
-            background: rgba(0,0,0,0.2);
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 900px;
-        }
-
-        th, td {
-            padding: 1rem 1.2rem;
-            text-align: left;
-            border-bottom: 1px solid var(--border-light);
-            vertical-align: middle;
-            color: var(--text-primary);
-        }
-
-        th {
-            background: rgba(139, 92, 246, 0.1);
-            font-weight: 600;
-            color: var(--accent);
-        }
-
-        tr:hover {
-            background: rgba(255, 255, 255, 0.02);
-        }
-
-        [contenteditable="true"] {
-            outline: 1px solid var(--border-light);
-            cursor: text;
-            padding: 0.3rem 0.5rem;
-            border-radius: 0.25rem;
-            background: rgba(0, 0, 0, 0.2);
-            transition: all 0.2s;
-            min-width: 50px;
-            display: inline-block;
-        }
-
-        [contenteditable="true"]:focus {
-            outline: 2px solid var(--accent);
-            background: rgba(0, 0, 0, 0.3);
-        }
-
-        .project-name-cell {
-            display: flex;
-            align-items: center;
-        }
-
-        .sub-item-indicator {
-            display: inline-block;
-            width: 20px;
-            text-align: center;
-            margin-right: 8px;
-            color: var(--accent);
-            font-weight: bold;
-        }
-
-        .grade-cell {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .letter-grade {
-            font-weight: bold;
-            color: var(--warning-color);
-            transition: color 0.2s;
-        }
-
-        .action-btn {
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 9999px;
-            cursor: pointer;
-            color: white;
-            font-size: 0.85rem;
-            margin: 0 0.25rem;
-            transition: all 0.15s;
-            font-weight: 500;
-            min-width: 70px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .action-btn:hover {
-            transform: translateY(-1px);
-            filter: brightness(1.1);
-        }
-
-        .remove-row-btn {
-            background: linear-gradient(135deg, var(--danger-color) 0%, #dc2626 100%);
-        }
-
-        .solve-item-btn {
-            background: linear-gradient(135deg, var(--success-color) 0%, #059669 100%);
-        }
-
-        .add-sub-btn {
-            background: linear-gradient(135deg, var(--warning-color) 0%, #d97706 100%);
-        }
-
-        #add-row-btn {
-            margin-top: 1.5rem;
-            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
-            color: white;
-            border: none;
-            padding: 1rem 1.5rem;
-            border-radius: 9999px;
-            cursor: pointer;
-            width: 100%;
-            font-size: 1rem;
-            font-weight: 600;
-            transition: all 0.2s;
-            box-shadow: 0 2px 8px rgba(139,92,246,0.2);
-        }
-
-        #add-row-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(139,92,246,0.4);
-        }
-
-        /* 页脚 */
-        footer {
-            padding: 3rem 1.5rem;
-            border-top: 1px solid var(--border-light);
-            background: black;
-            position: relative;
-            z-index: 10;
-            width: 100%;
-            text-align: center;
-        }
-
-        .footer-copyright {
-            color: var(--text-tertiary);
-            font-size: 0.875rem;
-        }
-
-        /* 响应式 */
-        @media (max-width: 1100px) {
-            nav {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 1rem;
-            }
-            .header-area {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            .header-left, .header-center, .header-right {
-                width: 100%;
-                justify-content: flex-start;
-            }
-            .header-center {
-                justify-content: center;
-            }
-            .header-right {
-                justify-content: flex-end;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .container { padding: 1rem; }
-            th, td { padding: 0.75rem; }
-            .action-btn {
-                padding: 0.4rem 0.6rem;
-                font-size: 0.75rem;
-                min-width: 60px;
-            }
-            .overall-score { font-size: 2rem; }
-        }
-    </style>
+    <!-- 统一 favicon -->
+    <link rel="icon" href="https://raw.githubusercontent.com/nanqiouheng/nanqiouheng.github.io/main/DownsicientLoge.ico" type="image/x-icon" />
+
+    <!-- 完整统一样式表 (来自上级目录的 index.css) -->
+    <link rel="stylesheet" href="../index.css">
 </head>
 <body class="lang-en">
     <!-- 加载动画 -->
     <div id="loading"><div class="spinner"></div></div>
 
     <!-- 背景元素 -->
-    <div class="fixed inset-0 z-0 pointer-events-none">
+    <div class="fixed-bg">
         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-purple-900/10 background-circle rounded-full blur-[120px] opacity-40"></div>
         <div class="absolute inset-0 bg-grid-pattern opacity-30"></div>
     </div>
 
-    <!-- 导航栏 (链接已修正) -->
+    <!-- ========== 导航栏 ========== -->
     <nav class="fixed top-0 left-0 right-0 z-50 px-6 py-6 flex justify-between items-center transition">
+        <!-- Logo 指向主页 -->
         <a href="../index.html" class="text-xl font-semibold tracking-tight text-white flex items-center gap-2">
-            <span class="w-6 h-6"><img src="https://raw.githubusercontent.com/nanqiouheng/nanqiouheng.github.io/main/DownsicientLoge.ico" alt="Down's Tools Logo"></span>
+            <span class="w-6 h-6"><img src="https://raw.githubusercontent.com/nanqiouheng/nanqiouheng.github.io/main/DownsicientLoge.ico" alt="Down's Tools"></span>
             Down's Tools
         </a>
+
+        <!-- 桌面导航链接 (指向主页各区域) -->
         <div class="hidden md:flex gap-8 text-sm font-medium text-neutral-300">
-            <a href="../index.html" class="hover:text-white transition-colors"><span class="lang-en">Home</span><span class="lang-zh">主页</span></a>
-            <a href="../index.html#features" class="hover:text-white transition-colors"><span class="lang-en">Features</span><span class="lang-zh">特性</span></a>
-            <a href="../index.html#demo" class="hover:text-white transition-colors"><span class="lang-en">Demo</span><span class="lang-zh">演示</span></a>
-            <a href="../index.html#about" class="hover:text-white transition-colors"><span class="lang-en">About</span><span class="lang-zh">关于</span></a>
+            <a href="../index.html" class="hover:text-white transition-colors">
+                <span class="lang-en">Home</span><span class="lang-zh">主页</span>
+            </a>
+            <a href="../index.html#features" class="hover:text-white transition-colors">
+                <span class="lang-en">Features</span><span class="lang-zh">特性</span>
+            </a>
+            <a href="../index.html#demo" class="hover:text-white transition-colors">
+                <span class="lang-en">Demo</span><span class="lang-zh">演示</span>
+            </a>
+            <a href="../index.html#about" class="hover:text-white transition-colors">
+                <span class="lang-en">About</span><span class="lang-zh">关于</span>
+            </a>
         </div>
+
+        <!-- 右侧：语言切换 + g值选择器 + 分数计算器链接 -->
         <div class="flex items-center gap-4">
             <button onclick="toggleLang()" class="text-xs font-medium text-neutral-400 hover:text-white transition-colors flex items-center gap-1.5 uppercase tracking-wider">
                 <iconify-icon icon="lucide:globe" width="14"></iconify-icon>
                 <span class="lang-en">EN</span>
                 <span class="lang-zh">中</span>
             </button>
-            <!-- 物理计算器链接 -->
-            <a href="../Down's%20Physics%20Calculator/Down's%20Physics%20Calculator.html" class="text-sm font-medium text-white border border-white/20 px-4 py-2 rounded-full hover:bg-white hover:text-black transition-all duration-300">
-                <span class="lang-en">Physics Solver</span><span class="lang-zh">物理计算器</span>
+
+            <!-- g 值选择器 -->
+            <div class="g-selector">
+                <span class="text-xs text-neutral-400 px-2 lang-en">g =</span>
+                <span class="text-xs text-neutral-400 px-2 lang-zh">g =</span>
+                <button class="g-option active" id="g9_8">9.8</button>
+                <button class="g-option" id="g10">10</button>
+            </div>
+
+            <!-- 分数计算器链接 (目录形式) -->
+            <a href="../Down's%20Score%20Calculator/" class="text-sm font-medium text-white border border-white/20 px-4 py-2 rounded-full hover:bg-white hover:text-black transition-all duration-300">
+                <span class="lang-en">Score Calc</span><span class="lang-zh">分数计算器</span>
             </a>
         </div>
     </nav>
 
-    <!-- 保存管理模态框 (内容不变，此处省略详细结构以节省篇幅，实际使用时保留原样) -->
-    <div id="saveModal" class="modal">...</div>
-    <div id="saveInputModal" class="modal">...</div>
-    <div id="renameModal" class="modal">...</div>
-
     <!-- 主容器 -->
-    <div class="container relative z-10" style="margin-top: 100px;">
-        <div class="header-area">
-            <div class="header-left">
-                <a href="../index.html" class="home-btn" target="_blank" data-i18n="returnHome">返回主页</a>
-                <h2 data-i18n="appTitle">Down's Score Calculator</h2>
-            </div>
-            <div class="header-right">
-                <button id="manageSavesBtn" class="save-manage-btn" data-i18n="saveManagement">保存管理</button>
-                <div class="overall-score-container">
-                    <div class="overall-score" contenteditable="true">100</div>
-                    <button id="solve-overall-btn" class="btn-primary" style="padding:0.6rem 1.5rem;" data-i18n="calculateOverall">计算总分</button>
-                </div>
-            </div>
+    <div class="container-custom relative z-10 mx-auto px-4 pt-32 pb-12">
+        <!-- 当前时间显示区域已移除 -->
+
+        <!-- 公式说明区域 (动态生成) -->
+        <div class="info-panel reveal-on-scroll" id="infoPanel"></div>
+
+        <!-- 卡片网格容器 (动态生成，包含新加水压卡片) -->
+        <div class="card-grid" id="cardGrid"></div>
+
+        <!-- 底部提示 -->
+        <div class="text-center text-neutral-500 text-sm mt-8" id="footerText">
+            <span class="lang-en">π = 3.14 · Enter known values, click Solve · Supports scientific notation (e.g., 6.67e-11)</span>
+            <span class="lang-zh">π = 3.14 · 输入已知量，点击计算 · 支持科学计数法 (如 6.67e-11)</span>
         </div>
-
-        <h3 data-i18n="calculatorTitle">分数计算器</h3>
-
-        <div class="instructions-container">
-            <div class="instructions-text">
-                <p>
-                    <strong data-i18n="instructions">使用指引:</strong> 
-                    <span data-i18n="instructionsText">输入成绩和权重进行计算，支持多层级的子项目</span>
-                </p>
-            </div>
-        </div>
-
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th data-i18n="project">项目</th>
-                        <th data-i18n="weight">权重</th>
-                        <th data-i18n="grade">成绩</th>
-                        <th data-i18n="actions">操作</th>
-                    </tr>
-                </thead>
-                <tbody id="grade-table-body">
-                    <!-- 初始为空 -->
-                </tbody>
-            </table>
-        </div>
-
-        <button id="add-row-btn" data-i18n="addNewProject">+ 添加新项目</button>
     </div>
 
-    <!-- 页脚 (已移除工具链接) -->
+    <!-- macOS风格模态窗口 (用于公式详情) -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-window" id="modalWindow">
+            <div class="modal-header">
+                <button class="modal-close" id="modalClose"></button>
+                <span class="modal-title" id="modalTitle">Formula Details</span>
+            </div>
+            <div class="modal-content" id="modalContent"></div>
+        </div>
+    </div>
+
+    <!-- 页脚 (已移除工具链接，仅保留工作室信息) -->
     <footer class="py-12 px-6 border-t border-white/10 bg-black relative z-10">
         <div class="max-w-6xl mx-auto">
             <div class="flex flex-col md:flex-row justify-between items-center gap-6 mb-8">
@@ -847,9 +125,420 @@
     </footer>
 
     <script>
-        // 完整的脚本内容与之前一致，此处仅展示核心框架，实际使用时保留完整脚本
-        // 初始化、语言切换、保存管理等函数均保留
-        // 注意：toggleLang 函数中不需要动画
+        (function() {
+            // 隐藏加载动画
+            const loading = document.getElementById('loading');
+            if (loading) {
+                loading.style.opacity = '0';
+                setTimeout(() => loading.style.display = 'none', 300);
+            }
+
+            // ---------- 全局变量 ----------
+            let currentLang = 'en';
+            let gValue = 9.8;       // 从选择器获取
+            const PI = 3.14;
+
+            // 模态窗口元素
+            const modalOverlay = document.getElementById('modalOverlay');
+            const modalClose = document.getElementById('modalClose');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalContent = document.getElementById('modalContent');
+
+            modalClose.addEventListener('click', () => modalOverlay.style.display = 'none');
+            modalOverlay.addEventListener('click', (e) => {
+                if (e.target === modalOverlay) modalOverlay.style.display = 'none';
+            });
+
+            // ---------- 语言切换函数 ----------
+            window.toggleLang = function() {
+                const body = document.body;
+                if (body.classList.contains('lang-en')) {
+                    body.classList.replace('lang-en', 'lang-zh');
+                    currentLang = 'zh';
+                } else {
+                    body.classList.replace('lang-zh', 'lang-en');
+                    currentLang = 'en';
+                }
+                renderInfoPanel();
+                renderCards();
+            };
+
+            // 翻译字典 (包含详细解释和例子)
+            const t = (key) => {
+                const translations = {
+                    zh: {
+                        infoTitle: "📐 七大核心公式 · 点击标签查看详情",
+                        infoDesc: "每张卡片对应一个核心模块。输入已知量，点击“计算”求解未知量。",
+                        topics: ["运动学 (匀加速)", "牛顿第二定律", "功能关系", "动量与冲量", "圆周/万有引力", "简谐运动", "水的压强与压力"],
+                        cardTitles: {
+                            kin: "运动学 (匀加速)",
+                            newt: "牛顿第二定律",
+                            work: "功能关系",
+                            mom: "动量与冲量",
+                            circ: "圆周运动 / 万有引力",
+                            shm: "简谐运动 (弹簧)",
+                            hydro: "水的压强与压力"
+                        },
+                        eq: {
+                            kin: "v = v₀ + a t    Δx = v₀ t + ½ a t²    v² = v₀² + 2 a Δx",
+                            newt: "F = m a",
+                            work: "W = ΔKE = ½ m (v² − v₀²)    PE = m g h",
+                            mom: "p = m v    J = F Δt = Δp",
+                            circ: "F_c = m v² / r    F_g = G M m / r²",
+                            shm: "F = -k x    T = 2π √(m / k)",
+                            hydro: "P = ρ g h    F = P · A"
+                        },
+                        // 详细解释与示例
+                        details: {
+                            kin: `
+                                <p><strong>物理意义：</strong>描述物体在匀加速直线运动中的速度、位移与时间的关系。</p>
+                                <p><strong>公式说明：</strong></p>
+                                <ul class="list-disc pl-5 space-y-1">
+                                    <li>v = v₀ + a t —— 末速度公式</li>
+                                    <li>Δx = v₀ t + ½ a t² —— 位移公式</li>
+                                    <li>v² = v₀² + 2 a Δx —— 不含时间的关系式</li>
+                                </ul>
+                                <p><strong>示例：</strong>一辆汽车从静止开始以 2 m/s² 的加速度行驶 5 秒，求末速度和位移。<br>
+                                解：v₀ = 0, a = 2, t = 5 → v = 0 + 2×5 = 10 m/s, Δx = 0×5 + ½×2×5² = 25 m。</p>
+                            `,
+                            newt: `
+                                <p><strong>物理意义：</strong>物体所受合外力等于其质量与加速度的乘积（F=ma）。</p>
+                                <p><strong>公式说明：</strong>力是改变物体运动状态的原因，加速度方向与合外力方向一致。</p>
+                                <p><strong>示例：</strong>一个 5 kg 的物体受到 20 N 的水平拉力，求加速度。<br>
+                                解：a = F/m = 20/5 = 4 m/s²。</p>
+                            `,
+                            work: `
+                                <p><strong>物理意义：</strong>合外力对物体做的功等于物体动能的变化（动能定理）；重力势能变化与重力做功有关。</p>
+                                <p><strong>公式说明：</strong></p>
+                                <ul class="list-disc pl-5 space-y-1">
+                                    <li>W = ΔKE = ½ m (v² - v₀²) —— 动能定理</li>
+                                    <li>PE = m g h —— 重力势能</li>
+                                </ul>
+                                <p><strong>示例：</strong>一个 2 kg 物体从静止加速到 6 m/s，求外力做的功。<br>
+                                解：W = ½×2×(6² - 0) = 36 J。</p>
+                            `,
+                            mom: `
+                                <p><strong>物理意义：</strong>动量 p = mv；冲量 J = FΔt 等于动量的变化 Δp。</p>
+                                <p><strong>公式说明：</strong>冲量是力对时间的积累效应，动量定理适用于碰撞、打击等问题。</p>
+                                <p><strong>示例：</strong>一个 0.5 kg 的球以 10 m/s 飞来，被球棒打击后以 15 m/s 反向飞回，作用时间 0.02 s，求平均作用力。<br>
+                                解：Δp = m(v' - v) = 0.5×(-15 - 10) = -12.5 kg·m/s，F = Δp/Δt = -12.5/0.02 = -625 N（负号表示方向与初速度相反）。</p>
+                            `,
+                            circ: `
+                                <p><strong>物理意义：</strong>向心力 F_c = m v²/r 维持物体做圆周运动；万有引力 F_g = G M m / r² 描述两物体间的引力。</p>
+                                <p><strong>公式说明：</strong>向心力不是一种新的力，而是指向圆心的合力；G = 6.67×10⁻¹¹ N·m²/kg²。</p>
+                                <p><strong>示例：</strong>一个 1000 kg 的卫星以 7.5 km/s 的速度在距地心 7000 km 的圆轨道上运行，求向心力。<br>
+                                解：F_c = 1000×(7500)² / (7×10⁶) ≈ 8036 N。</p>
+                            `,
+                            shm: `
+                                <p><strong>物理意义：</strong>简谐运动中，回复力 F = -k x 与位移成正比反向；弹簧振子周期 T = 2π √(m/k)。</p>
+                                <p><strong>公式说明：</strong>k 为劲度系数，负号表示力与位移方向相反。</p>
+                                <p><strong>示例：</strong>一个 0.2 kg 的物体挂在劲度系数 80 N/m 的弹簧上，求振动周期。<br>
+                                解：T = 2π √(0.2/80) = 2π √0.0025 = 2π×0.05 = 0.314 s。</p>
+                            `,
+                            hydro: `
+                                <p><strong>物理意义：</strong>液体中某点的压强 P = ρ g h（ρ 为液体密度，h 为深度），压力 F = P·A 为压强乘以受力面积。</p>
+                                <p><strong>公式说明：</strong>适用于静止液体，压强只与深度和密度有关，与容器形状无关。</p>
+                                <p><strong>示例：</strong>水深 10 m 处，水的密度 1000 kg/m³，g=9.8，求压强及一个 2 m² 闸门受到的压力。<br>
+                                解：P = 1000×9.8×10 = 98000 Pa，F = 98000×2 = 196000 N。</p>
+                            `
+                        },
+                        labels: {
+                            v0: "v₀ (m/s)", v: "v (m/s)", a: "a (m/s²)", t: "t (s)", dx: "Δx (m)",
+                            F: "F (N)", m: "m (kg)", h: "h (m)", W: "W (J)", PE: "PE (J)",
+                            p: "p (kg·m/s)", dt: "Δt (s)", dv: "Δv (m/s)",
+                            r: "r (m)", M: "M (kg)", Fg: "F_g (N)",
+                            k: "k (N/m)", x: "x (m)", T: "T (s)",
+                            rho: "ρ (kg/m³)", A: "A (m²)"
+                        },
+                        buttons: { calc: "计算", reset: "重置" },
+                        result: "结果：",
+                        insufficient: "⚠️ 输入不足或无法计算",
+                    },
+                    en: {
+                        infoTitle: "📐 Seven Core Formulas · Click Tags for Details",
+                        infoDesc: "Each card corresponds to a core topic. Enter known values and click 'Solve' to find the unknown.",
+                        topics: ["Kinematics (const a)", "Newton's 2nd Law", "Work-Energy", "Momentum & Impulse", "Circular/Gravity", "Simple Harmonic Motion", "Water Pressure & Force"],
+                        cardTitles: {
+                            kin: "Kinematics (constant acceleration)",
+                            newt: "Newton's Second Law",
+                            work: "Work-Energy Theorem",
+                            mom: "Momentum & Impulse",
+                            circ: "Circular Motion / Gravity",
+                            shm: "Simple Harmonic Motion (Spring)",
+                            hydro: "Water Pressure & Force"
+                        },
+                        eq: {
+                            kin: "v = v₀ + a t    Δx = v₀ t + ½ a t²    v² = v₀² + 2 a Δx",
+                            newt: "F = m a",
+                            work: "W = ΔKE = ½ m (v² − v₀²)    PE = m g h",
+                            mom: "p = m v    J = F Δt = Δp",
+                            circ: "F_c = m v² / r    F_g = G M m / r²",
+                            shm: "F = -k x    T = 2π √(m / k)",
+                            hydro: "P = ρ g h    F = P · A"
+                        },
+                        details: {
+                            kin: `
+                                <p><strong>Physical meaning:</strong> Describes the relationship between velocity, displacement, and time for constant acceleration motion.</p>
+                                <p><strong>Formulas:</strong></p>
+                                <ul class="list-disc pl-5 space-y-1">
+                                    <li>v = v₀ + a t — final velocity</li>
+                                    <li>Δx = v₀ t + ½ a t² — displacement</li>
+                                    <li>v² = v₀² + 2 a Δx — time-free relation</li>
+                                </ul>
+                                <p><strong>Example:</strong> A car starts from rest and accelerates at 2 m/s² for 5 s. Find final velocity and displacement.<br>
+                                Solution: v₀ = 0, a = 2, t = 5 → v = 0 + 2×5 = 10 m/s, Δx = 0×5 + ½×2×5² = 25 m.</p>
+                            `,
+                            newt: `
+                                <p><strong>Physical meaning:</strong> Net force equals mass times acceleration (F = ma).</p>
+                                <p><strong>Formula:</strong> The acceleration direction is the same as the net force direction.</p>
+                                <p><strong>Example:</strong> A 5 kg object is pulled with a 20 N horizontal force. Find acceleration.<br>
+                                Solution: a = F/m = 20/5 = 4 m/s².</p>
+                            `,
+                            work: `
+                                <p><strong>Physical meaning:</strong> Work done by net force equals change in kinetic energy (work-energy theorem); gravitational potential energy relates to work by gravity.</p>
+                                <p><strong>Formulas:</strong></p>
+                                <ul class="list-disc pl-5 space-y-1">
+                                    <li>W = ΔKE = ½ m (v² - v₀²) — work-energy theorem</li>
+                                    <li>PE = m g h — gravitational potential energy</li>
+                                </ul>
+                                <p><strong>Example:</strong> A 2 kg object accelerates from rest to 6 m/s. Find the work done.<br>
+                                Solution: W = ½×2×(6² - 0) = 36 J.</p>
+                            `,
+                            mom: `
+                                <p><strong>Physical meaning:</strong> Momentum p = mv; impulse J = FΔt equals change in momentum Δp.</p>
+                                <p><strong>Formulas:</strong> Impulse is the time integral of force, used in collisions and impacts.</p>
+                                <p><strong>Example:</strong> A 0.5 kg ball comes at 10 m/s and is hit back at 15 m/s in 0.02 s. Find average force.<br>
+                                Solution: Δp = 0.5×(-15 - 10) = -12.5 kg·m/s, F = Δp/Δt = -12.5/0.02 = -625 N (negative indicates opposite direction).</p>
+                            `,
+                            circ: `
+                                <p><strong>Physical meaning:</strong> Centripetal force F_c = m v²/r keeps an object in circular motion; universal gravitation F_g = G M m / r² describes gravitational attraction.</p>
+                                <p><strong>Notes:</strong> Centripetal force is the net force pointing toward the center; G = 6.67×10⁻¹¹ N·m²/kg².</p>
+                                <p><strong>Example:</strong> A 1000 kg satellite orbits at 7.5 km/s with radius 7000 km. Find centripetal force.<br>
+                                Solution: F_c = 1000×(7500)² / (7×10⁶) ≈ 8036 N.</p>
+                            `,
+                            shm: `
+                                <p><strong>Physical meaning:</strong> In simple harmonic motion, restoring force F = -k x is proportional to displacement; period T = 2π √(m/k).</p>
+                                <p><strong>Formulas:</strong> k is spring constant, negative sign indicates force opposes displacement.</p>
+                                <p><strong>Example:</strong> A 0.2 kg mass on a spring with k = 80 N/m. Find period.<br>
+                                Solution: T = 2π √(0.2/80) = 2π √0.0025 = 2π×0.05 = 0.314 s.</p>
+                            `,
+                            hydro: `
+                                <p><strong>Physical meaning:</strong> Pressure at depth in a fluid: P = ρ g h (ρ density, h depth); force on a surface: F = P·A.</p>
+                                <p><strong>Notes:</strong> For static fluids, pressure depends only on depth and density, not on container shape.</p>
+                                <p><strong>Example:</strong> At 10 m depth in water (ρ = 1000 kg/m³, g=9.8), find pressure and force on a 2 m² gate.<br>
+                                Solution: P = 1000×9.8×10 = 98000 Pa, F = 98000×2 = 196000 N.</p>
+                            `
+                        },
+                        labels: {
+                            v0: "v₀ (m/s)", v: "v (m/s)", a: "a (m/s²)", t: "t (s)", dx: "Δx (m)",
+                            F: "F (N)", m: "m (kg)", h: "h (m)", W: "W (J)", PE: "PE (J)",
+                            p: "p (kg·m/s)", dt: "Δt (s)", dv: "Δv (m/s)",
+                            r: "r (m)", M: "M (kg)", Fg: "F_g (N)",
+                            k: "k (N/m)", x: "x (m)", T: "T (s)",
+                            rho: "ρ (kg/m³)", A: "A (m²)"
+                        },
+                        buttons: { calc: "Solve", reset: "Reset" },
+                        result: "Result:",
+                        insufficient: "⚠️ Insufficient input or cannot solve",
+                    }
+                };
+                return key.split('.').reduce((obj, k) => obj?.[k], translations[currentLang]) || key;
+            };
+
+            // 卡片数据 (包含 hydro 卡片)
+            const cardsData = [
+                { id: 'kin', inputs: ['v0','v','a','t','dx'],
+                  solve: (vals) => {
+                      if (vals.v0 !== undefined && vals.a !== undefined && vals.t !== undefined) return { v: vals.v0 + vals.a * vals.t };
+                      if (vals.v0 !== undefined && vals.v !== undefined && vals.a !== undefined) return { t: (vals.v - vals.v0) / vals.a };
+                      if (vals.v0 !== undefined && vals.t !== undefined && vals.v !== undefined) return { a: (vals.v - vals.v0) / vals.t };
+                      if (vals.v0 !== undefined && vals.t !== undefined && vals.a !== undefined) return { v: vals.v0 + vals.a * vals.t };
+                      return null;
+                  } },
+                { id: 'newt', inputs: ['F','m','a'],
+                  solve: (vals) => {
+                      if (vals.m !== undefined && vals.a !== undefined) return { F: vals.m * vals.a };
+                      if (vals.F !== undefined && vals.m !== undefined) return { a: vals.F / vals.m };
+                      if (vals.F !== undefined && vals.a !== undefined) return { m: vals.F / vals.a };
+                      return null;
+                  } },
+                { id: 'work', inputs: ['m','v0','v','h','W','PE'],
+                  solve: (vals) => { return null; } },
+                { id: 'mom', inputs: ['m','v','p','F','dt','dv'],
+                  solve: (vals) => { return null; } },
+                { id: 'circ', inputs: ['m','v','r','F','M','Fg'],
+                  solve: (vals) => { return null; } },
+                { id: 'shm', inputs: ['k','x','F','m','T'],
+                  solve: (vals) => { return null; } },
+                { id: 'hydro', inputs: ['rho','h','A'],
+                  solve: (vals) => {
+                      const g = window.gValue !== undefined ? window.gValue : 9.8;
+                      if (vals.rho !== undefined && vals.h !== undefined) {
+                          const P = vals.rho * g * vals.h;
+                          if (vals.A !== undefined) {
+                              const F = P * vals.A;
+                              return { P, F };
+                          } else {
+                              return { P };
+                          }
+                      }
+                      return null;
+                  } }
+            ];
+
+            // 显示模态框（使用详细解释）
+            function showModal(topicKey) {
+                modalTitle.innerText = t(`cardTitles.${topicKey}`);
+                const detailsHtml = t(`details.${topicKey}`);
+                modalContent.innerHTML = `
+                    <div class="formula-detail">${t(`eq.${topicKey}`)}</div>
+                    ${detailsHtml}
+                `;
+                modalOverlay.style.display = 'flex';
+            }
+
+            // 渲染信息面板 (包含7个标签)
+            function renderInfoPanel() {
+                const panel = document.getElementById('infoPanel');
+                const topics = t('topics');
+                const topicKeys = ['kin','newt','work','mom','circ','shm','hydro'];
+                panel.innerHTML = `
+                    <div class="info-title">${t('infoTitle')}</div>
+                    <div class="info-desc">${t('infoDesc')}</div>
+                    <div class="topic-tags">
+                        ${topics.map((topic, idx) => `<span class="topic-tag" data-topic="${topicKeys[idx]}">${topic}</span>`).join('')}
+                    </div>
+                `;
+                document.querySelectorAll('.topic-tag').forEach(tag => {
+                    tag.addEventListener('click', () => showModal(tag.dataset.topic));
+                });
+            }
+
+            // 渲染卡片
+            function renderCards() {
+                const grid = document.getElementById('cardGrid');
+                grid.innerHTML = '';
+
+                cardsData.forEach(card => {
+                    const cardDiv = document.createElement('div');
+                    cardDiv.className = 'card';
+                    cardDiv.id = `card-${card.id}`;
+
+                    let inputsHtml = '';
+                    card.inputs.forEach(inp => {
+                        inputsHtml += `
+                            <div class="input-row">
+                                <label>${t(`labels.${inp}`)}</label>
+                                <input type="number" id="${card.id}_${inp}" step="any" placeholder="—">
+                            </div>
+                        `;
+                    });
+
+                    cardDiv.innerHTML = `
+                        <div class="card-title">${t(`cardTitles.${card.id}`)}</div>
+                        <div class="card-equation">${t(`eq.${card.id}`)}</div>
+                        ${inputsHtml}
+                        <div class="button-group">
+                            <button class="btn" data-card="${card.id}">${t('buttons.calc')}</button>
+                            <button class="btn reset" data-reset="${card.id}">${t('buttons.reset')}</button>
+                        </div>
+                        <div class="result-box" id="${card.id}_result"></div>
+                    `;
+                    grid.appendChild(cardDiv);
+                });
+
+                // 绑定计算事件
+                document.querySelectorAll('.btn[data-card]').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const cardId = e.target.dataset.card;
+                        const card = cardsData.find(c => c.id === cardId);
+                        if (!card) return;
+                        const vals = {};
+                        card.inputs.forEach(inp => {
+                            const el = document.getElementById(`${cardId}_${inp}`);
+                            if (el && el.value.trim() !== '') vals[inp] = parseFloat(el.value);
+                        });
+                        const result = card.solve(vals);
+                        const resDiv = document.getElementById(`${cardId}_result`);
+                        if (resDiv) {
+                            if (result) {
+                                let resultStr = '';
+                                if (result.P !== undefined) resultStr += `P = ${result.P.toFixed(4)} Pa`;
+                                if (result.F !== undefined) resultStr += `, F = ${result.F.toFixed(4)} N`;
+                                if (Object.keys(result).length === 1) {
+                                    const key = Object.keys(result)[0];
+                                    const val = result[key];
+                                    resultStr = `${key} = ${val.toFixed(4)}`;
+                                }
+                                resDiv.innerHTML = `<strong>${t('result')}</strong> ${resultStr}`;
+                            } else {
+                                resDiv.innerHTML = `<span style="color:var(--warning-color);">${t('insufficient')}</span>`;
+                            }
+                        }
+                    });
+                });
+
+                // 绑定重置事件
+                document.querySelectorAll('.btn.reset').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const cardId = e.target.dataset.reset;
+                        document.querySelectorAll(`#card-${cardId} input`).forEach(inp => inp.value = '');
+                        document.getElementById(`${cardId}_result`).innerHTML = '';
+                    });
+                });
+            }
+
+            // g值切换
+            document.getElementById('g9_8').addEventListener('click', () => {
+                gValue = 9.8;
+                window.gValue = 9.8;
+                document.getElementById('g9_8').classList.add('active');
+                document.getElementById('g10').classList.remove('active');
+            });
+            document.getElementById('g10').addEventListener('click', () => {
+                gValue = 10;
+                window.gValue = 10;
+                document.getElementById('g10').classList.add('active');
+                document.getElementById('g9_8').classList.remove('active');
+            });
+            window.gValue = 9.8;
+
+            // 滚动动画
+            function initReveal() {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('is-visible');
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.1 });
+                document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
+            }
+
+            // 导航栏背景
+            function scrollNav() {
+                const nav = document.querySelector("nav");
+                if (window.scrollY === 0) nav.classList.remove("with-back");
+                else nav.classList.add("with-back");
+            }
+            window.addEventListener('scroll', scrollNav);
+            scrollNav();
+
+            // 根据浏览器语言设置初始语言
+            if (navigator.language.startsWith('zh')) {
+                document.body.classList.replace('lang-en', 'lang-zh');
+                currentLang = 'zh';
+            } else {
+                document.body.classList.replace('lang-zh', 'lang-en');
+                currentLang = 'en';
+            }
+
+            // 初次渲染
+            renderInfoPanel();
+            renderCards();
+            initReveal();
+        })();
     </script>
 </body>
 </html>
