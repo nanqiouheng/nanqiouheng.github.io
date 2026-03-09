@@ -504,32 +504,7 @@
             justify-content: center;
         }
 
-        .language-switcher {
-            display: flex;
-            align-items: center;
-            gap: 0.25rem;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid var(--border-light);
-            border-radius: 9999px;
-            padding: 0.25rem;
-        }
-
-        .lang-btn {
-            background: transparent;
-            border: none;
-            color: var(--text-secondary);
-            padding: 0.4rem 1rem;
-            border-radius: 9999px;
-            cursor: pointer;
-            font-weight: 500;
-            font-size: 0.9rem;
-            transition: all 0.15s;
-        }
-
-        .lang-btn.active {
-            background: var(--accent);
-            color: white;
-        }
+        /* 语言切换器样式已移除，统一使用右上角按钮 */
 
         .save-manage-btn {
             background: linear-gradient(135deg, var(--accent-dark) 0%, #5b21b6 100%);
@@ -824,6 +799,7 @@
             <a href="index.html#about" class="hover:text-white transition-colors"><span class="lang-en">About</span><span class="lang-zh">关于</span></a>
         </div>
         <div class="flex items-center gap-4">
+            <!-- 语言切换按钮：与物理计算器完全一致 -->
             <button onclick="toggleLang()" class="text-xs font-medium text-neutral-400 hover:text-white transition-colors flex items-center gap-1.5 uppercase tracking-wider">
                 <iconify-icon icon="lucide:globe" width="14"></iconify-icon>
                 <span class="lang-en">EN</span>
@@ -897,17 +873,12 @@
                 <a href="index.html" class="home-btn" target="_blank" data-i18n="returnHome">返回主页</a>
                 <h2 data-i18n="appTitle">Down's Score Calculator</h2>
             </div>
-            <div class="header-center">
-                <div class="language-switcher">
-                    <button class="lang-btn active" data-lang="zh">中文</button>
-                    <button class="lang-btn" data-lang="en">English</button>
-                </div>
-                <button id="manageSavesBtn" class="save-manage-btn" data-i18n="saveManagement">保存管理</button>
-            </div>
+            <!-- 语言切换器已移除，统一使用右上角按钮 -->
             <div class="header-right">
+                <button id="manageSavesBtn" class="save-manage-btn" data-i18n="saveManagement">保存管理</button>
                 <div class="overall-score-container">
                     <div class="overall-score" contenteditable="true">100</div>
-                    <button id="solve-overall-btn" class="btn-primary" style="padding:0.6rem 1.5rem;">计算总分</button>
+                    <button id="solve-overall-btn" class="btn-primary" style="padding:0.6rem 1.5rem;" data-i18n="calculateOverall">计算总分</button>
                 </div>
             </div>
         </div>
@@ -942,11 +913,23 @@
         <button id="add-row-btn" data-i18n="addNewProject">+ 添加新项目</button>
     </div>
 
-    <!-- 页脚 -->
-    <footer>
-        <div class="footer-copyright">
-            <span class="lang-en">Powered by Down`sicient | Copyright © 2026 Down`sicient Studio, Tach's subsidiary studio</span>
-            <span class="lang-zh">Powered by Down`sicient | 版权所有 © 2026 Down`sicient Studio，Tach的附属工作室</span>
+    <!-- 页脚（修改为与物理计算器一致） -->
+    <footer class="py-12 px-6 border-t border-white/10 bg-black relative z-10">
+        <div class="max-w-6xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6 mb-8">
+                <div class="flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-purple-500"></span>
+                    <span class="text-white font-semibold text-lg">Down's Tools</span>
+                </div>
+                <div class="flex gap-6 text-neutral-400">
+                    <a href="https://nanqiouheng.github.io" class="hover:text-purple-500 transition-colors"><iconify-icon icon="lucide:earth" width="20"></iconify-icon></a>
+                    <a href="https://github.com/nanqiouheng" class="hover:text-purple-500 transition-colors"><iconify-icon icon="lucide:github" width="20"></iconify-icon></a>
+                </div>
+            </div>
+            <div class="text-center text-neutral-500 text-sm">
+                <span class="lang-en">Powered by Down`sicient | Copyright © 2026 Down`sicient Studio, Tach's subsidiary studio</span>
+                <span class="lang-zh">Powered by Down`sicient | 版权所有 © 2026 Down`sicient Studio，Tach的附属工作室</span>
+            </div>
         </div>
     </footer>
 
@@ -1508,22 +1491,30 @@
                 localStorage.setItem(LANGUAGE_STORAGE_KEY, currentLang);
             }
 
-            updateLanguageButtons();
+            // 更新 body 类
+            if (currentLang === 'zh') {
+                document.body.classList.add('lang-zh');
+                document.body.classList.remove('lang-en');
+            } else {
+                document.body.classList.add('lang-en');
+                document.body.classList.remove('lang-zh');
+            }
+
             applyLanguage();
         }
 
-        // 切换语言
-        function switchLanguage(lang) {
-            if (lang !== currentLang && (lang === 'zh' || lang === 'en')) {
-                showLanguageAnimation(lang);
+        // 切换语言（供导航栏按钮调用）
+        function toggleLang() {
+            const newLang = currentLang === 'en' ? 'zh' : 'en';
+            showLanguageAnimation(newLang);
 
-                setTimeout(() => {
-                    currentLang = lang;
-                    localStorage.setItem(LANGUAGE_STORAGE_KEY, currentLang);
-                    updateLanguageButtons();
-                    applyLanguage();
-                }, 400);
-            }
+            setTimeout(() => {
+                currentLang = newLang;
+                localStorage.setItem(LANGUAGE_STORAGE_KEY, currentLang);
+                document.body.classList.remove('lang-en', 'lang-zh');
+                document.body.classList.add(`lang-${newLang}`);
+                applyLanguage();
+            }, 400);
         }
 
         // 显示语言切换动画
@@ -1546,17 +1537,6 @@
                     animationElement.style.pointerEvents = 'none';
                 }, 200);
             }, 800);
-        }
-
-        // 更新语言按钮状态
-        function updateLanguageButtons() {
-            document.querySelectorAll('.lang-btn').forEach(btn => {
-                if (btn.dataset.lang === currentLang) {
-                    btn.classList.add('active');
-                } else {
-                    btn.classList.remove('active');
-                }
-            });
         }
 
         // 应用语言到页面
@@ -1607,13 +1587,6 @@
 
         // 绑定所有事件
         function bindEvents() {
-            // 语言切换
-            document.querySelectorAll('.lang-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    switchLanguage(btn.dataset.lang);
-                });
-            });
-
             // 保存管理相关
             document.getElementById('manageSavesBtn').addEventListener('click', openSaveModal);
             document.getElementById('saveCurrentBtn').addEventListener('click', openSaveInputModal);
