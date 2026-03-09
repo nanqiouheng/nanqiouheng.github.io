@@ -1,5 +1,5 @@
 /* ========================================
-   Down's Tools 统一样式表（修正版）
+   Down's Tools 统一样式表（完整版）
    ======================================== */
 
 /* ----------------------------------------
@@ -57,10 +57,17 @@ h1, h2, h3, .serif {
     font-family: 'MiSans', sans-serif;
 }
 
+/* 语言切换显示规则 */
+body.lang-en .lang-zh {
+    display: none !important;
+}
+body.lang-zh .lang-en {
+    display: none !important;
+}
+
 /* ----------------------------------------
    2. 语言切换系统
    ---------------------------------------- */
-/* 语言切换动画 */
 .language-switch-animation {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
@@ -90,6 +97,7 @@ h1, h2, h3, .serif {
     70% { opacity: 1; transform: scale(1.1); }
     100% { opacity: 0; transform: scale(1.5); }
 }
+
 /* ----------------------------------------
    3. 背景装饰元素
    ---------------------------------------- */
@@ -288,7 +296,7 @@ nav.with-back {
 }
 
 /* ----------------------------------------
-   6. 物理计算器专用样式（修正 composes）
+   6. 物理计算器专用样式
    ---------------------------------------- */
 .container-custom {
     max-width: 1400px;
@@ -307,7 +315,6 @@ nav.with-back {
 }
 
 .card {
-    /* 原 composes: glass-panel; 已手动合并样式 */
     background: var(--bg-tertiary);
     backdrop-filter: blur(12px);
     border: 1px solid var(--border-light);
@@ -425,7 +432,6 @@ nav.with-back {
 }
 
 .info-panel {
-    /* 原 composes: glass-panel; 已手动合并样式 */
     background: var(--bg-tertiary);
     backdrop-filter: blur(12px);
     border: 1px solid var(--border-light);
@@ -764,10 +770,7 @@ tr:hover {
 .modal-overlay {
     display: none;
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    top: 0; left: 0; width: 100%; height: 100%;
     background: rgba(0, 0, 0, 0.7);
     justify-content: center;
     align-items: center;
@@ -799,8 +802,7 @@ tr:hover {
 }
 
 .modal-close {
-    width: 16px;
-    height: 16px;
+    width: 16px; height: 16px;
     border-radius: 50%;
     background: #ff5f56;
     border: none;
@@ -865,10 +867,7 @@ tr:hover {
    ---------------------------------------- */
 #loading {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    top: 0; left: 0; width: 100%; height: 100%;
     background: var(--bg-primary);
     display: flex;
     justify-content: center;
@@ -878,8 +877,7 @@ tr:hover {
 }
 
 .spinner {
-    width: 45px;
-    height: 45px;
+    width: 45px; height: 45px;
     border: 4px solid rgba(255, 255, 255, 0.1);
     border-top-color: var(--accent);
     border-radius: 50%;
@@ -916,61 +914,30 @@ tr:hover {
 }
 
 .mockup-dot {
-    width: 0.5rem;
-    height: 0.5rem;
-    border-radius: 50%;
-    background: #ef4444;
+    width: 0.5rem; height: 0.5rem; border-radius: 50%; background: #ef4444;
 }
 
-.mockup-dot:nth-child(2) {
-    background: #f59e0b;
-}
-
-.mockup-dot:nth-child(3) {
-    background: #10b981;
-}
+.mockup-dot:nth-child(2) { background: #f59e0b; }
+.mockup-dot:nth-child(3) { background: #10b981; }
 
 .mockup-bar {
-    height: 2rem;
-    width: 75%;
-    background: rgba(38, 38, 38, 0.8);
-    border-radius: 0.25rem;
-    animation: pulse 2s infinite;
+    height: 2rem; width: 75%; background: rgba(38, 38, 38, 0.8); border-radius: 0.25rem; animation: pulse 2s infinite;
 }
 
 .mockup-bar-large {
-    height: 8rem;
-    width: 100%;
-    background: rgba(38, 38, 38, 0.8);
-    border-radius: 0.25rem;
-    opacity: 0.5;
+    height: 8rem; width: 100%; background: rgba(38, 38, 38, 0.8); border-radius: 0.25rem; opacity: 0.5;
 }
 
 .timeline-line {
-    height: 4rem;
-    width: 1px;
-    background: linear-gradient(to bottom, transparent, var(--accent), transparent);
-    margin: 3rem auto;
+    height: 4rem; width: 1px; background: linear-gradient(to bottom, transparent, var(--accent), transparent); margin: 3rem auto;
 }
 
 .timeline-dot {
-    position: absolute;
-    left: -5px;
-    top: 0.5rem;
-    width: 0.625rem;
-    height: 0.625rem;
-    border-radius: 50%;
-    background: var(--accent);
-    box-shadow: 0 0 0 4px rgba(22, 22, 22, 1);
+    position: absolute; left: -5px; top: 0.5rem; width: 0.625rem; height: 0.625rem; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 4px rgba(22, 22, 22, 1);
 }
 
-.timeline-dot-blue {
-    background: #3b82f6;
-}
-
-.timeline-dot-gray {
-    background: #525252;
-}
+.timeline-dot-blue { background: #3b82f6; }
+.timeline-dot-gray { background: #525252; }
 
 /* ----------------------------------------
    11. 页脚样式
@@ -1002,64 +969,22 @@ footer {
    12. 响应式设计
    ---------------------------------------- */
 @media (max-width: 1100px) {
-    nav {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1rem;
-    }
-    
-    nav .nav-links {
-        width: 100%;
-        justify-content: center;
-    }
-    
-    nav .nav-actions {
-        width: 100%;
-        justify-content: flex-start;
-    }
+    nav { flex-direction: column; align-items: flex-start; gap: 1rem; }
+    nav .nav-links { width: 100%; justify-content: center; }
+    nav .nav-actions { width: 100%; justify-content: flex-start; }
 }
 
 @media (max-width: 768px) {
-    .container-custom {
-        padding: 0 0.5rem;
-    }
-    
-    .card-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    th, td {
-        padding: 0.75rem;
-    }
-    
-    .action-btn {
-        padding: 0.4rem 0.6rem;
-        font-size: 0.75rem;
-        min-width: 60px;
-    }
-    
-    .overall-score {
-        font-size: 2rem;
-    }
-    
-    h2 {
-        font-size: 1.5rem;
-    }
+    .container-custom { padding: 0 0.5rem; }
+    .card-grid { grid-template-columns: 1fr; }
+    th, td { padding: 0.75rem; }
+    .action-btn { padding: 0.4rem 0.6rem; font-size: 0.75rem; min-width: 60px; }
+    .overall-score { font-size: 2rem; }
+    h2 { font-size: 1.5rem; }
 }
 
 @media (max-width: 480px) {
-    .btn-primary, .btn-ghost {
-        padding: 0.6rem 1rem;
-        font-size: 0.9rem;
-    }
-    
-    .input-row label {
-        width: 70px;
-        font-size: 0.8rem;
-    }
-    
-    .g-option {
-        padding: 0.2rem 0.6rem;
-        font-size: 0.8rem;
-    }
+    .btn-primary, .btn-ghost { padding: 0.6rem 1rem; font-size: 0.9rem; }
+    .input-row label { width: 70px; font-size: 0.8rem; }
+    .g-option { padding: 0.2rem 0.6rem; font-size: 0.8rem; }
 }
