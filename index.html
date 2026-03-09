@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Down's Tools | 唐氏工具集</title>
-    <!-- Tailwind + Iconify + 字体 (保留, 与自定义样式互补) -->
+    <!-- Tailwind + Iconify + 字体 -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
     <link rel="preconnect" href="https://fonts.loli.net">
@@ -13,174 +13,10 @@
     <link href="https://fonts.loli.net/css2?family=Noto+Serif+SC:wght@200..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/misans@4.1.0/lib/Normal/MiSans-Regular.min.css" />
     <link rel="stylesheet" crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/misans@4.1.0/lib/Normal/MiSans-Semibold.min.css" />
-    <!-- 新图标 favicon -->
+    <!-- favicon -->
     <link rel="icon" href="https://raw.githubusercontent.com/nanqiouheng/nanqiouheng.github.io/main/DownsicientLoge.ico" type="image/x-icon" />
 
-    <!-- 完整的 Down's Tools 统一样式表 (来自 index.css) -->
-    <style>
-        /* 样式与之前完全一致，此处省略以节省篇幅，实际使用请保留原样 */
-        /* ... 完整样式代码 ... */
-    </style>
-</head>
-<body class="antialiased selection:bg-purple-500/30 selection:text-purple-200 lang-en">
-    <!-- 加载动画 -->
-    <div id="loading"><div class="spinner"></div></div>
-
-    <!-- 语言切换动画容器 -->
-    <div id="languageAnimation" class="language-switch-animation">
-        <div class="language-animation-text" id="animationText">Switching...</div>
-    </div>
-
-    <!-- 背景元素 (固定) -->
-    <div class="fixed inset-0 z-0 pointer-events-none">
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-purple-900/10 background-circle rounded-full blur-[120px] opacity-40"></div>
-        <div class="absolute inset-0 bg-grid-pattern opacity-30"></div>
-    </div>
-
-    <!-- 导航栏 (链接已修正为文件夹内 .html 文件) -->
-    <nav class="fixed top-0 left-0 right-0 z-50 px-6 py-6 flex justify-between items-center transition">
-        <a href="#" class="text-xl font-semibold tracking-tight text-white flex items-center gap-2">
-            <span class="w-6 h-6"><img src="https://raw.githubusercontent.com/nanqiouheng/nanqiouheng.github.io/main/DownsicientLoge.ico" alt="Down's Tools Logo"></span>
-            Down's Tools
-        </a>
-        <div class="hidden md:flex gap-8 text-sm font-medium text-neutral-300">
-            <a href="#" class="hover:text-white transition-colors"><span class="lang-en">Home</span><span class="lang-zh">主页</span></a>
-            <a href="#features" class="hover:text-white transition-colors"><span class="lang-en">Features</span><span class="lang-zh">特性</span></a>
-            <a href="#demo" class="hover:text-white transition-colors"><span class="lang-en">Demo</span><span class="lang-zh">演示</span></a>
-            <a href="#about" class="hover:text-white transition-colors"><span class="lang-en">About</span><span class="lang-zh">关于</span></a>
-        </div>
-        <div class="flex items-center gap-4">
-            <button onclick="toggleLang()" class="text-xs font-medium text-neutral-400 hover:text-white transition-colors flex items-center gap-1.5 uppercase tracking-wider">
-                <iconify-icon icon="lucide:globe" width="14"></iconify-icon>
-                <span class="lang-en">EN</span>
-                <span class="lang-zh">中</span>
-            </button>
-            <!-- 分数计算器链接 (指向文件夹内 .html) -->
-            <a href="Down's%20Score%20Calculator/Down's%20Score%20Calculator.html" class="text-sm font-medium text-white border border-white/20 px-4 py-2 rounded-full hover:bg-white hover:text-black transition-all duration-300">
-                <span class="lang-en">Score Calc</span><span class="lang-zh">分数计算器</span>
-            </a>
-            <!-- 物理计算器链接 (指向文件夹内 .html) -->
-            <a href="Down's%20Physics%20Calculator/Down's%20Physics%20Calculator.html" class="text-sm font-medium text-white border border-white/20 px-4 py-2 rounded-full hover:bg-white hover:text-black transition-all duration-300 ml-3">
-                <span class="lang-en">Physics Solver</span><span class="lang-zh">物理计算器</span>
-            </a>
-        </div>
-    </nav>
-
-    <!-- 英雄区、跑马灯、特性等部分的所有链接同样修改，此处仅展示关键修改位置，完整代码请参考之前版本但将链接全部替换为上述格式 -->
-    <!-- 例如英雄区按钮： -->
-    <section class="relative min-h-screen flex flex-col items-center justify-center overflow-hidden px-4 z-10">
-        <!-- ... 其他内容 ... -->
-        <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6 reveal-on-scroll delay-300 lang-en">
-            <button onclick="window.location.href='Down\'s%20Score%20Calculator/Down\'s%20Score%20Calculator.html'" class="group relative px-8 py-4 bg-purple-500 hover:bg-purple-400 text-black font-semibold rounded-full transition-all duration-300 hover:scale-105">
-                Score Calculator
-                <iconify-icon icon="lucide:arrow-right" class="inline-block ml-2 -mr-1 transition-transform group-hover:translate-x-1" width="18"></iconify-icon>
-            </button>
-            <button onclick="window.location.href='Down\'s%20Physics%20Calculator/Down\'s%20Physics%20Calculator.html'" class="group relative px-8 py-4 bg-blue-500 hover:bg-blue-400 text-black font-semibold rounded-full transition-all duration-300 hover:scale-105">
-                Physics Solver
-            </button>
-            <!-- 其他按钮... -->
-        </div>
-        <!-- 中文版本同理 -->
-    </section>
-
-    <!-- 特性卡片、CTA区域等所有用到链接的地方，均按上述格式修改 -->
-
-    <!-- 页脚 (已移除工具链接，仅保留地球和 GitHub) -->
-    <footer id="about" class="py-12 px-6 border-t border-white/10 bg-black relative z-10">
-        <div class="max-w-6xl mx-auto">
-            <div class="flex flex-col md:flex-row justify-between items-center gap-6 mb-8">
-                <div class="flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-purple-500"></span>
-                    <span class="text-white font-semibold text-lg">Down's Tools</span>
-                </div>
-                <div class="flex gap-6 text-neutral-400">
-                    <a href="https://nanqiouheng.github.io" class="hover:text-purple-500 transition-colors"><iconify-icon icon="lucide:earth" width="20"></iconify-icon></a>
-                    <a href="https://github.com/nanqiouheng" class="hover:text-purple-500 transition-colors"><iconify-icon icon="lucide:github" width="20"></iconify-icon></a>
-                </div>
-            </div>
-            <div class="text-center text-neutral-500 text-sm">
-                <span class="lang-en">Powered by Down`sicient | Copyright © 2026 Down`sicient Studio, Tach's subsidiary studio</span>
-                <span class="lang-zh">Powered by Down`sicient | 版权所有 © 2026 Down`sicient Studio，Tach的附属工作室</span>
-            </div>
-        </div>
-    </footer>
-
-    <script>
-        // 脚本与之前一致，无需修改
-        (function() {
-            // 隐藏加载动画
-            const loading = document.getElementById('loading');
-            if (loading) {
-                loading.style.opacity = '0';
-                setTimeout(() => loading.style.display = 'none', 300);
-            }
-
-            window.toggleLang = function() {
-                const body = document.body;
-                const animation = document.getElementById('languageAnimation');
-                const text = document.getElementById('animationText');
-                
-                if (body.classList.contains('lang-en')) {
-                    text.innerText = '切换到中文';
-                    body.classList.replace('lang-en', 'lang-zh');
-                } else {
-                    text.innerText = 'Switching to English';
-                    body.classList.replace('lang-zh', 'lang-en');
-                }
-
-                animation.style.opacity = '1';
-                animation.style.pointerEvents = 'auto';
-                setTimeout(() => {
-                    animation.style.opacity = '0';
-                    animation.style.pointerEvents = 'none';
-                }, 800);
-            };
-
-            const nav = document.querySelector('nav');
-            function updateNav() {
-                if (window.scrollY === 0) nav.classList.remove('with-back');
-                else nav.classList.add('with-back');
-            }
-            window.addEventListener('scroll', updateNav);
-            updateNav();
-
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('is-visible');
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, { threshold: 0.1, rootMargin: '0px 0px -20px 0px' });
-            document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
-
-            if (navigator.language.startsWith('zh')) {
-                document.body.classList.replace('lang-en', 'lang-zh');
-            } else {
-                document.body.classList.replace('lang-zh', 'lang-en');
-            }
-        })();
-    </script>
-</body>
-</html><!DOCTYPE html>
-<html lang="zh-CN" class="scroll-smooth">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Down's Tools | 唐氏工具集</title>
-    <!-- Tailwind + Iconify + 字体 (保留, 与自定义样式互补) -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
-    <link rel="preconnect" href="https://fonts.loli.net">
-    <link rel="preconnect" href="https://gstatic.loli.net" crossorigin="">
-    <link href="https://fonts.loli.net/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&amp;family=Geist:wght@100..900&amp;display=swap" rel="stylesheet">
-    <link href="https://fonts.loli.net/css2?family=Noto+Serif+SC:wght@200..900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/misans@4.1.0/lib/Normal/MiSans-Regular.min.css" />
-    <link rel="stylesheet" crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/misans@4.1.0/lib/Normal/MiSans-Semibold.min.css" />
-    <!-- 新图标 favicon -->
-    <link rel="icon" href="https://raw.githubusercontent.com/nanqiouheng/nanqiouheng.github.io/main/DownsicientLoge.ico" type="image/x-icon" />
-
-    <!-- 完整的 Down's Tools 统一样式表 (来自 index.css) -->
+    <!-- 完整的 Down's Tools 统一样式表 -->
     <style>
         /* ========================================
            Down's Tools 统一样式表（完整版）
@@ -241,7 +77,7 @@
             font-family: 'MiSans', sans-serif;
         }
 
-        /* 语言切换显示规则 (内联 style 确保生效) */
+        /* 语言切换显示规则 */
         body.lang-en .lang-zh {
             display: none !important;
         }
@@ -480,7 +316,7 @@
         }
 
         /* ----------------------------------------
-           6. 物理计算器专用样式（保留，主页无需但无妨）
+           6. 物理计算器专用样式（保留）
            ---------------------------------------- */
         .container-custom {
             max-width: 1400px;
@@ -1105,7 +941,7 @@
         <div class="absolute inset-0 bg-grid-pattern opacity-30"></div>
     </div>
 
-    <!-- 导航栏 (链接已改为目录形式) -->
+    <!-- 导航栏 (链接已修正为文件夹内 .html 文件) -->
     <nav class="fixed top-0 left-0 right-0 z-50 px-6 py-6 flex justify-between items-center transition">
         <a href="#" class="text-xl font-semibold tracking-tight text-white flex items-center gap-2">
             <span class="w-6 h-6"><img src="https://raw.githubusercontent.com/nanqiouheng/nanqiouheng.github.io/main/DownsicientLoge.ico" alt="Down's Tools Logo"></span>
@@ -1123,12 +959,12 @@
                 <span class="lang-en">EN</span>
                 <span class="lang-zh">中</span>
             </button>
-            <!-- 分数计算器链接 (目录形式) -->
-            <a href="Down's%20Score%20Calculator/" class="text-sm font-medium text-white border border-white/20 px-4 py-2 rounded-full hover:bg-white hover:text-black transition-all duration-300">
+            <!-- 分数计算器链接 -->
+            <a href="Down's%20Score%20Calculator/Down's%20Score%20Calculator.html" class="text-sm font-medium text-white border border-white/20 px-4 py-2 rounded-full hover:bg-white hover:text-black transition-all duration-300">
                 <span class="lang-en">Score Calc</span><span class="lang-zh">分数计算器</span>
             </a>
-            <!-- 物理计算器链接 (目录形式) -->
-            <a href="Down's%20Physics%20Calculator/" class="text-sm font-medium text-white border border-white/20 px-4 py-2 rounded-full hover:bg-white hover:text-black transition-all duration-300 ml-3">
+            <!-- 物理计算器链接 -->
+            <a href="Down's%20Physics%20Calculator/Down's%20Physics%20Calculator.html" class="text-sm font-medium text-white border border-white/20 px-4 py-2 rounded-full hover:bg-white hover:text-black transition-all duration-300 ml-3">
                 <span class="lang-en">Physics Solver</span><span class="lang-zh">物理计算器</span>
             </a>
         </div>
@@ -1177,13 +1013,13 @@
                 为游戏玩家、数据分析师及需要精确计算的用户提供高级计算工具。节省时间，立即获得准确结果。
             </p>
 
-            <!-- 英文按钮组 (物理按钮无图标) -->
+            <!-- 英文按钮组 -->
             <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6 reveal-on-scroll delay-300 lang-en">
-                <button onclick="window.location.href='Down\'s%20Score%20Calculator/'" class="group relative px-8 py-4 bg-purple-500 hover:bg-purple-400 text-black font-semibold rounded-full transition-all duration-300 hover:scale-105">
+                <button onclick="window.location.href='Down\'s%20Score%20Calculator/Down\'s%20Score%20Calculator.html'" class="group relative px-8 py-4 bg-purple-500 hover:bg-purple-400 text-black font-semibold rounded-full transition-all duration-300 hover:scale-105">
                     Score Calculator
                     <iconify-icon icon="lucide:arrow-right" class="inline-block ml-2 -mr-1 transition-transform group-hover:translate-x-1" width="18"></iconify-icon>
                 </button>
-                <button onclick="window.location.href='Down\'s%20Physics%20Calculator/'" class="group relative px-8 py-4 bg-blue-500 hover:bg-blue-400 text-black font-semibold rounded-full transition-all duration-300 hover:scale-105">
+                <button onclick="window.location.href='Down\'s%20Physics%20Calculator/Down\'s%20Physics%20Calculator.html'" class="group relative px-8 py-4 bg-blue-500 hover:bg-blue-400 text-black font-semibold rounded-full transition-all duration-300 hover:scale-105">
                     Physics Solver
                 </button>
                 <button onclick="window.location.href='#features'" class="px-8 py-4 text-white hover:text-purple-200 font-medium transition-colors flex items-center gap-2">
@@ -1192,11 +1028,11 @@
             </div>
             <!-- 中文按钮组 -->
             <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6 reveal-on-scroll delay-300 lang-zh">
-                <button onclick="window.location.href='Down\'s%20Score%20Calculator/'" class="group relative px-8 py-4 bg-purple-500 hover:bg-purple-400 text-black font-semibold rounded-full transition-all duration-300 hover:scale-105">
+                <button onclick="window.location.href='Down\'s%20Score%20Calculator/Down\'s%20Score%20Calculator.html'" class="group relative px-8 py-4 bg-purple-500 hover:bg-purple-400 text-black font-semibold rounded-full transition-all duration-300 hover:scale-105">
                     分数计算器
                     <iconify-icon icon="lucide:arrow-right" class="inline-block ml-2 -mr-1 transition-transform group-hover:translate-x-1" width="18"></iconify-icon>
                 </button>
-                <button onclick="window.location.href='Down\'s%20Physics%20Calculator/'" class="group relative px-8 py-4 bg-blue-500 hover:bg-blue-400 text-black font-semibold rounded-full transition-all duration-300 hover:scale-105">
+                <button onclick="window.location.href='Down\'s%20Physics%20Calculator/Down\'s%20Physics%20Calculator.html'" class="group relative px-8 py-4 bg-blue-500 hover:bg-blue-400 text-black font-semibold rounded-full transition-all duration-300 hover:scale-105">
                     物理计算器
                 </button>
                 <button onclick="window.location.href='#features'" class="px-8 py-4 text-white hover:text-purple-200 font-medium transition-colors flex items-center gap-2">
@@ -1220,7 +1056,7 @@
                 <span class="lang-en">Cross-Platform</span> ✦ <span class="lang-zh">跨平台</span>
                 <span class="lang-en">User-Friendly Interface</span> ✦ <span class="lang-zh">用户友好界面</span>
                 <span class="lang-en">Free to Use</span> ✦ <span class="lang-zh">完全免费</span>
-                <!-- 重复一次以形成循环 -->
+                <!-- 重复 -->
                 <span class="lang-en">Real-time Calculation</span> ✦ <span class="lang-zh">实时计算</span>
                 <span class="lang-en">Precise Results</span> ✦ <span class="lang-zh">精确结果</span>
                 <span class="lang-en">No Installation Required</span> ✦ <span class="lang-zh">无需安装</span>
@@ -1262,18 +1098,18 @@
         </div>
     </section>
 
-    <!-- 特性网格 (物理卡片无图标) -->
+    <!-- 特性网格 -->
     <section id="features" class="py-32 px-4 relative z-10">
         <div class="max-w-6xl mx-auto">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- 卡片1: 分数计算器 (保留图标) -->
+                <!-- 卡片1: 分数计算器 -->
                 <div class="glass-panel p-8 rounded-3xl reveal-on-scroll hover:bg-white/5 transition-colors duration-500 group lang-en">
                     <div class="w-12 h-12 bg-purple-500/10 rounded-2xl flex items-center justify-center text-purple-500 mb-6 group-hover:scale-110 transition-transform">
                         <iconify-icon icon="lucide:calculator" width="24"></iconify-icon>
                     </div>
                     <h3 class="text-xl text-white font-semibold mb-3">Score Calculator</h3>
                     <p class="text-neutral-400 leading-relaxed text-sm">Powerful calculator for grade calculations, with multi-level sub-items and real-time updates. Perfect for students.</p>
-                    <a href="Down's%20Score%20Calculator/" class="mt-4 inline-flex items-center text-purple-400 hover:text-purple-300 text-sm">Try now <iconify-icon icon="lucide:arrow-right" class="ml-1" width="14"></iconify-icon></a>
+                    <a href="Down's%20Score%20Calculator/Down's%20Score%20Calculator.html" class="mt-4 inline-flex items-center text-purple-400 hover:text-purple-300 text-sm">Try now <iconify-icon icon="lucide:arrow-right" class="ml-1" width="14"></iconify-icon></a>
                 </div>
                 <div class="glass-panel p-8 rounded-3xl reveal-on-scroll hover:bg-white/5 transition-colors duration-500 group lang-zh serif-zh">
                     <div class="w-12 h-12 bg-purple-500/10 rounded-2xl flex items-center justify-center text-purple-500 mb-6 group-hover:scale-110 transition-transform">
@@ -1281,22 +1117,22 @@
                     </div>
                     <h3 class="text-xl text-white font-semibold mb-3">分数计算器</h3>
                     <p class="text-neutral-400 leading-relaxed text-sm">强大的分数计算器，支持多级子项目、实时更新，非常适合学生使用。</p>
-                    <a href="Down's%20Score%20Calculator/" class="mt-4 inline-flex items-center text-purple-400 hover:text-purple-300 text-sm">立即试用 <iconify-icon icon="lucide:arrow-right" class="ml-1" width="14"></iconify-icon></a>
+                    <a href="Down's%20Score%20Calculator/Down's%20Score%20Calculator.html" class="mt-4 inline-flex items-center text-purple-400 hover:text-purple-300 text-sm">立即试用 <iconify-icon icon="lucide:arrow-right" class="ml-1" width="14"></iconify-icon></a>
                 </div>
 
-                <!-- 卡片2: 物理计算器 (无图标) -->
+                <!-- 卡片2: 物理计算器 -->
                 <div class="glass-panel p-8 rounded-3xl reveal-on-scroll delay-100 hover:bg-white/5 transition-colors duration-500 group lang-en">
                     <h3 class="text-xl text-white font-semibold mb-3">Physics Solver</h3>
                     <p class="text-neutral-400 leading-relaxed text-sm">AP Physics 1 formula solver with six core topics, g-value selection, and detailed explanations.</p>
-                    <a href="Down's%20Physics%20Calculator/" class="mt-4 inline-flex items-center text-blue-400 hover:text-blue-300 text-sm">Try now <iconify-icon icon="lucide:arrow-right" class="ml-1" width="14"></iconify-icon></a>
+                    <a href="Down's%20Physics%20Calculator/Down's%20Physics%20Calculator.html" class="mt-4 inline-flex items-center text-blue-400 hover:text-blue-300 text-sm">Try now <iconify-icon icon="lucide:arrow-right" class="ml-1" width="14"></iconify-icon></a>
                 </div>
                 <div class="glass-panel p-8 rounded-3xl reveal-on-scroll delay-100 hover:bg-white/5 transition-colors duration-500 group lang-zh serif-zh">
                     <h3 class="text-xl text-white font-semibold mb-3">物理计算器</h3>
                     <p class="text-neutral-400 leading-relaxed text-sm">AP物理1公式计算器，涵盖六大核心主题、g值选择、详细解释。</p>
-                    <a href="Down's%20Physics%20Calculator/" class="mt-4 inline-flex items-center text-blue-400 hover:text-blue-300 text-sm">立即试用 <iconify-icon icon="lucide:arrow-right" class="ml-1" width="14"></iconify-icon></a>
+                    <a href="Down's%20Physics%20Calculator/Down's%20Physics%20Calculator.html" class="mt-4 inline-flex items-center text-blue-400 hover:text-blue-300 text-sm">立即试用 <iconify-icon icon="lucide:arrow-right" class="ml-1" width="14"></iconify-icon></a>
                 </div>
 
-                <!-- 卡片3: 数据分析 (保留图标) -->
+                <!-- 卡片3: 数据分析 -->
                 <div class="glass-panel p-8 rounded-3xl reveal-on-scroll delay-200 hover:bg-white/5 transition-colors duration-500 group lang-en">
                     <div class="w-12 h-12 bg-purple-500/10 rounded-2xl flex items-center justify-center text-purple-500 mb-6 group-hover:scale-110 transition-transform">
                         <iconify-icon icon="lucide:bar-chart" width="24"></iconify-icon>
@@ -1315,7 +1151,7 @@
         </div>
     </section>
 
-    <!-- 工具演示区域 (物理步骤图标已移除) -->
+    <!-- 工具演示区域 -->
     <section id="demo" class="py-32 px-4 relative z-10 bg-neutral-900/30">
         <div class="max-w-4xl mx-auto">
             <div class="text-center mb-20 reveal-on-scroll lang-en">
@@ -1354,7 +1190,7 @@
                     </div>
                 </div>
 
-                <!-- 步骤2 物理计算器 (无图标) -->
+                <!-- 步骤2 物理计算器 -->
                 <div class="relative pl-12 md:pl-0 md:grid md:grid-cols-2 md:gap-16 items-center reveal-on-scroll lang-en delay-100">
                     <div class="timeline-dot timeline-dot-blue"></div>
                     <div class="hidden md:flex md:justify-end md:order-1"><!-- 无图标 --></div>
@@ -1372,7 +1208,7 @@
                     </div>
                 </div>
 
-                <!-- 步骤3 数据分析 (有图标) 丰富演示 -->
+                <!-- 步骤3 数据分析 -->
                 <div class="relative pl-12 md:pl-0 md:grid md:grid-cols-2 md:gap-16 items-center reveal-on-scroll lang-en delay-200">
                     <div class="timeline-dot timeline-dot-gray"></div>
                     <div class="hidden md:flex md:justify-end md:order-1">
@@ -1401,7 +1237,7 @@
         </div>
     </section>
 
-    <!-- CTA 区域 (物理按钮无图标) -->
+    <!-- CTA 区域 -->
     <section id="calculator" class="py-32 px-4 relative z-10">
         <div class="max-w-4xl mx-auto text-center">
             <div class="glass-panel rounded-3xl p-12 reveal-on-scroll">
@@ -1413,10 +1249,10 @@
                 <p class="text-neutral-400 text-lg mb-8 max-w-2xl mx-auto lang-en">Experience the power of our advanced calculation tools. Get instant results, save time, and eliminate calculation errors.</p>
                 <p class="text-neutral-400 text-lg mb-8 max-w-2xl mx-auto lang-zh">体验高级计算工具的强大功能。即时结果，节省时间，消除错误。</p>
                 <div class="flex flex-col sm:flex-row items-center justify-center gap-6">
-                    <a href="Down's%20Score%20Calculator/" class="px-10 py-4 bg-purple-500 hover:bg-purple-400 text-black font-bold rounded-full transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_-10px_rgba(147,51,234,0.6)]">
+                    <a href="Down's%20Score%20Calculator/Down's%20Score%20Calculator.html" class="px-10 py-4 bg-purple-500 hover:bg-purple-400 text-black font-bold rounded-full transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_-10px_rgba(147,51,234,0.6)]">
                         <span class="lang-en">Score Calculator</span><span class="lang-zh">分数计算器</span>
                     </a>
-                    <a href="Down's%20Physics%20Calculator/" class="px-10 py-4 bg-blue-500 hover:bg-blue-400 text-black font-bold rounded-full transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_-10px_rgba(59,130,246,0.6)]">
+                    <a href="Down's%20Physics%20Calculator/Down's%20Physics%20Calculator.html" class="px-10 py-4 bg-blue-500 hover:bg-blue-400 text-black font-bold rounded-full transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_-10px_rgba(59,130,246,0.6)]">
                         <span class="lang-en">Physics Solver</span><span class="lang-zh">物理计算器</span>
                     </a>
                 </div>
@@ -1432,15 +1268,15 @@
             <h2 class="text-5xl md:text-7xl serif text-white tracking-tight leading-tight reveal-on-scroll lang-zh title-zh">开始更智能地计算<br><span class="italic text-neutral-500">而非更费力。</span></h2>
             <div class="flex flex-col items-center gap-4 reveal-on-scroll delay-100 lang-en">
                 <div class="flex flex-wrap justify-center gap-4">
-                    <button onclick="window.location.href='Down\'s%20Score%20Calculator/'" class="purple-glow px-10 py-5 bg-purple-500 text-black text-lg font-bold rounded-full hover:bg-purple-400 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_-10px_rgba(147,51,234,0.6)]">Score Calculator</button>
-                    <button onclick="window.location.href='Down\'s%20Physics%20Calculator/'" class="purple-glow px-10 py-5 bg-blue-500 text-black text-lg font-bold rounded-full hover:bg-blue-400 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_-10px_rgba(59,130,246,0.6)]">Physics Solver</button>
+                    <button onclick="window.location.href='Down\'s%20Score%20Calculator/Down\'s%20Score%20Calculator.html'" class="purple-glow px-10 py-5 bg-purple-500 text-black text-lg font-bold rounded-full hover:bg-purple-400 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_-10px_rgba(147,51,234,0.6)]">Score Calculator</button>
+                    <button onclick="window.location.href='Down\'s%20Physics%20Calculator/Down\'s%20Physics%20Calculator.html'" class="purple-glow px-10 py-5 bg-blue-500 text-black text-lg font-bold rounded-full hover:bg-blue-400 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_-10px_rgba(59,130,246,0.6)]">Physics Solver</button>
                 </div>
                 <p class="text-neutral-500 text-sm">Free to use · No registration required</p>
             </div>
             <div class="flex flex-col items-center gap-4 reveal-on-scroll delay-100 lang-zh">
                 <div class="flex flex-wrap justify-center gap-4">
-                    <button onclick="window.location.href='Down\'s%20Score%20Calculator/'" class="purple-glow px-10 py-5 bg-purple-500 text-black text-lg font-bold rounded-full hover:bg-purple-400 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_-10px_rgba(147,51,234,0.6)]">分数计算器</button>
-                    <button onclick="window.location.href='Down\'s%20Physics%20Calculator/'" class="purple-glow px-10 py-5 bg-blue-500 text-black text-lg font-bold rounded-full hover:bg-blue-400 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_-10px_rgba(59,130,246,0.6)]">物理计算器</button>
+                    <button onclick="window.location.href='Down\'s%20Score%20Calculator/Down\'s%20Score%20Calculator.html'" class="purple-glow px-10 py-5 bg-purple-500 text-black text-lg font-bold rounded-full hover:bg-purple-400 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_-10px_rgba(147,51,234,0.6)]">分数计算器</button>
+                    <button onclick="window.location.href='Down\'s%20Physics%20Calculator/Down\'s%20Physics%20Calculator.html'" class="purple-glow px-10 py-5 bg-blue-500 text-black text-lg font-bold rounded-full hover:bg-blue-400 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_-10px_rgba(59,130,246,0.6)]">物理计算器</button>
                 </div>
                 <p class="text-neutral-500 text-sm">免费使用 · 无需注册</p>
             </div>
@@ -1520,7 +1356,7 @@
             }, { threshold: 0.1, rootMargin: '0px 0px -20px 0px' });
             document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
 
-            // 根据浏览器语言设置初始语言 (可选)
+            // 根据浏览器语言设置初始语言
             if (navigator.language.startsWith('zh')) {
                 document.body.classList.replace('lang-en', 'lang-zh');
             } else {
