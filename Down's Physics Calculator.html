@@ -625,14 +625,7 @@
 
     <!-- 主容器 -->
     <div class="container-custom relative z-10 mx-auto px-4 pt-32 pb-12">
-        <!-- 当前时间显示 -->
-        <div class="flex justify-end mb-4">
-            <div class="time-container">
-                <span class="lang-en"><strong>Current Time:</strong></span>
-                <span class="lang-zh"><strong>当前时间:</strong></span>
-                <span id="timeStr"></span>
-            </div>
-        </div>
+        <!-- 当前时间显示区域已移除 -->
 
         <!-- 公式说明区域 (动态生成) -->
         <div class="info-panel reveal-on-scroll" id="infoPanel"></div>
@@ -975,22 +968,6 @@
             }
             window.addEventListener('scroll', scrollNav);
             scrollNav();
-
-            // 更新时间
-            function updateTime() {
-                const timeElement = document.getElementById('timeStr');
-                if (!timeElement) return;
-                const now = new Date();
-                const year = now.getFullYear();
-                const month = String(now.getMonth() + 1).padStart(2, '0');
-                const day = String(now.getDate()).padStart(2, '0');
-                const hours = String(now.getHours()).padStart(2, '0');
-                const minutes = String(now.getMinutes()).padStart(2, '0');
-                const seconds = String(now.getSeconds()).padStart(2, '0');
-                timeElement.textContent = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-            }
-            setInterval(updateTime, 1000);
-            updateTime();
 
             // 根据浏览器语言设置初始语言
             if (navigator.language.startsWith('zh')) {
