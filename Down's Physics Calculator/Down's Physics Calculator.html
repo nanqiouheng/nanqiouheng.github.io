@@ -16,7 +16,7 @@
     <!-- 统一 favicon -->
     <link rel="icon" href="https://raw.githubusercontent.com/nanqiouheng/nanqiouheng.github.io/main/DownsicientLoge.ico" type="image/x-icon" />
 
-    <!-- 完整统一样式表 (与主页完全一致，并包含物理计算器专用样式) -->
+    <!-- 完整统一样式表 (包含物理计算器专用样式) -->
     <style>
         /* ========================================
            Down's Tools 统一样式表（修正版）
@@ -581,31 +581,31 @@
         <div class="absolute inset-0 bg-grid-pattern opacity-30"></div>
     </div>
 
-    <!-- ========== 导航栏 (分数计算器链接已改为目录形式) ========== -->
+    <!-- ========== 导航栏 ========== -->
     <nav class="fixed top-0 left-0 right-0 z-50 px-6 py-6 flex justify-between items-center transition">
         <!-- Logo 指向主页 -->
-        <a href="index.html" class="text-xl font-semibold tracking-tight text-white flex items-center gap-2">
+        <a href="../index.html" class="text-xl font-semibold tracking-tight text-white flex items-center gap-2">
             <span class="w-6 h-6"><img src="https://raw.githubusercontent.com/nanqiouheng/nanqiouheng.github.io/main/DownsicientLoge.ico" alt="Down's Tools"></span>
             Down's Tools
         </a>
 
         <!-- 桌面导航链接 (指向主页各区域) -->
         <div class="hidden md:flex gap-8 text-sm font-medium text-neutral-300">
-            <a href="index.html" class="hover:text-white transition-colors">
+            <a href="../index.html" class="hover:text-white transition-colors">
                 <span class="lang-en">Home</span><span class="lang-zh">主页</span>
             </a>
-            <a href="index.html#features" class="hover:text-white transition-colors">
+            <a href="../index.html#features" class="hover:text-white transition-colors">
                 <span class="lang-en">Features</span><span class="lang-zh">特性</span>
             </a>
-            <a href="index.html#demo" class="hover:text-white transition-colors">
+            <a href="../index.html#demo" class="hover:text-white transition-colors">
                 <span class="lang-en">Demo</span><span class="lang-zh">演示</span>
             </a>
-            <a href="index.html#about" class="hover:text-white transition-colors">
+            <a href="../index.html#about" class="hover:text-white transition-colors">
                 <span class="lang-en">About</span><span class="lang-zh">关于</span>
             </a>
         </div>
 
-        <!-- 右侧：语言切换 + g值选择器 + 分数计算器链接 (已改为目录形式) -->
+        <!-- 右侧：语言切换 + g值选择器 + 分数计算器链接 -->
         <div class="flex items-center gap-4">
             <button onclick="toggleLang()" class="text-xs font-medium text-neutral-400 hover:text-white transition-colors flex items-center gap-1.5 uppercase tracking-wider">
                 <iconify-icon icon="lucide:globe" width="14"></iconify-icon>
@@ -613,7 +613,7 @@
                 <span class="lang-zh">中</span>
             </button>
 
-            <!-- g 值选择器 (物理计算器特有) -->
+            <!-- g 值选择器 -->
             <div class="g-selector">
                 <span class="text-xs text-neutral-400 px-2 lang-en">g =</span>
                 <span class="text-xs text-neutral-400 px-2 lang-zh">g =</span>
@@ -621,8 +621,8 @@
                 <button class="g-option" id="g10">10</button>
             </div>
 
-            <!-- 分数计算器链接：已改为目录形式 -->
-            <a href="Down's%20Score%20Calculator/" class="text-sm font-medium text-white border border-white/20 px-4 py-2 rounded-full hover:bg-white hover:text-black transition-all duration-300">
+            <!-- 分数计算器链接 -->
+            <a href="../Down's%20Score%20Calculator/Down's%20Score%20Calculator.html" class="text-sm font-medium text-white border border-white/20 px-4 py-2 rounded-full hover:bg-white hover:text-black transition-all duration-300">
                 <span class="lang-en">Score Calc</span><span class="lang-zh">分数计算器</span>
             </a>
         </div>
@@ -656,7 +656,7 @@
         </div>
     </div>
 
-    <!-- 页脚 (已移除所有指向分数/物理的链接，仅保留工作室信息) -->
+    <!-- 页脚 (已移除所有工具链接，仅保留工作室信息) -->
     <footer class="py-12 px-6 border-t border-white/10 bg-black relative z-10">
         <div class="max-w-6xl mx-auto">
             <div class="flex flex-col md:flex-row justify-between items-center gap-6 mb-8">
