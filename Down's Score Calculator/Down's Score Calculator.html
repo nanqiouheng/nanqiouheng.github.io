@@ -234,36 +234,7 @@
             to { transform: rotate(360deg); }
         }
 
-        /* 语言切换动画 */
-        .language-switch-animation {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9998;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.2s;
-        }
-
-        .language-animation-text {
-            font-size: 48px;
-            font-weight: bold;
-            background: linear-gradient(135deg, var(--accent), var(--success-color));
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: languageFadeInOut 0.8s ease-in-out;
-        }
-
-        @keyframes languageFadeInOut {
-            0% { opacity: 0; transform: scale(0.8); }
-            30% { opacity: 1; transform: scale(1.1); }
-            70% { opacity: 1; transform: scale(1.1); }
-            100% { opacity: 0; transform: scale(1.5); }
-        }
+        /* 语言切换动画已移除 */
 
         /* 模态框 */
         .modal {
@@ -775,10 +746,7 @@
     <!-- 加载动画 (与 index.html 一致) -->
     <div id="loading"><div class="spinner"></div></div>
 
-    <!-- 语言切换动画 -->
-    <div id="languageAnimation" class="language-switch-animation">
-        <div class="language-animation-text" id="animationText">Switching...</div>
-    </div>
+    <!-- 语言切换动画已移除 -->
 
     <!-- 背景元素 -->
     <div class="fixed inset-0 z-0 pointer-events-none">
@@ -786,7 +754,7 @@
         <div class="absolute inset-0 bg-grid-pattern opacity-30"></div>
     </div>
 
-    <!-- 导航栏 (物理链接图标已移除) -->
+    <!-- 导航栏 (物理链接已改为目录形式) -->
     <nav class="fixed top-0 left-0 right-0 z-50 px-6 py-6 flex justify-between items-center transition">
         <a href="index.html" class="text-xl font-semibold tracking-tight text-white flex items-center gap-2">
             <span class="w-6 h-6"><img src="https://raw.githubusercontent.com/nanqiouheng/nanqiouheng.github.io/main/DownsicientLoge.ico" alt="Down's Tools Logo"></span>
@@ -799,14 +767,14 @@
             <a href="index.html#about" class="hover:text-white transition-colors"><span class="lang-en">About</span><span class="lang-zh">关于</span></a>
         </div>
         <div class="flex items-center gap-4">
-            <!-- 语言切换按钮：与物理计算器完全一致 -->
+            <!-- 语言切换按钮 -->
             <button onclick="toggleLang()" class="text-xs font-medium text-neutral-400 hover:text-white transition-colors flex items-center gap-1.5 uppercase tracking-wider">
                 <iconify-icon icon="lucide:globe" width="14"></iconify-icon>
                 <span class="lang-en">EN</span>
                 <span class="lang-zh">中</span>
             </button>
-            <!-- 物理计算器链接：图标已移除，只保留文字 -->
-            <a href="Down's%20Physics%20Calculator.html" class="text-sm font-medium text-white border border-white/20 px-4 py-2 rounded-full hover:bg-white hover:text-black transition-all duration-300">
+            <!-- 物理计算器链接：已改为目录形式 -->
+            <a href="Down's%20Physics%20Calculator/" class="text-sm font-medium text-white border border-white/20 px-4 py-2 rounded-full hover:bg-white hover:text-black transition-all duration-300">
                 <span class="lang-en">Physics Solver</span><span class="lang-zh">物理计算器</span>
             </a>
         </div>
@@ -913,7 +881,7 @@
         <button id="add-row-btn" data-i18n="addNewProject">+ 添加新项目</button>
     </div>
 
-    <!-- 页脚（修改为与物理计算器一致） -->
+    <!-- 页脚（与物理计算器一致） -->
     <footer class="py-12 px-6 border-t border-white/10 bg-black relative z-10">
         <div class="max-w-6xl mx-auto">
             <div class="flex flex-col md:flex-row justify-between items-center gap-6 mb-8">
@@ -934,7 +902,7 @@
     </footer>
 
     <script>
-        // 加载动画控制 (与 index.html 一致)
+        // 加载动画控制
         window.addEventListener('load', function() {
             const loading = document.getElementById('loading');
             if (loading) {
@@ -1503,40 +1471,14 @@
             applyLanguage();
         }
 
-        // 切换语言（供导航栏按钮调用）
+        // 切换语言（供导航栏按钮调用）- 无动画
         function toggleLang() {
             const newLang = currentLang === 'en' ? 'zh' : 'en';
-            showLanguageAnimation(newLang);
-
-            setTimeout(() => {
-                currentLang = newLang;
-                localStorage.setItem(LANGUAGE_STORAGE_KEY, currentLang);
-                document.body.classList.remove('lang-en', 'lang-zh');
-                document.body.classList.add(`lang-${newLang}`);
-                applyLanguage();
-            }, 400);
-        }
-
-        // 显示语言切换动画
-        function showLanguageAnimation(targetLang) {
-            const animationElement = document.getElementById('languageAnimation');
-            const animationText = document.getElementById('animationText');
-
-            if (targetLang === 'zh') {
-                animationText.textContent = translations['en']['switchingToChinese'];
-            } else {
-                animationText.textContent = translations['zh']['switchingToEnglish'];
-            }
-
-            animationElement.style.opacity = '1';
-            animationElement.style.pointerEvents = 'auto';
-
-            setTimeout(() => {
-                animationElement.style.opacity = '0';
-                setTimeout(() => {
-                    animationElement.style.pointerEvents = 'none';
-                }, 200);
-            }, 800);
+            currentLang = newLang;
+            localStorage.setItem(LANGUAGE_STORAGE_KEY, currentLang);
+            document.body.classList.remove('lang-en', 'lang-zh');
+            document.body.classList.add(`lang-${newLang}`);
+            applyLanguage();
         }
 
         // 应用语言到页面
@@ -1644,7 +1586,7 @@
                     alert(translations[currentLang]['enterNewName']);
                 }
             });
-
+ 
             // 表格操作按钮事件（事件委托）
             document.body.addEventListener('click', (e) => {
                 if (e.target.matches('#add-row-btn')) addTopLevelRow();
