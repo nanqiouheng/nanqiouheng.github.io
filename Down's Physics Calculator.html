@@ -259,7 +259,7 @@
             border: 1px solid var(--border-light);
             border-radius: 1rem;
             width: 90%;
-            max-width: 550px;
+            max-width: 600px;
             max-height: 80vh;
             overflow-y: auto;
             animation: modalFadeIn 0.2s ease-out;
@@ -581,7 +581,7 @@
         <div class="absolute inset-0 bg-grid-pattern opacity-30"></div>
     </div>
 
-    <!-- ========== 导航栏 (已移除所有指向其他计算器的链接，仅保留语言切换和g值) ========== -->
+    <!-- ========== 导航栏 ========== -->
     <nav class="fixed top-0 left-0 right-0 z-50 px-6 py-6 flex justify-between items-center transition">
         <!-- Logo 指向主页 -->
         <a href="index.html" class="text-xl font-semibold tracking-tight text-white flex items-center gap-2">
@@ -605,7 +605,7 @@
             </a>
         </div>
 
-        <!-- 右侧：仅保留语言切换 + g值选择器 (已移除分数/物理链接) -->
+        <!-- 右侧：语言切换 + g值选择器 -->
         <div class="flex items-center gap-4">
             <button onclick="toggleLang()" class="text-xs font-medium text-neutral-400 hover:text-white transition-colors flex items-center gap-1.5 uppercase tracking-wider">
                 <iconify-icon icon="lucide:globe" width="14"></iconify-icon>
@@ -613,7 +613,7 @@
                 <span class="lang-zh">中</span>
             </button>
 
-            <!-- g 值选择器 (物理计算器特有) -->
+            <!-- g 值选择器 -->
             <div class="g-selector">
                 <span class="text-xs text-neutral-400 px-2 lang-en">g =</span>
                 <span class="text-xs text-neutral-400 px-2 lang-zh">g =</span>
@@ -651,7 +651,7 @@
         </div>
     </div>
 
-    <!-- 页脚 (已移除所有指向分数/物理的链接，仅保留工作室信息) -->
+    <!-- 页脚 -->
     <footer class="py-12 px-6 border-t border-white/10 bg-black relative z-10">
         <div class="max-w-6xl mx-auto">
             <div class="flex flex-col md:flex-row justify-between items-center gap-6 mb-8">
@@ -662,7 +662,6 @@
                 <div class="flex gap-6 text-neutral-400">
                     <a href="https://nanqiouheng.github.io" class="hover:text-purple-500 transition-colors"><iconify-icon icon="lucide:earth" width="20"></iconify-icon></a>
                     <a href="https://github.com/nanqiouheng" class="hover:text-purple-500 transition-colors"><iconify-icon icon="lucide:github" width="20"></iconify-icon></a>
-                    <!-- 已移除所有工具链接 -->
                 </div>
             </div>
             <div class="text-center text-neutral-500 text-sm">
@@ -711,7 +710,7 @@
                 renderCards();
             };
 
-            // 翻译字典 (增加水的压强相关条目)
+            // 翻译字典 (包含详细解释和例子)
             const t = (key) => {
                 const translations = {
                     zh: {
@@ -736,13 +735,67 @@
                             shm: "F = -k x    T = 2π √(m / k)",
                             hydro: "P = ρ g h    F = P · A"
                         },
+                        // 详细解释与示例
+                        details: {
+                            kin: `
+                                <p><strong>物理意义：</strong>描述物体在匀加速直线运动中的速度、位移与时间的关系。</p>
+                                <p><strong>公式说明：</strong></p>
+                                <ul class="list-disc pl-5 space-y-1">
+                                    <li>v = v₀ + a t —— 末速度公式</li>
+                                    <li>Δx = v₀ t + ½ a t² —— 位移公式</li>
+                                    <li>v² = v₀² + 2 a Δx —— 不含时间的关系式</li>
+                                </ul>
+                                <p><strong>示例：</strong>一辆汽车从静止开始以 2 m/s² 的加速度行驶 5 秒，求末速度和位移。<br>
+                                解：v₀ = 0, a = 2, t = 5 → v = 0 + 2×5 = 10 m/s, Δx = 0×5 + ½×2×5² = 25 m。</p>
+                            `,
+                            newt: `
+                                <p><strong>物理意义：</strong>物体所受合外力等于其质量与加速度的乘积（F=ma）。</p>
+                                <p><strong>公式说明：</strong>力是改变物体运动状态的原因，加速度方向与合外力方向一致。</p>
+                                <p><strong>示例：</strong>一个 5 kg 的物体受到 20 N 的水平拉力，求加速度。<br>
+                                解：a = F/m = 20/5 = 4 m/s²。</p>
+                            `,
+                            work: `
+                                <p><strong>物理意义：</strong>合外力对物体做的功等于物体动能的变化（动能定理）；重力势能变化与重力做功有关。</p>
+                                <p><strong>公式说明：</strong></p>
+                                <ul class="list-disc pl-5 space-y-1">
+                                    <li>W = ΔKE = ½ m (v² - v₀²) —— 动能定理</li>
+                                    <li>PE = m g h —— 重力势能</li>
+                                </ul>
+                                <p><strong>示例：</strong>一个 2 kg 物体从静止加速到 6 m/s，求外力做的功。<br>
+                                解：W = ½×2×(6² - 0) = 36 J。</p>
+                            `,
+                            mom: `
+                                <p><strong>物理意义：</strong>动量 p = mv；冲量 J = FΔt 等于动量的变化 Δp。</p>
+                                <p><strong>公式说明：</strong>冲量是力对时间的积累效应，动量定理适用于碰撞、打击等问题。</p>
+                                <p><strong>示例：</strong>一个 0.5 kg 的球以 10 m/s 飞来，被球棒打击后以 15 m/s 反向飞回，作用时间 0.02 s，求平均作用力。<br>
+                                解：Δp = m(v' - v) = 0.5×(-15 - 10) = -12.5 kg·m/s，F = Δp/Δt = -12.5/0.02 = -625 N（负号表示方向与初速度相反）。</p>
+                            `,
+                            circ: `
+                                <p><strong>物理意义：</strong>向心力 F_c = m v²/r 维持物体做圆周运动；万有引力 F_g = G M m / r² 描述两物体间的引力。</p>
+                                <p><strong>公式说明：</strong>向心力不是一种新的力，而是指向圆心的合力；G = 6.67×10⁻¹¹ N·m²/kg²。</p>
+                                <p><strong>示例：</strong>一个 1000 kg 的卫星以 7.5 km/s 的速度在距地心 7000 km 的圆轨道上运行，求向心力。<br>
+                                解：F_c = 1000×(7500)² / (7×10⁶) ≈ 8036 N。</p>
+                            `,
+                            shm: `
+                                <p><strong>物理意义：</strong>简谐运动中，回复力 F = -k x 与位移成正比反向；弹簧振子周期 T = 2π √(m/k)。</p>
+                                <p><strong>公式说明：</strong>k 为劲度系数，负号表示力与位移方向相反。</p>
+                                <p><strong>示例：</strong>一个 0.2 kg 的物体挂在劲度系数 80 N/m 的弹簧上，求振动周期。<br>
+                                解：T = 2π √(0.2/80) = 2π √0.0025 = 2π×0.05 = 0.314 s。</p>
+                            `,
+                            hydro: `
+                                <p><strong>物理意义：</strong>液体中某点的压强 P = ρ g h（ρ 为液体密度，h 为深度），压力 F = P·A 为压强乘以受力面积。</p>
+                                <p><strong>公式说明：</strong>适用于静止液体，压强只与深度和密度有关，与容器形状无关。</p>
+                                <p><strong>示例：</strong>水深 10 m 处，水的密度 1000 kg/m³，g=9.8，求压强及一个 2 m² 闸门受到的压力。<br>
+                                解：P = 1000×9.8×10 = 98000 Pa，F = 98000×2 = 196000 N。</p>
+                            `
+                        },
                         labels: {
                             v0: "v₀ (m/s)", v: "v (m/s)", a: "a (m/s²)", t: "t (s)", dx: "Δx (m)",
                             F: "F (N)", m: "m (kg)", h: "h (m)", W: "W (J)", PE: "PE (J)",
                             p: "p (kg·m/s)", dt: "Δt (s)", dv: "Δv (m/s)",
                             r: "r (m)", M: "M (kg)", Fg: "F_g (N)",
                             k: "k (N/m)", x: "x (m)", T: "T (s)",
-                            rho: "ρ (kg/m³)", A: "A (m²)"   // 新增水压相关
+                            rho: "ρ (kg/m³)", A: "A (m²)"
                         },
                         buttons: { calc: "计算", reset: "重置" },
                         result: "结果：",
@@ -770,6 +823,59 @@
                             shm: "F = -k x    T = 2π √(m / k)",
                             hydro: "P = ρ g h    F = P · A"
                         },
+                        details: {
+                            kin: `
+                                <p><strong>Physical meaning:</strong> Describes the relationship between velocity, displacement, and time for constant acceleration motion.</p>
+                                <p><strong>Formulas:</strong></p>
+                                <ul class="list-disc pl-5 space-y-1">
+                                    <li>v = v₀ + a t — final velocity</li>
+                                    <li>Δx = v₀ t + ½ a t² — displacement</li>
+                                    <li>v² = v₀² + 2 a Δx — time-free relation</li>
+                                </ul>
+                                <p><strong>Example:</strong> A car starts from rest and accelerates at 2 m/s² for 5 s. Find final velocity and displacement.<br>
+                                Solution: v₀ = 0, a = 2, t = 5 → v = 0 + 2×5 = 10 m/s, Δx = 0×5 + ½×2×5² = 25 m.</p>
+                            `,
+                            newt: `
+                                <p><strong>Physical meaning:</strong> Net force equals mass times acceleration (F = ma).</p>
+                                <p><strong>Formula:</strong> The acceleration direction is the same as the net force direction.</p>
+                                <p><strong>Example:</strong> A 5 kg object is pulled with a 20 N horizontal force. Find acceleration.<br>
+                                Solution: a = F/m = 20/5 = 4 m/s².</p>
+                            `,
+                            work: `
+                                <p><strong>Physical meaning:</strong> Work done by net force equals change in kinetic energy (work-energy theorem); gravitational potential energy relates to work by gravity.</p>
+                                <p><strong>Formulas:</strong></p>
+                                <ul class="list-disc pl-5 space-y-1">
+                                    <li>W = ΔKE = ½ m (v² - v₀²) — work-energy theorem</li>
+                                    <li>PE = m g h — gravitational potential energy</li>
+                                </ul>
+                                <p><strong>Example:</strong> A 2 kg object accelerates from rest to 6 m/s. Find the work done.<br>
+                                Solution: W = ½×2×(6² - 0) = 36 J.</p>
+                            `,
+                            mom: `
+                                <p><strong>Physical meaning:</strong> Momentum p = mv; impulse J = FΔt equals change in momentum Δp.</p>
+                                <p><strong>Formulas:</strong> Impulse is the time integral of force, used in collisions and impacts.</p>
+                                <p><strong>Example:</strong> A 0.5 kg ball comes at 10 m/s and is hit back at 15 m/s in 0.02 s. Find average force.<br>
+                                Solution: Δp = 0.5×(-15 - 10) = -12.5 kg·m/s, F = Δp/Δt = -12.5/0.02 = -625 N (negative indicates opposite direction).</p>
+                            `,
+                            circ: `
+                                <p><strong>Physical meaning:</strong> Centripetal force F_c = m v²/r keeps an object in circular motion; universal gravitation F_g = G M m / r² describes gravitational attraction.</p>
+                                <p><strong>Notes:</strong> Centripetal force is the net force pointing toward the center; G = 6.67×10⁻¹¹ N·m²/kg².</p>
+                                <p><strong>Example:</strong> A 1000 kg satellite orbits at 7.5 km/s with radius 7000 km. Find centripetal force.<br>
+                                Solution: F_c = 1000×(7500)² / (7×10⁶) ≈ 8036 N.</p>
+                            `,
+                            shm: `
+                                <p><strong>Physical meaning:</strong> In simple harmonic motion, restoring force F = -k x is proportional to displacement; period T = 2π √(m/k).</p>
+                                <p><strong>Formulas:</strong> k is spring constant, negative sign indicates force opposes displacement.</p>
+                                <p><strong>Example:</strong> A 0.2 kg mass on a spring with k = 80 N/m. Find period.<br>
+                                Solution: T = 2π √(0.2/80) = 2π √0.0025 = 2π×0.05 = 0.314 s.</p>
+                            `,
+                            hydro: `
+                                <p><strong>Physical meaning:</strong> Pressure at depth in a fluid: P = ρ g h (ρ density, h depth); force on a surface: F = P·A.</p>
+                                <p><strong>Notes:</strong> For static fluids, pressure depends only on depth and density, not on container shape.</p>
+                                <p><strong>Example:</strong> At 10 m depth in water (ρ = 1000 kg/m³, g=9.8), find pressure and force on a 2 m² gate.<br>
+                                Solution: P = 1000×9.8×10 = 98000 Pa, F = 98000×2 = 196000 N.</p>
+                            `
+                        },
                         labels: {
                             v0: "v₀ (m/s)", v: "v (m/s)", a: "a (m/s²)", t: "t (s)", dx: "Δx (m)",
                             F: "F (N)", m: "m (kg)", h: "h (m)", W: "W (J)", PE: "PE (J)",
@@ -786,11 +892,10 @@
                 return key.split('.').reduce((obj, k) => obj?.[k], translations[currentLang]) || key;
             };
 
-            // 卡片数据 (新增 hydro 卡片)
+            // 卡片数据 (与之前相同)
             const cardsData = [
                 { id: 'kin', inputs: ['v0','v','a','t','dx'],
                   solve: (vals) => {
-                      // 运动学求解 (简化示例，实际应完整)
                       if (vals.v0 !== undefined && vals.a !== undefined && vals.t !== undefined) return { v: vals.v0 + vals.a * vals.t };
                       if (vals.v0 !== undefined && vals.v !== undefined && vals.a !== undefined) return { t: (vals.v - vals.v0) / vals.a };
                       if (vals.v0 !== undefined && vals.t !== undefined && vals.v !== undefined) return { a: (vals.v - vals.v0) / vals.t };
@@ -805,20 +910,15 @@
                       return null;
                   } },
                 { id: 'work', inputs: ['m','v0','v','h','W','PE'],
-                  solve: (vals) => {
-                      // 简单示例
-                      return null;
-                  } },
+                  solve: (vals) => { return null; } },
                 { id: 'mom', inputs: ['m','v','p','F','dt','dv'],
                   solve: (vals) => { return null; } },
                 { id: 'circ', inputs: ['m','v','r','F','M','Fg'],
                   solve: (vals) => { return null; } },
                 { id: 'shm', inputs: ['k','x','F','m','T'],
                   solve: (vals) => { return null; } },
-                // 新增水的压强与压力卡片
                 { id: 'hydro', inputs: ['rho','h','A'],
                   solve: (vals) => {
-                      // 需要全局 gValue
                       const g = window.gValue !== undefined ? window.gValue : 9.8;
                       if (vals.rho !== undefined && vals.h !== undefined) {
                           const P = vals.rho * g * vals.h;
@@ -833,10 +933,15 @@
                   } }
             ];
 
-            // 显示模态框
+            // 显示模态框（使用详细解释）
             function showModal(topicKey) {
                 modalTitle.innerText = t(`cardTitles.${topicKey}`);
-                modalContent.innerHTML = `<p>${t('infoDesc')}</p><div class="formula-detail">${t(`eq.${topicKey}`)}</div>`;
+                // 组合内容：公式 + 详细解释
+                const detailsHtml = t(`details.${topicKey}`);
+                modalContent.innerHTML = `
+                    <div class="formula-detail">${t(`eq.${topicKey}`)}</div>
+                    ${detailsHtml}
+                `;
                 modalOverlay.style.display = 'flex';
             }
 
@@ -857,7 +962,7 @@
                 });
             }
 
-            // 渲染卡片 (无任何图标)
+            // 渲染卡片 (与之前相同)
             function renderCards() {
                 const grid = document.getElementById('cardGrid');
                 grid.innerHTML = '';
@@ -901,7 +1006,6 @@
                             const el = document.getElementById(`${cardId}_${inp}`);
                             if (el && el.value.trim() !== '') vals[inp] = parseFloat(el.value);
                         });
-                        // 将全局g值传递给求解函数（通过闭包已经可以使用window.gValue）
                         const result = card.solve(vals);
                         const resDiv = document.getElementById(`${cardId}_result`);
                         if (resDiv) {
@@ -932,7 +1036,7 @@
                 });
             }
 
-            // g值切换 (更新全局变量)
+            // g值切换
             document.getElementById('g9_8').addEventListener('click', () => {
                 gValue = 9.8;
                 window.gValue = 9.8;
@@ -945,7 +1049,7 @@
                 document.getElementById('g10').classList.add('active');
                 document.getElementById('g9_8').classList.remove('active');
             });
-            window.gValue = 9.8; // 初始化
+            window.gValue = 9.8;
 
             // 滚动动画
             function initReveal() {
