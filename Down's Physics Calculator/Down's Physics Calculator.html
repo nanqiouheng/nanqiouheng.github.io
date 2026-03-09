@@ -581,7 +581,7 @@
         <div class="absolute inset-0 bg-grid-pattern opacity-30"></div>
     </div>
 
-    <!-- ========== 导航栏 ========== -->
+    <!-- ========== 导航栏 (分数计算器链接已改为目录形式) ========== -->
     <nav class="fixed top-0 left-0 right-0 z-50 px-6 py-6 flex justify-between items-center transition">
         <!-- Logo 指向主页 -->
         <a href="index.html" class="text-xl font-semibold tracking-tight text-white flex items-center gap-2">
@@ -605,7 +605,7 @@
             </a>
         </div>
 
-        <!-- 右侧：语言切换 + g值选择器 -->
+        <!-- 右侧：语言切换 + g值选择器 + 分数计算器链接 (已改为目录形式) -->
         <div class="flex items-center gap-4">
             <button onclick="toggleLang()" class="text-xs font-medium text-neutral-400 hover:text-white transition-colors flex items-center gap-1.5 uppercase tracking-wider">
                 <iconify-icon icon="lucide:globe" width="14"></iconify-icon>
@@ -613,13 +613,18 @@
                 <span class="lang-zh">中</span>
             </button>
 
-            <!-- g 值选择器 -->
+            <!-- g 值选择器 (物理计算器特有) -->
             <div class="g-selector">
                 <span class="text-xs text-neutral-400 px-2 lang-en">g =</span>
                 <span class="text-xs text-neutral-400 px-2 lang-zh">g =</span>
                 <button class="g-option active" id="g9_8">9.8</button>
                 <button class="g-option" id="g10">10</button>
             </div>
+
+            <!-- 分数计算器链接：已改为目录形式 -->
+            <a href="Down's%20Score%20Calculator/" class="text-sm font-medium text-white border border-white/20 px-4 py-2 rounded-full hover:bg-white hover:text-black transition-all duration-300">
+                <span class="lang-en">Score Calc</span><span class="lang-zh">分数计算器</span>
+            </a>
         </div>
     </nav>
 
@@ -651,7 +656,7 @@
         </div>
     </div>
 
-    <!-- 页脚 -->
+    <!-- 页脚 (已移除所有指向分数/物理的链接，仅保留工作室信息) -->
     <footer class="py-12 px-6 border-t border-white/10 bg-black relative z-10">
         <div class="max-w-6xl mx-auto">
             <div class="flex flex-col md:flex-row justify-between items-center gap-6 mb-8">
@@ -892,7 +897,7 @@
                 return key.split('.').reduce((obj, k) => obj?.[k], translations[currentLang]) || key;
             };
 
-            // 卡片数据 (与之前相同)
+            // 卡片数据 (包含 hydro 卡片)
             const cardsData = [
                 { id: 'kin', inputs: ['v0','v','a','t','dx'],
                   solve: (vals) => {
@@ -936,7 +941,6 @@
             // 显示模态框（使用详细解释）
             function showModal(topicKey) {
                 modalTitle.innerText = t(`cardTitles.${topicKey}`);
-                // 组合内容：公式 + 详细解释
                 const detailsHtml = t(`details.${topicKey}`);
                 modalContent.innerHTML = `
                     <div class="formula-detail">${t(`eq.${topicKey}`)}</div>
@@ -962,7 +966,7 @@
                 });
             }
 
-            // 渲染卡片 (与之前相同)
+            // 渲染卡片
             function renderCards() {
                 const grid = document.getElementById('cardGrid');
                 grid.innerHTML = '';
