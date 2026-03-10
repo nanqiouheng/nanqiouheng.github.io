@@ -14,7 +14,7 @@
     <link rel="stylesheet" crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/misans@4.1.0/lib/Normal/MiSans-Semibold.min.css" />
     <!-- 引用根目录下的统一样式表 -->
     <link rel="stylesheet" href="../index.css">
-    <!-- 页面专属样式：字母等级靠右，总分框初始0 -->
+    <!-- 页面专属样式：字母等级靠右，总分框右侧固定 -->
     <style>
         .grade-cell .letter-grade {
             margin-left: auto;
@@ -30,9 +30,16 @@
             border-radius: 0.5rem;
             padding: 0 0.5rem;
         }
-        /* 隐藏左侧区域，让右侧自然靠右 */
+        /* 隐藏左侧区域，使右侧区域完全靠右 */
         .header-left {
             display: none;
+        }
+        .header-right {
+            flex: 1;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 1rem;
         }
     </style>
 </head>
@@ -46,7 +53,7 @@
         <div class="absolute inset-0 bg-grid-pattern opacity-30"></div>
     </div>
 
-    <!-- 导航栏 (已移除保存管理按钮) -->
+    <!-- 导航栏 -->
     <nav class="fixed top-0 left-0 right-0 z-50 px-6 py-6 flex justify-between items-center transition">
         <a href="../index.html" class="text-xl font-semibold tracking-tight text-white flex items-center gap-2">
             <span class="w-6 h-6"><img src="https://raw.githubusercontent.com/nanqiouheng/nanqiouheng.github.io/main/DownsicientLoge.ico" alt="Down's Tools Logo"></span>
@@ -59,27 +66,25 @@
             <a href="../index.html#about" class="hover:text-white transition-colors"><span class="lang-en">About</span><span class="lang-zh">关于</span></a>
         </div>
         <div class="flex items-center gap-4">
-            <!-- 语言切换按钮：无动画 -->
+            <!-- 语言切换按钮 -->
             <button onclick="toggleLang()" class="text-xs font-medium text-neutral-400 hover:text-white transition-colors flex items-center gap-1.5 uppercase tracking-wider">
                 <iconify-icon icon="lucide:globe" width="14"></iconify-icon>
                 <span class="lang-en">EN</span>
                 <span class="lang-zh">中</span>
             </button>
-            <!-- 物理计算器链接 (目录形式) -->
+            <!-- 物理计算器链接 -->
             <a href="../Down's%20Physics%20Calculator/" class="text-sm font-medium text-white border border-white/20 px-4 py-2 rounded-full hover:bg-white hover:text-black transition-all duration-300">
                 <span class="lang-en">Physics Solver</span><span class="lang-zh">物理计算器</span>
             </a>
         </div>
     </nav>
 
-    <!-- 所有保存管理相关模态框已移除 -->
-
     <!-- 主容器 -->
     <div class="container relative z-10" style="margin-top: 100px;">
         <div class="header-area">
+            <!-- 左侧完全隐藏，右侧独占一行且靠右 -->
             <div class="header-left"></div>
             <div class="header-right">
-                <!-- 总分区域独立存在，没有保存管理按钮 -->
                 <div class="overall-score-container">
                     <div class="overall-score" contenteditable="true">0</div>
                     <button id="solve-overall-btn" class="btn-primary" style="padding:0.6rem 1.5rem;" data-i18n="calculateOverall">计算总分</button>
@@ -87,7 +92,7 @@
             </div>
         </div>
 
-        <!-- 表格区域 -->
+        <!-- 表格 -->
         <div class="table-container">
             <table>
                 <thead>
@@ -107,7 +112,7 @@
         <button id="add-row-btn" data-i18n="addNewProject">+ 添加新项目</button>
     </div>
 
-    <!-- 页脚 (仅地球和 GitHub) -->
+    <!-- 页脚 -->
     <footer class="py-12 px-6 border-t border-white/10 bg-black relative z-10">
         <div class="max-w-6xl mx-auto">
             <div class="flex flex-col md:flex-row justify-between items-center gap-6 mb-8">
@@ -128,7 +133,6 @@
     </footer>
 
     <script>
-        // 加载动画控制
         window.addEventListener('load', function() {
             const loading = document.getElementById('loading');
             if (loading) {
@@ -139,7 +143,6 @@
 
         const LANGUAGE_STORAGE_KEY = 'grade_calculator_language';
 
-        // 国际化支持 (移除了所有保存管理相关条目)
         const translations = {
             zh: {
                 project: "项目",
@@ -180,7 +183,6 @@
         let currentLang = 'zh';
         let gradeTableBody;
 
-        // --- 主要函数定义 (保持不变) ---
         function getGrade(score) {
             if (score >= 93) return 'A'; 
             if (score >= 90) return 'A−'; 
@@ -457,7 +459,6 @@
                 }
             });
 
-            // 更新表格按钮文本
             document.querySelectorAll('.add-sub-btn').forEach(btn => {
                 btn.textContent = translations[currentLang]['addSubItem'];
             });
