@@ -30,7 +30,7 @@
             border-radius: 0.5rem;
             padding: 0 0.5rem;
         }
-        /* 隐藏左侧空白区域，让右侧区域自然靠右 */
+        /* 隐藏左侧区域，让右侧自然靠右 */
         .header-left {
             display: none;
         }
@@ -46,7 +46,7 @@
         <div class="absolute inset-0 bg-grid-pattern opacity-30"></div>
     </div>
 
-    <!-- 导航栏 -->
+    <!-- 导航栏 (已移除保存管理按钮) -->
     <nav class="fixed top-0 left-0 right-0 z-50 px-6 py-6 flex justify-between items-center transition">
         <a href="../index.html" class="text-xl font-semibold tracking-tight text-white flex items-center gap-2">
             <span class="w-6 h-6"><img src="https://raw.githubusercontent.com/nanqiouheng/nanqiouheng.github.io/main/DownsicientLoge.ico" alt="Down's Tools Logo"></span>
@@ -72,67 +72,14 @@
         </div>
     </nav>
 
-    <!-- 保存管理模态框 -->
-    <div id="saveModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title" data-i18n="saveManagement">保存管理</h3>
-                <button class="close-modal" id="closeSaveModal">×</button>
-            </div>
-            <div class="modal-body">
-                <div id="saveList"></div>
-                <div id="emptySaveState" class="empty-state" style="display: none;">
-                    <p data-i18n="noSavedRecords">暂无保存记录</p>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button id="saveCurrentBtn" class="save-manage-btn" data-i18n="saveCurrentState">保存当前状态</button>
-            </div>
-        </div>
-    </div>
+    <!-- 所有保存管理相关模态框已移除 -->
 
-    <!-- 保存输入模态框 (无默认值) -->
-    <div id="saveInputModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title" data-i18n="saveCurrentState">保存当前状态</h3>
-                <button class="close-modal" id="closeSaveInputModal">×</button>
-            </div>
-            <div class="modal-body">
-                <input type="text" id="saveNameInput" class="modal-input" data-i18n-placeholder="saveNamePlaceholder" placeholder="请输入保存名称" autofocus>
-            </div>
-            <div class="modal-footer">
-                <button id="cancelSaveBtn" class="action-btn remove-row-btn" data-i18n="cancel">取消</button>
-                <button id="confirmSaveBtn" class="action-btn solve-item-btn" data-i18n="save">保存</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- 重命名模态框 -->
-    <div id="renameModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title" data-i18n="renameSave">重命名保存</h3>
-                <button class="close-modal" id="closeRenameModal">×</button>
-            </div>
-            <div class="modal-body">
-                <input type="text" id="renameInput" class="modal-input" data-i18n-placeholder="renamePlaceholder" placeholder="请输入新名称" autofocus>
-                <input type="hidden" id="renameSaveId">
-            </div>
-            <div class="modal-footer">
-                <button id="cancelRenameBtn" class="action-btn remove-row-btn" data-i18n="cancel">取消</button>
-                <button id="confirmRenameBtn" class="action-btn solve-item-btn" data-i18n="rename">重命名</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- 主容器 (移除了所有标题和指引文字) -->
+    <!-- 主容器 -->
     <div class="container relative z-10" style="margin-top: 100px;">
         <div class="header-area">
-            <!-- 左侧区域已隐藏，不再显示任何标题 -->
             <div class="header-left"></div>
             <div class="header-right">
-                <button id="manageSavesBtn" class="save-manage-btn" data-i18n="saveManagement">保存管理</button>
+                <!-- 总分区域独立存在，没有保存管理按钮 -->
                 <div class="overall-score-container">
                     <div class="overall-score" contenteditable="true">0</div>
                     <button id="solve-overall-btn" class="btn-primary" style="padding:0.6rem 1.5rem;" data-i18n="calculateOverall">计算总分</button>
@@ -190,46 +137,26 @@
             }
         });
 
-        const SAVE_STORAGE_KEY = 'grade_calculator_saves';
         const LANGUAGE_STORAGE_KEY = 'grade_calculator_language';
 
+        // 国际化支持 (移除了所有保存管理相关条目)
         const translations = {
             zh: {
-                // appTitle 和 calculatorTitle 已移除，保留其他条目
                 project: "项目",
                 weight: "权重",
                 grade: "成绩",
                 actions: "操作",
                 addNewProject: "+ 添加新项目",
                 calculateOverall: "计算总分",
-                saveManagement: "保存管理",
                 solveItem: "求解",
                 removeItem: "删除",
                 addSubItem: "添加子项",
-                saveCurrentState: "保存当前状态",
-                load: "加载",
-                rename: "重命名",
-                delete: "删除",
-                cancel: "取消",
-                save: "保存",
-                saveNamePlaceholder: "请输入保存名称",
-                renameSave: "重命名保存",
-                renamePlaceholder: "请输入新名称",
-                noSavedRecords: "暂无保存记录",
                 confirmDelete: "确定要删除这个项目及其所有子项目吗？",
-                confirmDeleteSave: "确定要删除这个保存记录吗？",
-                saveSuccess: "保存成功！",
-                loadSuccess: "加载成功！",
-                renameSuccess: "重命名成功！",
-                deleteSuccess: "删除成功！",
                 invalidTotalScore: "无效的总分目标值。",
                 cannotSolveParent: "无法为包含子项的项目求解。请为具体的子节点项目求解。",
                 zeroWeightError: "无法为权重为零或负数的项目求解。",
-                saveFailed: "保存失败，请检查控制台错误信息。",
-                enterNewName: "请输入新名称！",
                 newProject: "新项目",
                 newSubProject: "新子项目",
-                loading: "加载中...",
             },
             en: {
                 project: "Project",
@@ -238,41 +165,22 @@
                 actions: "Actions",
                 addNewProject: "+ Add New Project",
                 calculateOverall: "Calculate Total",
-                saveManagement: "Save Management",
                 solveItem: "Solve",
                 removeItem: "Delete",
                 addSubItem: "Add Sub-item",
-                saveCurrentState: "Save Current State",
-                load: "Load",
-                rename: "Rename",
-                delete: "Delete",
-                cancel: "Cancel",
-                save: "Save",
-                saveNamePlaceholder: "Enter save name",
-                renameSave: "Rename Save",
-                renamePlaceholder: "Enter new name",
-                noSavedRecords: "No saved records",
                 confirmDelete: "Are you sure you want to delete this item and all its sub-items?",
-                confirmDeleteSave: "Are you sure you want to delete this save record?",
-                saveSuccess: "Save successful!",
-                loadSuccess: "Load successful!",
-                renameSuccess: "Rename successful!",
-                deleteSuccess: "Delete successful!",
                 invalidTotalScore: "Invalid total score target.",
                 cannotSolveParent: "Cannot solve for items with sub-items. Please solve for specific sub-items.",
                 zeroWeightError: "Cannot solve for items with zero or negative weight.",
-                saveFailed: "Save failed, please check console for errors.",
-                enterNewName: "Please enter a new name!",
                 newProject: "New Project",
                 newSubProject: "New Sub-project",
-                loading: "Loading...",
             }
         };
 
         let currentLang = 'zh';
         let gradeTableBody;
 
-        // --- 主要函数定义 (与之前相同) ---
+        // --- 主要函数定义 (保持不变) ---
         function getGrade(score) {
             if (score >= 93) return 'A'; 
             if (score >= 90) return 'A−'; 
@@ -500,191 +408,6 @@
             }
         }
 
-        function getCurrentData() {
-            const rows = gradeTableBody.querySelectorAll('tr');
-            const data = [];
-            const overallScore = parseFloat(document.querySelector('.overall-score').textContent) || 0;
-
-            const itemMap = new Map();
-
-            rows.forEach(row => {
-                const id = row.id;
-                const name = row.querySelector('.project-name-cell span[contenteditable="true"]').textContent;
-                const weight = row.querySelector('.editable-weight').textContent;
-                const score = row.querySelector('.editable-score').textContent;
-                const parentId = row.dataset.parentId || null;
-
-                const item = {
-                    id,
-                    name,
-                    weight,
-                    score,
-                    subItems: []
-                };
-
-                itemMap.set(id, item);
-
-                if (!parentId) {
-                    data.push(item);
-                }
-            });
-
-            rows.forEach(row => {
-                const id = row.id;
-                const parentId = row.dataset.parentId;
-
-                if (parentId && itemMap.has(parentId)) {
-                    const parent = itemMap.get(parentId);
-                    const child = itemMap.get(id);
-                    parent.subItems.push(child);
-                }
-            });
-
-            return {
-                overallScore,
-                items: data,
-                timestamp: new Date().toISOString()
-            };
-        }
-
-        function loadData(data) {
-            gradeTableBody.innerHTML = '';
-
-            document.querySelector('.overall-score').textContent = data.overallScore.toFixed(1);
-
-            data.items.forEach(item => {
-                renderRow(item);
-            });
-
-            setTimeout(calculateOverallScore, 100);
-        }
-
-        function renderSaveList() {
-            const saveListElement = document.getElementById('saveList');
-            const emptyStateElement = document.getElementById('emptySaveState');
-            const saves = saveManager.getAllSaves();
-
-            if (saves.length === 0) {
-                saveListElement.innerHTML = '';
-                emptyStateElement.style.display = 'block';
-                return;
-            }
-
-            emptyStateElement.style.display = 'none';
-            saveListElement.innerHTML = '';
-
-            saves.forEach(save => {
-                const saveItem = document.createElement('div');
-                saveItem.className = 'save-item';
-                saveItem.innerHTML = `
-                    <div style="display: flex; align-items: center; flex: 1;">
-                        <div class="save-item-name">${save.name}</div>
-                        <div class="save-item-meta">${currentLang === 'zh' ? '保存时间:' : 'Saved:'} ${save.formattedDate}</div>
-                    </div>
-                    <div class="save-item-actions">
-                        <button class="save-action-btn btn-load" data-save-id="${save.id}">${translations[currentLang]['load']}</button>
-                        <button class="save-action-btn btn-rename" data-save-id="${save.id}">${translations[currentLang]['rename']}</button>
-                        <button class="save-action-btn btn-delete" data-save-id="${save.id}">${translations[currentLang]['delete']}</button>
-                    </div>
-                `;
-                saveListElement.appendChild(saveItem);
-            });
-        }
-
-        function openSaveModal() {
-            renderSaveList();
-            document.getElementById('saveModal').style.display = 'flex';
-        }
-
-        function openSaveInputModal() {
-            document.getElementById('saveNameInput').value = '';
-            document.getElementById('saveInputModal').style.display = 'flex';
-            document.getElementById('saveNameInput').focus();
-        }
-
-        function openRenameModal(saveId) {
-            const save = saveManager.getSave(saveId);
-            if (save) {
-                document.getElementById('renameInput').value = save.name;
-                document.getElementById('renameSaveId').value = saveId;
-                document.getElementById('renameModal').style.display = 'flex';
-                document.getElementById('renameInput').focus();
-            }
-        }
-
-        class SaveManager {
-            constructor() {
-                this.saves = this.loadSaves();
-            }
-
-            loadSaves() {
-                try {
-                    const savesJson = localStorage.getItem(SAVE_STORAGE_KEY);
-                    return savesJson ? JSON.parse(savesJson) : [];
-                } catch (e) {
-                    console.error('加载保存记录失败:', e);
-                    return [];
-                }
-            }
-
-            saveSaves() {
-                try {
-                    localStorage.setItem(SAVE_STORAGE_KEY, JSON.stringify(this.saves));
-                } catch (e) {
-                    console.error('保存记录失败:', e);
-                    alert(translations[currentLang]['saveFailed']);
-                }
-            }
-
-            addSave(name, data) {
-                const timestamp = new Date().toISOString();
-                const formattedDate = new Date().toLocaleString(currentLang === 'zh' ? 'zh-CN' : 'en-US');
-                const saveName = name.trim() || (currentLang === 'zh' ? '未命名' : 'Unnamed');
-                const save = {
-                    id: 'save_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
-                    name: saveName,
-                    timestamp: timestamp,
-                    formattedDate: formattedDate,
-                    data: data
-                };
-                this.saves.unshift(save);
-                this.saveSaves();
-                return save;
-            }
-
-            renameSave(id, newName) {
-                const saveIndex = this.saves.findIndex(save => save.id === id);
-                if (saveIndex !== -1) {
-                    this.saves[saveIndex].name = newName;
-                    this.saves[saveIndex].timestamp = new Date().toISOString();
-                    this.saves[saveIndex].formattedDate = new Date().toLocaleString(currentLang === 'zh' ? 'zh-CN' : 'en-US');
-                    this.saveSaves();
-                    return true;
-                }
-                return false;
-            }
-
-            deleteSave(id) {
-                const initialLength = this.saves.length;
-                this.saves = this.saves.filter(save => save.id !== id);
-                if (this.saves.length !== initialLength) {
-                    this.saveSaves();
-                    return true;
-                }
-                return false;
-            }
-
-            getSave(id) {
-                return this.saves.find(save => save.id === id);
-            }
-
-            getAllSaves() {
-                return [...this.saves];
-            }
-        }
-
-        const saveManager = new SaveManager();
-
         function initData() {
             gradeTableBody.innerHTML = '';
             const overallEl = document.querySelector('.overall-score');
@@ -734,17 +457,7 @@
                 }
             });
 
-            document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
-                const key = element.getAttribute('data-i18n-placeholder');
-                if (translations[currentLang][key]) {
-                    element.placeholder = translations[currentLang][key];
-                }
-            });
-
-            updateTableButtonTexts();
-        }
-
-        function updateTableButtonTexts() {
+            // 更新表格按钮文本
             document.querySelectorAll('.add-sub-btn').forEach(btn => {
                 btn.textContent = translations[currentLang]['addSubItem'];
             });
@@ -754,112 +467,15 @@
             document.querySelectorAll('.remove-row-btn').forEach(btn => {
                 btn.textContent = translations[currentLang]['removeItem'];
             });
-            document.querySelectorAll('.btn-load').forEach(btn => {
-                btn.textContent = translations[currentLang]['load'];
-            });
-            document.querySelectorAll('.btn-rename').forEach(btn => {
-                btn.textContent = translations[currentLang]['rename'];
-            });
-            document.querySelectorAll('.btn-delete').forEach(btn => {
-                btn.textContent = translations[currentLang]['delete'];
-            });
         }
 
         function bindEvents() {
-            document.getElementById('manageSavesBtn').addEventListener('click', openSaveModal);
-            document.getElementById('saveCurrentBtn').addEventListener('click', openSaveInputModal);
-
-            document.getElementById('closeSaveModal').addEventListener('click', () => {
-                document.getElementById('saveModal').style.display = 'none';
-            });
-
-            document.getElementById('closeSaveInputModal').addEventListener('click', () => {
-                document.getElementById('saveInputModal').style.display = 'none';
-            });
-
-            document.getElementById('closeRenameModal').addEventListener('click', () => {
-                document.getElementById('renameModal').style.display = 'none';
-            });
-
-            document.getElementById('cancelSaveBtn').addEventListener('click', () => {
-                document.getElementById('saveInputModal').style.display = 'none';
-            });
-
-            document.getElementById('cancelRenameBtn').addEventListener('click', () => {
-                document.getElementById('renameModal').style.display = 'none';
-            });
-
-            document.getElementById('confirmSaveBtn').addEventListener('click', () => {
-                const saveName = document.getElementById('saveNameInput').value.trim();
-                if (!saveName) {
-                    alert(translations[currentLang]['enterNewName']);
-                    return;
-                }
-                const currentData = getCurrentData();
-
-                try {
-                    saveManager.addSave(saveName, currentData);
-                    document.getElementById('saveInputModal').style.display = 'none';
-                    document.getElementById('saveModal').style.display = 'none';
-                    renderSaveList();
-                    alert(translations[currentLang]['saveSuccess']);
-                } catch (error) {
-                    console.error('保存失败:', error);
-                    alert(translations[currentLang]['saveFailed']);
-                }
-            });
-
-            document.getElementById('confirmRenameBtn').addEventListener('click', () => {
-                const saveId = document.getElementById('renameSaveId').value;
-                const newName = document.getElementById('renameInput').value.trim();
-                if (newName) {
-                    if (saveManager.renameSave(saveId, newName)) {
-                        document.getElementById('renameModal').style.display = 'none';
-                        renderSaveList();
-                        alert(translations[currentLang]['renameSuccess']);
-                    }
-                } else {
-                    alert(translations[currentLang]['enterNewName']);
-                }
-            });
- 
             document.body.addEventListener('click', (e) => {
                 if (e.target.matches('#add-row-btn')) addTopLevelRow();
                 if (e.target.matches('.add-sub-btn')) addSubItem(e.target);
                 if (e.target.matches('.remove-row-btn')) removeRow(e.target);
                 if (e.target.matches('#solve-overall-btn')) calculateOverallScore();
                 if (e.target.matches('.solve-item-btn')) solveForItem(e.target);
-
-                if (e.target.matches('.btn-load')) {
-                    const saveId = e.target.dataset.saveId;
-                    const save = saveManager.getSave(saveId);
-                    if (save) {
-                        loadData(save.data);
-                        document.getElementById('saveModal').style.display = 'none';
-                        alert(translations[currentLang]['loadSuccess']);
-                    }
-                }
-
-                if (e.target.matches('.btn-rename')) {
-                    const saveId = e.target.dataset.saveId;
-                    openRenameModal(saveId);
-                }
-
-                if (e.target.matches('.btn-delete')) {
-                    const saveId = e.target.dataset.saveId;
-                    if (confirm(translations[currentLang]['confirmDeleteSave'])) {
-                        if (saveManager.deleteSave(saveId)) {
-                            renderSaveList();
-                            alert(translations[currentLang]['deleteSuccess']);
-                        }
-                    }
-                }
-            });
-
-            window.addEventListener('click', (e) => {
-                if (e.target.classList.contains('modal')) {
-                    e.target.style.display = 'none';
-                }
             });
 
             document.body.addEventListener('blur', (e) => {
@@ -889,18 +505,6 @@
                 if (e.target.isContentEditable && e.key === 'Enter') {
                     e.preventDefault();
                     e.target.blur();
-                }
-                if (e.key === 'Escape') {
-                    const modals = document.querySelectorAll('.modal');
-                    modals.forEach(modal => {
-                        if (modal.style.display === 'flex') {
-                            modal.style.display = 'none';
-                        }
-                    });
-                }
-                if (e.ctrlKey && e.key === 's') {
-                    e.preventDefault();
-                    openSaveInputModal();
                 }
             });
         }
