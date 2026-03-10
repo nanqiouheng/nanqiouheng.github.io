@@ -14,25 +14,53 @@
     <link rel="stylesheet" crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/misans@4.1.0/lib/Normal/MiSans-Regular.min.css" />
     <link rel="stylesheet" crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/misans@4.1.0/lib/Normal/MiSans-Semibold.min.css" />
     <link rel="icon" href="https://raw.githubusercontent.com/nanqiouheng/nanqiouheng.github.io/main/DownsicientLoge.ico" type="image/x-icon" />
-    <!-- 引用根目录样式表 -->
+    <!-- 引用根目录统一样式表 -->
     <link rel="stylesheet" href="../index.css">
+    <!-- 后备样式（确保基本显示） -->
     <style>
-        /* 后备样式：如果 index.css 未加载，页面仍能基本显示 */
-        body { background: #050505; color: #e5e5e5; }
-        .card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 1.5rem; padding: 1.5rem; }
-        .input-row { display: flex; gap: 0.5rem; margin-bottom: 0.75rem; }
-        .input-row label { width: 80px; color: #a3a3a3; }
+        body { background: #050505; color: #e5e5e5; font-family: 'MiSans', sans-serif; }
+        .card { background: rgba(255,255,255,0.03); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.08); border-radius: 1.5rem; padding: 1.5rem; transition: 0.2s; }
+        .card:hover { background: rgba(255,255,255,0.05); border-color: #8b5cf6; transform: translateY(-3px); }
+        .card-title { color: #8b5cf6; font-weight: 600; font-size: 1.25rem; margin-bottom: 0.5rem; }
+        .card-equation { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.08); border-radius: 1rem; padding: 0.75rem; text-align: center; margin: 1rem 0; font-family: 'Cambria Math', serif; }
+        .input-row { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem; }
+        .input-row label { width: 80px; color: #a3a3a3; font-size: 0.9rem; flex-shrink: 0; }
         .input-row input { flex: 1; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.08); border-radius: 0.75rem; padding: 0.6rem; color: white; }
-        .btn { background: linear-gradient(135deg, #8b5cf6, #7c3aed); border: none; color: white; padding: 0.7rem; border-radius: 9999px; cursor: pointer; }
-        .btn.reset { background: rgba(255,255,255,0.05); }
+        .input-row input:focus { outline: none; border-color: #8b5cf6; box-shadow: 0 0 0 3px rgba(139,92,246,0.2); }
+        .button-group { display: flex; gap: 0.75rem; margin: 1rem 0 0.5rem; }
+        .btn { flex: 1; background: linear-gradient(135deg, #8b5cf6, #7c3aed); border: none; color: white; font-weight: 600; padding: 0.7rem; border-radius: 9999px; cursor: pointer; transition: 0.15s; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(139,92,246,0.4); }
+        .btn.reset { background: rgba(255,255,255,0.05); color: #a3a3a3; }
+        .btn.reset:hover { background: rgba(255,255,255,0.1); color: white; }
         .result-box { background: rgba(16,185,129,0.1); border-left: 4px solid #10b981; padding: 0.75rem; border-radius: 0.75rem; margin-top: 0.5rem; }
         .info-panel { background: rgba(255,255,255,0.03); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.08); border-radius: 1.5rem; padding: 1.5rem; margin-bottom: 1.5rem; }
-        .topic-tag { background: rgba(255,255,255,0.05); padding: 0.4rem 1.2rem; border-radius: 9999px; cursor: pointer; }
-        .topic-tag:hover { background: #8b5cf6; color: white; }
+        .info-title { color: #8b5cf6; font-weight: 600; font-size: 1.25rem; margin-bottom: 0.5rem; }
+        .info-desc { color: #a3a3a3; margin-bottom: 1rem; }
+        .topic-tags { display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; }
+        .topic-tag { background: rgba(255,255,255,0.05); padding: 0.4rem 1.2rem; border-radius: 9999px; cursor: pointer; border: 1px solid rgba(255,255,255,0.08); transition: 0.2s; }
+        .topic-tag:hover { background: #8b5cf6; color: white; transform: scale(1.05); }
+        .g-selector { display: flex; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 9999px; padding: 0.25rem; }
+        .g-option { background: transparent; border: none; color: #a3a3a3; padding: 0.3rem 1rem; border-radius: 9999px; cursor: pointer; }
+        .g-option.active { background: #8b5cf6; color: white; }
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 10000; backdrop-filter: blur(3px); }
+        .modal-window { background: rgba(22,22,22,0.95); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.08); border-radius: 1rem; width: 90%; max-width: 600px; max-height: 80vh; overflow-y: auto; animation: modalFadeIn 0.2s; }
+        @keyframes modalFadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        .modal-header { background: rgba(0,0,0,0.3); padding: 1rem; display: flex; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08); position: sticky; top: 0; }
+        .modal-close { width: 16px; height: 16px; border-radius: 50%; background: #ff5f56; border: none; margin-right: 12px; cursor: pointer; }
+        .modal-close:hover { background: #ff3b30; }
+        .modal-title { font-weight: 600; color: white; }
+        .modal-content { padding: 1.5rem; color: #a3a3a3; }
+        .formula-detail { font-family: 'Cambria Math', serif; font-size: 1.2rem; text-align: center; margin: 1rem 0; background: rgba(0,0,0,0.3); padding: 0.75rem; border-radius: 0.75rem; color: white; }
+        #loading { position: fixed; inset: 0; background: #050505; display: flex; justify-content: center; align-items: center; z-index: 9999; transition: opacity 0.3s; }
+        .spinner { width: 45px; height: 45px; border: 4px solid rgba(255,255,255,0.1); border-top-color: #8b5cf6; border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body class="lang-en">
+    <!-- 加载动画 -->
     <div id="loading"><div class="spinner"></div></div>
+
+    <!-- 背景元素 -->
     <div class="fixed-bg">
         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-purple-900/10 background-circle rounded-full blur-[120px] opacity-40"></div>
         <div class="absolute inset-0 bg-grid-pattern opacity-30"></div>
@@ -67,6 +95,7 @@
         </div>
     </nav>
 
+    <!-- 主容器 -->
     <div class="container-custom relative z-10 mx-auto px-4 pt-32 pb-12">
         <div class="info-panel reveal-on-scroll" id="infoPanel"></div>
         <div class="card-grid" id="cardGrid"></div>
@@ -109,308 +138,514 @@
 
     <script>
         (function() {
-            // 错误捕获，方便调试
-            window.addEventListener('error', function(e) {
-                console.error('捕获到错误:', e.error || e.message);
-            });
+            // 隐藏加载动画
+            const loading = document.getElementById('loading');
+            if (loading) {
+                loading.style.opacity = '0';
+                setTimeout(() => loading.style.display = 'none', 300);
+            }
 
-            try {
-                // 隐藏加载动画
-                const loading = document.getElementById('loading');
-                if (loading) {
-                    loading.style.opacity = '0';
-                    setTimeout(() => loading.style.display = 'none', 300);
-                }
+            // ---------- 全局变量 ----------
+            let currentLang = 'en';
+            let gValue = 9.8;
+            const PI = 3.14;
 
-                let currentLang = 'en';
-                let gValue = 9.8;
-                const PI = 3.14;
+            // 模态框元素
+            const modalOverlay = document.getElementById('modalOverlay');
+            const modalClose = document.getElementById('modalClose');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalContent = document.getElementById('modalContent');
 
-                // 模态框元素
-                const modalOverlay = document.getElementById('modalOverlay');
-                const modalClose = document.getElementById('modalClose');
-                const modalTitle = document.getElementById('modalTitle');
-                const modalContent = document.getElementById('modalContent');
+            if (modalClose) {
+                modalClose.addEventListener('click', () => modalOverlay.style.display = 'none');
+            }
+            if (modalOverlay) {
+                modalOverlay.addEventListener('click', (e) => {
+                    if (e.target === modalOverlay) modalOverlay.style.display = 'none';
+                });
+            }
 
-                if (modalClose) {
-                    modalClose.addEventListener('click', () => modalOverlay.style.display = 'none');
-                }
-                if (modalOverlay) {
-                    modalOverlay.addEventListener('click', (e) => {
-                        if (e.target === modalOverlay) modalOverlay.style.display = 'none';
-                    });
-                }
-
-                window.toggleLang = function() {
-                    const body = document.body;
-                    if (body.classList.contains('lang-en')) {
-                        body.classList.replace('lang-en', 'lang-zh');
-                        currentLang = 'zh';
-                    } else {
-                        body.classList.replace('lang-zh', 'lang-en');
-                        currentLang = 'en';
-                    }
-                    renderInfoPanel();
-                    renderCards();
-                };
-
-                // 翻译字典 (完整内容见此前版本，为节省篇幅此处省略，实际使用时保留完整 translations)
-                // 请确保 translations 对象与之前提供的完整版本一致，包含九大主题的翻译。
-                // 为简化示例，这里仅保留结构，实际代码中需补全所有文本。
-                const translations = { zh: {}, en: {} }; // 请替换为完整内容
-
-                // 为了代码可读，此处仅展示关键部分，实际使用时请将完整 translations 粘贴进来。
-                // 完整 translations 可参考上一轮回答中的代码。
-
-                // 注意：由于篇幅限制，此处无法展示完整的 200+ 行翻译字典，请务必使用上一轮回答中的完整版本。
-                // 建议直接从之前的回答中复制 translations 对象粘贴至此。
-
-                const t = (key) => {
-                    return key.split('.').reduce((obj, k) => obj?.[k], translations[currentLang]) || key;
-                };
-
-                // 卡片数据 (含浮力、伯努利)
-                const cardsData = [
-                    { id: 'kin', inputs: ['v0','v','a','t','dx'],
-                      solve: (vals) => {
-                          try {
-                              if (vals.v0 !== undefined && vals.a !== undefined && vals.t !== undefined) return { v: vals.v0 + vals.a * vals.t };
-                              if (vals.v0 !== undefined && vals.v !== undefined && vals.a !== undefined) return { t: (vals.v - vals.v0) / vals.a };
-                              if (vals.v0 !== undefined && vals.t !== undefined && vals.v !== undefined) return { a: (vals.v - vals.v0) / vals.t };
-                              if (vals.v0 !== undefined && vals.t !== undefined && vals.a !== undefined) return { v: vals.v0 + vals.a * vals.t };
-                          } catch (e) { console.error('kin solve error', e); }
-                          return null;
-                      } },
-                    { id: 'newt', inputs: ['F','m','a'],
-                      solve: (vals) => {
-                          try {
-                              if (vals.m !== undefined && vals.a !== undefined) return { F: vals.m * vals.a };
-                              if (vals.F !== undefined && vals.m !== undefined) return { a: vals.F / vals.m };
-                              if (vals.F !== undefined && vals.a !== undefined) return { m: vals.F / vals.a };
-                          } catch (e) { console.error('newt solve error', e); }
-                          return null;
-                      } },
-                    { id: 'work', inputs: ['m','v0','v','h','W','PE'],
-                      solve: (vals) => { return null; } },
-                    { id: 'mom', inputs: ['m','v','p','F','dt','dv'],
-                      solve: (vals) => { return null; } },
-                    { id: 'circ', inputs: ['m','v','r','F','M','Fg'],
-                      solve: (vals) => { return null; } },
-                    { id: 'shm', inputs: ['k','x','F','m','T'],
-                      solve: (vals) => { return null; } },
-                    { id: 'hydro', inputs: ['rho','h','A'],
-                      solve: (vals) => {
-                          try {
-                              const g = window.gValue ?? 9.8;
-                              if (vals.rho !== undefined && vals.h !== undefined) {
-                                  const P = vals.rho * g * vals.h;
-                                  if (vals.A !== undefined) return { P, F: P * vals.A };
-                                  return { P };
-                              }
-                          } catch (e) { console.error('hydro solve error', e); }
-                          return null;
-                      } },
-                    { id: 'buoyancy', inputs: ['rho','V','Fb'],
-                      solve: (vals) => {
-                          try {
-                              const g = window.gValue ?? 9.8;
-                              if (vals.rho !== undefined && vals.V !== undefined) return { Fb: vals.rho * g * vals.V };
-                              if (vals.Fb !== undefined && vals.rho !== undefined) return { V: vals.Fb / (vals.rho * g) };
-                              if (vals.Fb !== undefined && vals.V !== undefined) return { rho: vals.Fb / (g * vals.V) };
-                          } catch (e) { console.error('buoyancy solve error', e); }
-                          return null;
-                      } },
-                    { id: 'bernoulli', inputs: ['P1','v1','h1','P2','v2','h2','rho'],
-                      solve: (vals) => {
-                          try {
-                              const g = window.gValue ?? 9.8;
-                              if (vals.rho === undefined) return null;
-                              const known = ['P1','v1','h1','P2','v2','h2'].filter(k => vals[k] !== undefined);
-                              if (known.length !== 5) return null;
-                              const missing = ['P1','v1','h1','P2','v2','h2'].find(k => vals[k] === undefined);
-                              const left = (missing !== 'P1' ? vals.P1 : 0) + (missing !== 'v1' ? 0.5 * vals.rho * vals.v1 * vals.v1 : 0) + (missing !== 'h1' ? vals.rho * g * vals.h1 : 0);
-                              const right = (missing !== 'P2' ? vals.P2 : 0) + (missing !== 'v2' ? 0.5 * vals.rho * vals.v2 * vals.v2 : 0) + (missing !== 'h2' ? vals.rho * g * vals.h2 : 0);
-                              if (missing === 'P1') return { P1: right - (0.5 * vals.rho * vals.v1 * vals.v1 + vals.rho * g * vals.h1) };
-                              if (missing === 'v1') {
-                                  const term = right - (vals.P1 + vals.rho * g * vals.h1);
-                                  if (term < 0) return null;
-                                  return { v1: Math.sqrt(2 * term / vals.rho) };
-                              }
-                              if (missing === 'h1') return { h1: (right - vals.P1 - 0.5 * vals.rho * vals.v1 * vals.v1) / (vals.rho * g) };
-                              if (missing === 'P2') return { P2: left - (0.5 * vals.rho * vals.v2 * vals.v2 + vals.rho * g * vals.h2) };
-                              if (missing === 'v2') {
-                                  const term = left - (vals.P2 + vals.rho * g * vals.h2);
-                                  if (term < 0) return null;
-                                  return { v2: Math.sqrt(2 * term / vals.rho) };
-                              }
-                              if (missing === 'h2') return { h2: (left - vals.P2 - 0.5 * vals.rho * vals.v2 * vals.v2) / (vals.rho * g) };
-                          } catch (e) { console.error('bernoulli solve error', e); }
-                          return null;
-                      } }
-                ];
-
-                function showModal(topicKey) {
-                    if (!modalTitle || !modalContent) return;
-                    modalTitle.innerText = t(`cardTitles.${topicKey}`);
-                    const detailsHtml = t(`details.${topicKey}`);
-                    modalContent.innerHTML = `<div class="formula-detail">${t(`eq.${topicKey}`)}</div>${detailsHtml}`;
-                    modalOverlay.style.display = 'flex';
-                }
-
-                function renderInfoPanel() {
-                    const panel = document.getElementById('infoPanel');
-                    if (!panel) return;
-                    const topics = t('topics');
-                    const topicKeys = ['kin','newt','work','mom','circ','shm','hydro','buoyancy','bernoulli'];
-                    panel.innerHTML = `
-                        <div class="info-title">${t('infoTitle')}</div>
-                        <div class="info-desc">${t('infoDesc')}</div>
-                        <div class="topic-tags">
-                            ${topics.map((topic, idx) => `<span class="topic-tag" data-topic="${topicKeys[idx]}">${topic}</span>`).join('')}
-                        </div>
-                    `;
-                    document.querySelectorAll('.topic-tag').forEach(tag => {
-                        tag.addEventListener('click', () => showModal(tag.dataset.topic));
-                    });
-                }
-
-                function renderCards() {
-                    const grid = document.getElementById('cardGrid');
-                    if (!grid) return;
-                    grid.innerHTML = '';
-                    cardsData.forEach(card => {
-                        const cardDiv = document.createElement('div');
-                        cardDiv.className = 'card';
-                        cardDiv.id = `card-${card.id}`;
-                        let inputsHtml = '';
-                        card.inputs.forEach(inp => {
-                            inputsHtml += `
-                                <div class="input-row">
-                                    <label>${t(`labels.${inp}`)}</label>
-                                    <input type="number" id="${card.id}_${inp}" step="any" placeholder="—">
-                                </div>
-                            `;
-                        });
-                        cardDiv.innerHTML = `
-                            <div class="card-title">${t(`cardTitles.${card.id}`)}</div>
-                            <div class="card-equation">${t(`eq.${card.id}`)}</div>
-                            ${inputsHtml}
-                            <div class="button-group">
-                                <button class="btn" data-card="${card.id}">${t('buttons.calc')}</button>
-                                <button class="btn reset" data-reset="${card.id}">${t('buttons.reset')}</button>
-                            </div>
-                            <div class="result-box" id="${card.id}_result"></div>
-                        `;
-                        grid.appendChild(cardDiv);
-                    });
-
-                    document.querySelectorAll('.btn[data-card]').forEach(btn => {
-                        btn.addEventListener('click', (e) => {
-                            const cardId = e.target.dataset.card;
-                            const card = cardsData.find(c => c.id === cardId);
-                            if (!card) return;
-                            const vals = {};
-                            card.inputs.forEach(inp => {
-                                const el = document.getElementById(`${cardId}_${inp}`);
-                                if (el && el.value.trim() !== '') vals[inp] = parseFloat(el.value);
-                            });
-                            const result = card.solve(vals);
-                            const resDiv = document.getElementById(`${cardId}_result`);
-                            if (resDiv) {
-                                if (result && typeof result === 'object') {
-                                    let resultStr = Object.entries(result).map(([key, val]) => {
-                                        if (typeof val !== 'number') return `${key}: ${val}`;
-                                        let label = key;
-                                        if (key === 'Fb') label = 'F_b';
-                                        else if (key === 'P1') label = 'P₁';
-                                        else if (key === 'v1') label = 'v₁';
-                                        else if (key === 'h1') label = 'h₁';
-                                        else if (key === 'P2') label = 'P₂';
-                                        else if (key === 'v2') label = 'v₂';
-                                        else if (key === 'h2') label = 'h₂';
-                                        else if (key === 'rho') label = 'ρ';
-                                        return `${label} = ${val.toFixed(4)}`;
-                                    }).join(', ');
-                                    resDiv.innerHTML = `<strong>${t('result')}</strong> ${resultStr}`;
-                                } else {
-                                    resDiv.innerHTML = `<span style="color:var(--warning-color);">${t('insufficient')}</span>`;
-                                }
-                            }
-                        });
-                    });
-
-                    document.querySelectorAll('.btn.reset').forEach(btn => {
-                        btn.addEventListener('click', (e) => {
-                            const cardId = e.target.dataset.reset;
-                            document.querySelectorAll(`#card-${cardId} input`).forEach(inp => inp.value = '');
-                            const resDiv = document.getElementById(`${cardId}_result`);
-                            if (resDiv) resDiv.innerHTML = '';
-                        });
-                    });
-                }
-
-                // g值切换
-                const g9_8 = document.getElementById('g9_8');
-                const g10 = document.getElementById('g10');
-                if (g9_8 && g10) {
-                    g9_8.addEventListener('click', () => {
-                        gValue = 9.8;
-                        window.gValue = 9.8;
-                        g9_8.classList.add('active');
-                        g10.classList.remove('active');
-                    });
-                    g10.addEventListener('click', () => {
-                        gValue = 10;
-                        window.gValue = 10;
-                        g10.classList.add('active');
-                        g9_8.classList.remove('active');
-                    });
-                }
-                window.gValue = 9.8;
-
-                // 导航栏背景
-                function scrollNav() {
-                    const nav = document.querySelector("nav");
-                    if (nav) {
-                        if (window.scrollY === 0) nav.classList.remove("with-back");
-                        else nav.classList.add("with-back");
-                    }
-                }
-                window.addEventListener('scroll', scrollNav);
-                scrollNav();
-
-                // 滚动动画
-                function initReveal() {
-                    const observer = new IntersectionObserver((entries) => {
-                        entries.forEach(entry => {
-                            if (entry.isIntersecting) {
-                                entry.target.classList.add('is-visible');
-                                observer.unobserve(entry.target);
-                            }
-                        });
-                    }, { threshold: 0.1 });
-                    document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
-                }
-
-                // 初始化语言
-                if (navigator.language.startsWith('zh')) {
-                    document.body.classList.replace('lang-en', 'lang-zh');
+            // 语言切换函数
+            window.toggleLang = function() {
+                const body = document.body;
+                if (body.classList.contains('lang-en')) {
+                    body.classList.replace('lang-en', 'lang-zh');
                     currentLang = 'zh';
                 } else {
-                    document.body.classList.replace('lang-zh', 'lang-en');
+                    body.classList.replace('lang-zh', 'lang-en');
                     currentLang = 'en';
                 }
-
-                // 渲染
                 renderInfoPanel();
                 renderCards();
-                initReveal();
+            };
 
-                console.log('物理计算器初始化成功');
-            } catch (err) {
-                console.error('初始化过程中发生错误:', err);
-                document.body.innerHTML += `<div style="color:red; padding:2rem;">页面加载出错：${err.message}，请查看控制台。</div>`;
+            // ---------- 完整翻译字典（九大主题）----------
+            const translations = {
+                zh: {
+                    infoTitle: "📐 九大核心公式 · 点击标签查看详情",
+                    infoDesc: "每张卡片对应一个核心模块。输入已知量，点击“计算”求解未知量。",
+                    topics: [
+                        "运动学 (匀加速)", "牛顿第二定律", "功能关系", "动量与冲量",
+                        "圆周/万有引力", "简谐运动", "水的压强与压力", "浮力", "伯努利方程"
+                    ],
+                    cardTitles: {
+                        kin: "运动学 (匀加速)",
+                        newt: "牛顿第二定律",
+                        work: "功能关系",
+                        mom: "动量与冲量",
+                        circ: "圆周运动 / 万有引力",
+                        shm: "简谐运动 (弹簧)",
+                        hydro: "水的压强与压力",
+                        buoyancy: "浮力 (阿基米德原理)",
+                        bernoulli: "伯努利方程"
+                    },
+                    eq: {
+                        kin: "v = v₀ + a t    Δx = v₀ t + ½ a t²    v² = v₀² + 2 a Δx",
+                        newt: "F = m a",
+                        work: "W = ΔKE = ½ m (v² − v₀²)    PE = m g h",
+                        mom: "p = m v    J = F Δt = Δp",
+                        circ: "F_c = m v² / r    F_g = G M m / r²",
+                        shm: "F = -k x    T = 2π √(m / k)",
+                        hydro: "P = ρ g h    F = P · A",
+                        buoyancy: "F_b = ρ g V",
+                        bernoulli: "P + ½ ρ v² + ρ g h = constant"
+                    },
+                    details: {
+                        kin: `
+                            <p><strong>物理意义：</strong>描述物体在匀加速直线运动中的速度、位移与时间的关系。</p>
+                            <p><strong>公式说明：</strong></p>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>v = v₀ + a t —— 末速度公式</li>
+                                <li>Δx = v₀ t + ½ a t² —— 位移公式</li>
+                                <li>v² = v₀² + 2 a Δx —— 不含时间的关系式</li>
+                            </ul>
+                            <p><strong>示例：</strong>一辆汽车从静止开始以 2 m/s² 的加速度行驶 5 秒，求末速度和位移。<br>
+                            解：v₀ = 0, a = 2, t = 5 → v = 0 + 2×5 = 10 m/s, Δx = 0×5 + ½×2×5² = 25 m。</p>
+                        `,
+                        newt: `
+                            <p><strong>物理意义：</strong>物体所受合外力等于其质量与加速度的乘积（F=ma）。</p>
+                            <p><strong>公式说明：</strong>力是改变物体运动状态的原因，加速度方向与合外力方向一致。</p>
+                            <p><strong>示例：</strong>一个 5 kg 的物体受到 20 N 的水平拉力，求加速度。<br>
+                            解：a = F/m = 20/5 = 4 m/s²。</p>
+                        `,
+                        work: `
+                            <p><strong>物理意义：</strong>合外力对物体做的功等于物体动能的变化（动能定理）；重力势能变化与重力做功有关。</p>
+                            <p><strong>公式说明：</strong></p>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>W = ΔKE = ½ m (v² - v₀²) —— 动能定理</li>
+                                <li>PE = m g h —— 重力势能</li>
+                            </ul>
+                            <p><strong>示例：</strong>一个 2 kg 物体从静止加速到 6 m/s，求外力做的功。<br>
+                            解：W = ½×2×(6² - 0) = 36 J。</p>
+                        `,
+                        mom: `
+                            <p><strong>物理意义：</strong>动量 p = mv；冲量 J = FΔt 等于动量的变化 Δp。</p>
+                            <p><strong>公式说明：</strong>冲量是力对时间的积累效应，动量定理适用于碰撞、打击等问题。</p>
+                            <p><strong>示例：</strong>一个 0.5 kg 的球以 10 m/s 飞来，被球棒打击后以 15 m/s 反向飞回，作用时间 0.02 s，求平均作用力。<br>
+                            解：Δp = m(v' - v) = 0.5×(-15 - 10) = -12.5 kg·m/s，F = Δp/Δt = -12.5/0.02 = -625 N（负号表示方向与初速度相反）。</p>
+                        `,
+                        circ: `
+                            <p><strong>物理意义：</strong>向心力 F_c = m v²/r 维持物体做圆周运动；万有引力 F_g = G M m / r² 描述两物体间的引力。</p>
+                            <p><strong>公式说明：</strong>向心力不是一种新的力，而是指向圆心的合力；G = 6.67×10⁻¹¹ N·m²/kg²。</p>
+                            <p><strong>示例：</strong>一个 1000 kg 的卫星以 7.5 km/s 的速度在距地心 7000 km 的圆轨道上运行，求向心力。<br>
+                            解：F_c = 1000×(7500)² / (7×10⁶) ≈ 8036 N。</p>
+                        `,
+                        shm: `
+                            <p><strong>物理意义：</strong>简谐运动中，回复力 F = -k x 与位移成正比反向；弹簧振子周期 T = 2π √(m/k)。</p>
+                            <p><strong>公式说明：</strong>k 为劲度系数，负号表示力与位移方向相反。</p>
+                            <p><strong>示例：</strong>一个 0.2 kg 的物体挂在劲度系数 80 N/m 的弹簧上，求振动周期。<br>
+                            解：T = 2π √(0.2/80) = 2π √0.0025 = 2π×0.05 = 0.314 s。</p>
+                        `,
+                        hydro: `
+                            <p><strong>物理意义：</strong>液体中某点的压强 P = ρ g h（ρ 为液体密度，h 为深度），压力 F = P·A 为压强乘以受力面积。</p>
+                            <p><strong>公式说明：</strong>适用于静止液体，压强只与深度和密度有关，与容器形状无关。</p>
+                            <p><strong>示例：</strong>水深 10 m 处，水的密度 1000 kg/m³，g=9.8，求压强及一个 2 m² 闸门受到的压力。<br>
+                            解：P = 1000×9.8×10 = 98000 Pa，F = 98000×2 = 196000 N。</p>
+                        `,
+                        buoyancy: `
+                            <p><strong>物理意义：</strong>浸在流体中的物体所受浮力等于它排开的流体的重力（阿基米德原理）。</p>
+                            <p><strong>公式：</strong>F_b = ρ g V，其中 ρ 为流体密度，V 为物体排开流体的体积。</p>
+                            <p><strong>示例：</strong>一个体积为 0.5 m³ 的木块完全浸没在水中（ρ = 1000 kg/m³），求浮力。<br>
+                            解：F_b = 1000 × 9.8 × 0.5 = 4900 N。</p>
+                            <p><strong>注：</strong>若物体漂浮或悬浮，浮力等于物体重力。</p>
+                        `,
+                        bernoulli: `
+                            <p><strong>物理意义：</strong>理想流体定常流动时，沿流线压强、动能密度和势能密度之和守恒。</p>
+                            <p><strong>公式：</strong>P + ½ ρ v² + ρ g h = constant（沿流线）。</p>
+                            <p><strong>应用示例：</strong>水在水平管道中流动，已知某点压强 P₁ = 200 kPa，流速 v₁ = 2 m/s，另一点流速 v₂ = 4 m/s，求该点压强 P₂（ρ = 1000 kg/m³）。<br>
+                            解：由伯努利方程（h₁ = h₂）得 P₂ = P₁ + ½ ρ (v₁² - v₂²) = 200000 + ½×1000×(4 - 16) = 200000 - 6000 = 194000 Pa。</p>
+                        `
+                    },
+                    labels: {
+                        v0: "v₀ (m/s)", v: "v (m/s)", a: "a (m/s²)", t: "t (s)", dx: "Δx (m)",
+                        F: "F (N)", m: "m (kg)", h: "h (m)", W: "W (J)", PE: "PE (J)",
+                        p: "p (kg·m/s)", dt: "Δt (s)", dv: "Δv (m/s)",
+                        r: "r (m)", M: "M (kg)", Fg: "F_g (N)",
+                        k: "k (N/m)", x: "x (m)", T: "T (s)",
+                        rho: "ρ (kg/m³)", A: "A (m²)",
+                        V: "V (m³)", Fb: "F_b (N)",
+                        P1: "P₁ (Pa)", v1: "v₁ (m/s)", h1: "h₁ (m)",
+                        P2: "P₂ (Pa)", v2: "v₂ (m/s)", h2: "h₂ (m)"
+                    },
+                    buttons: { calc: "计算", reset: "重置" },
+                    result: "结果：",
+                    insufficient: "⚠️ 输入不足或无法计算"
+                },
+                en: {
+                    infoTitle: "📐 Nine Core Formulas · Click Tags for Details",
+                    infoDesc: "Each card corresponds to a core topic. Enter known values and click 'Solve' to find the unknown.",
+                    topics: [
+                        "Kinematics (const a)", "Newton's 2nd Law", "Work-Energy", "Momentum & Impulse",
+                        "Circular/Gravity", "Simple Harmonic Motion", "Water Pressure & Force", "Buoyancy", "Bernoulli's Equation"
+                    ],
+                    cardTitles: {
+                        kin: "Kinematics (constant acceleration)",
+                        newt: "Newton's Second Law",
+                        work: "Work-Energy Theorem",
+                        mom: "Momentum & Impulse",
+                        circ: "Circular Motion / Gravity",
+                        shm: "Simple Harmonic Motion (Spring)",
+                        hydro: "Water Pressure & Force",
+                        buoyancy: "Buoyancy (Archimedes' Principle)",
+                        bernoulli: "Bernoulli's Equation"
+                    },
+                    eq: {
+                        kin: "v = v₀ + a t    Δx = v₀ t + ½ a t²    v² = v₀² + 2 a Δx",
+                        newt: "F = m a",
+                        work: "W = ΔKE = ½ m (v² − v₀²)    PE = m g h",
+                        mom: "p = m v    J = F Δt = Δp",
+                        circ: "F_c = m v² / r    F_g = G M m / r²",
+                        shm: "F = -k x    T = 2π √(m / k)",
+                        hydro: "P = ρ g h    F = P · A",
+                        buoyancy: "F_b = ρ g V",
+                        bernoulli: "P + ½ ρ v² + ρ g h = constant"
+                    },
+                    details: {
+                        kin: `
+                            <p><strong>Physical meaning:</strong> Describes the relationship between velocity, displacement, and time for constant acceleration motion.</p>
+                            <p><strong>Formulas:</strong></p>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>v = v₀ + a t — final velocity</li>
+                                <li>Δx = v₀ t + ½ a t² — displacement</li>
+                                <li>v² = v₀² + 2 a Δx — time-free relation</li>
+                            </ul>
+                            <p><strong>Example:</strong> A car starts from rest and accelerates at 2 m/s² for 5 s. Find final velocity and displacement.<br>
+                            Solution: v₀ = 0, a = 2, t = 5 → v = 0 + 2×5 = 10 m/s, Δx = 0×5 + ½×2×5² = 25 m.</p>
+                        `,
+                        newt: `
+                            <p><strong>Physical meaning:</strong> Net force equals mass times acceleration (F = ma).</p>
+                            <p><strong>Formula:</strong> The acceleration direction is the same as the net force direction.</p>
+                            <p><strong>Example:</strong> A 5 kg object is pulled with a 20 N horizontal force. Find acceleration.<br>
+                            Solution: a = F/m = 20/5 = 4 m/s².</p>
+                        `,
+                        work: `
+                            <p><strong>Physical meaning:</strong> Work done by net force equals change in kinetic energy (work-energy theorem); gravitational potential energy relates to work by gravity.</p>
+                            <p><strong>Formulas:</strong></p>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>W = ΔKE = ½ m (v² - v₀²) — work-energy theorem</li>
+                                <li>PE = m g h — gravitational potential energy</li>
+                            </ul>
+                            <p><strong>Example:</strong> A 2 kg object accelerates from rest to 6 m/s. Find the work done.<br>
+                            Solution: W = ½×2×(6² - 0) = 36 J.</p>
+                        `,
+                        mom: `
+                            <p><strong>Physical meaning:</strong> Momentum p = mv; impulse J = FΔt equals change in momentum Δp.</p>
+                            <p><strong>Formulas:</strong> Impulse is the time integral of force, used in collisions and impacts.</p>
+                            <p><strong>Example:</strong> A 0.5 kg ball comes at 10 m/s and is hit back at 15 m/s in 0.02 s. Find average force.<br>
+                            Solution: Δp = 0.5×(-15 - 10) = -12.5 kg·m/s, F = Δp/Δt = -12.5/0.02 = -625 N (negative indicates opposite direction).</p>
+                        `,
+                        circ: `
+                            <p><strong>Physical meaning:</strong> Centripetal force F_c = m v²/r keeps an object in circular motion; universal gravitation F_g = G M m / r² describes gravitational attraction.</p>
+                            <p><strong>Notes:</strong> Centripetal force is the net force pointing toward the center; G = 6.67×10⁻¹¹ N·m²/kg².</p>
+                            <p><strong>Example:</strong> A 1000 kg satellite orbits at 7.5 km/s with radius 7000 km. Find centripetal force.<br>
+                            Solution: F_c = 1000×(7500)² / (7×10⁶) ≈ 8036 N.</p>
+                        `,
+                        shm: `
+                            <p><strong>Physical meaning:</strong> In simple harmonic motion, restoring force F = -k x is proportional to displacement; period T = 2π √(m/k).</p>
+                            <p><strong>Formulas:</strong> k is spring constant, negative sign indicates force opposes displacement.</p>
+                            <p><strong>Example:</strong> A 0.2 kg mass on a spring with k = 80 N/m. Find period.<br>
+                            Solution: T = 2π √(0.2/80) = 2π √0.0025 = 2π×0.05 = 0.314 s.</p>
+                        `,
+                        hydro: `
+                            <p><strong>Physical meaning:</strong> Pressure at depth in a fluid: P = ρ g h (ρ density, h depth); force on a surface: F = P·A.</p>
+                            <p><strong>Notes:</strong> For static fluids, pressure depends only on depth and density, not on container shape.</p>
+                            <p><strong>Example:</strong> At 10 m depth in water (ρ = 1000 kg/m³, g=9.8), find pressure and force on a 2 m² gate.<br>
+                            Solution: P = 1000×9.8×10 = 98000 Pa, F = 98000×2 = 196000 N.</p>
+                        `,
+                        buoyancy: `
+                            <p><strong>Physical meaning:</strong> The buoyant force on an object submerged in a fluid equals the weight of the fluid displaced by the object (Archimedes' principle).</p>
+                            <p><strong>Formula:</strong> F_b = ρ g V, where ρ is fluid density, V is displaced volume.</p>
+                            <p><strong>Example:</strong> A wooden block with volume 0.5 m³ is fully submerged in water (ρ = 1000 kg/m³). Find the buoyant force.<br>
+                            Solution: F_b = 1000 × 9.8 × 0.5 = 4900 N.</p>
+                            <p><strong>Note:</strong> If the object floats or is suspended, buoyant force equals its weight.</p>
+                        `,
+                        bernoulli: `
+                            <p><strong>Physical meaning:</strong> For an ideal fluid in steady flow, the sum of pressure, kinetic energy density, and potential energy density is constant along a streamline.</p>
+                            <p><strong>Formula:</strong> P + ½ ρ v² + ρ g h = constant (along streamline).</p>
+                            <p><strong>Example:</strong> Water flows through a horizontal pipe. At point 1, P₁ = 200 kPa, v₁ = 2 m/s. At point 2, v₂ = 4 m/s. Find P₂ (ρ = 1000 kg/m³).<br>
+                            Solution: Since h₁ = h₂, P₂ = P₁ + ½ ρ (v₁² - v₂²) = 200000 + ½×1000×(4 - 16) = 200000 - 6000 = 194000 Pa.</p>
+                        `
+                    },
+                    labels: {
+                        v0: "v₀ (m/s)", v: "v (m/s)", a: "a (m/s²)", t: "t (s)", dx: "Δx (m)",
+                        F: "F (N)", m: "m (kg)", h: "h (m)", W: "W (J)", PE: "PE (J)",
+                        p: "p (kg·m/s)", dt: "Δt (s)", dv: "Δv (m/s)",
+                        r: "r (m)", M: "M (kg)", Fg: "F_g (N)",
+                        k: "k (N/m)", x: "x (m)", T: "T (s)",
+                        rho: "ρ (kg/m³)", A: "A (m²)",
+                        V: "V (m³)", Fb: "F_b (N)",
+                        P1: "P₁ (Pa)", v1: "v₁ (m/s)", h1: "h₁ (m)",
+                        P2: "P₂ (Pa)", v2: "v₂ (m/s)", h2: "h₂ (m)"
+                    },
+                    buttons: { calc: "Solve", reset: "Reset" },
+                    result: "Result:",
+                    insufficient: "⚠️ Insufficient input or cannot solve"
+                }
+            };
+
+            const t = (key) => {
+                return key.split('.').reduce((obj, k) => obj?.[k], translations[currentLang]) || key;
+            };
+
+            // 卡片数据 (包含九张卡片)
+            const cardsData = [
+                { id: 'kin', inputs: ['v0','v','a','t','dx'],
+                  solve: (vals) => {
+                      try {
+                          if (vals.v0 !== undefined && vals.a !== undefined && vals.t !== undefined) return { v: vals.v0 + vals.a * vals.t };
+                          if (vals.v0 !== undefined && vals.v !== undefined && vals.a !== undefined) return { t: (vals.v - vals.v0) / vals.a };
+                          if (vals.v0 !== undefined && vals.t !== undefined && vals.v !== undefined) return { a: (vals.v - vals.v0) / vals.t };
+                          if (vals.v0 !== undefined && vals.t !== undefined && vals.a !== undefined) return { v: vals.v0 + vals.a * vals.t };
+                      } catch (e) { console.error('kin error', e); }
+                      return null;
+                  } },
+                { id: 'newt', inputs: ['F','m','a'],
+                  solve: (vals) => {
+                      try {
+                          if (vals.m !== undefined && vals.a !== undefined) return { F: vals.m * vals.a };
+                          if (vals.F !== undefined && vals.m !== undefined) return { a: vals.F / vals.m };
+                          if (vals.F !== undefined && vals.a !== undefined) return { m: vals.F / vals.a };
+                      } catch (e) { console.error('newt error', e); }
+                      return null;
+                  } },
+                { id: 'work', inputs: ['m','v0','v','h','W','PE'],
+                  solve: (vals) => { return null; } },
+                { id: 'mom', inputs: ['m','v','p','F','dt','dv'],
+                  solve: (vals) => { return null; } },
+                { id: 'circ', inputs: ['m','v','r','F','M','Fg'],
+                  solve: (vals) => { return null; } },
+                { id: 'shm', inputs: ['k','x','F','m','T'],
+                  solve: (vals) => { return null; } },
+                { id: 'hydro', inputs: ['rho','h','A'],
+                  solve: (vals) => {
+                      try {
+                          const g = window.gValue ?? 9.8;
+                          if (vals.rho !== undefined && vals.h !== undefined) {
+                              const P = vals.rho * g * vals.h;
+                              if (vals.A !== undefined) return { P, F: P * vals.A };
+                              return { P };
+                          }
+                      } catch (e) { console.error('hydro error', e); }
+                      return null;
+                  } },
+                { id: 'buoyancy', inputs: ['rho','V','Fb'],
+                  solve: (vals) => {
+                      try {
+                          const g = window.gValue ?? 9.8;
+                          if (vals.rho !== undefined && vals.V !== undefined) return { Fb: vals.rho * g * vals.V };
+                          if (vals.Fb !== undefined && vals.rho !== undefined) return { V: vals.Fb / (vals.rho * g) };
+                          if (vals.Fb !== undefined && vals.V !== undefined) return { rho: vals.Fb / (g * vals.V) };
+                      } catch (e) { console.error('buoyancy error', e); }
+                      return null;
+                  } },
+                { id: 'bernoulli', inputs: ['P1','v1','h1','P2','v2','h2','rho'],
+                  solve: (vals) => {
+                      try {
+                          const g = window.gValue ?? 9.8;
+                          if (vals.rho === undefined) return null;
+                          const known = ['P1','v1','h1','P2','v2','h2'].filter(k => vals[k] !== undefined);
+                          if (known.length !== 5) return null;
+                          const missing = ['P1','v1','h1','P2','v2','h2'].find(k => vals[k] === undefined);
+                          const left = (missing !== 'P1' ? vals.P1 : 0) + (missing !== 'v1' ? 0.5 * vals.rho * vals.v1 * vals.v1 : 0) + (missing !== 'h1' ? vals.rho * g * vals.h1 : 0);
+                          const right = (missing !== 'P2' ? vals.P2 : 0) + (missing !== 'v2' ? 0.5 * vals.rho * vals.v2 * vals.v2 : 0) + (missing !== 'h2' ? vals.rho * g * vals.h2 : 0);
+                          if (missing === 'P1') return { P1: right - (0.5 * vals.rho * vals.v1 * vals.v1 + vals.rho * g * vals.h1) };
+                          if (missing === 'v1') {
+                              const term = right - (vals.P1 + vals.rho * g * vals.h1);
+                              if (term < 0) return null;
+                              return { v1: Math.sqrt(2 * term / vals.rho) };
+                          }
+                          if (missing === 'h1') return { h1: (right - vals.P1 - 0.5 * vals.rho * vals.v1 * vals.v1) / (vals.rho * g) };
+                          if (missing === 'P2') return { P2: left - (0.5 * vals.rho * vals.v2 * vals.v2 + vals.rho * g * vals.h2) };
+                          if (missing === 'v2') {
+                              const term = left - (vals.P2 + vals.rho * g * vals.h2);
+                              if (term < 0) return null;
+                              return { v2: Math.sqrt(2 * term / vals.rho) };
+                          }
+                          if (missing === 'h2') return { h2: (left - vals.P2 - 0.5 * vals.rho * vals.v2 * vals.v2) / (vals.rho * g) };
+                      } catch (e) { console.error('bernoulli error', e); }
+                      return null;
+                  } }
+            ];
+
+            // 显示模态框
+            function showModal(topicKey) {
+                if (!modalTitle || !modalContent) return;
+                modalTitle.innerText = t(`cardTitles.${topicKey}`);
+                const detailsHtml = t(`details.${topicKey}`);
+                modalContent.innerHTML = `<div class="formula-detail">${t(`eq.${topicKey}`)}</div>${detailsHtml}`;
+                modalOverlay.style.display = 'flex';
             }
+
+            // 渲染信息面板
+            function renderInfoPanel() {
+                const panel = document.getElementById('infoPanel');
+                if (!panel) return;
+                const topics = t('topics');
+                const topicKeys = ['kin','newt','work','mom','circ','shm','hydro','buoyancy','bernoulli'];
+                panel.innerHTML = `
+                    <div class="info-title">${t('infoTitle')}</div>
+                    <div class="info-desc">${t('infoDesc')}</div>
+                    <div class="topic-tags">
+                        ${topics.map((topic, idx) => `<span class="topic-tag" data-topic="${topicKeys[idx]}">${topic}</span>`).join('')}
+                    </div>
+                `;
+                document.querySelectorAll('.topic-tag').forEach(tag => {
+                    tag.addEventListener('click', () => showModal(tag.dataset.topic));
+                });
+            }
+
+            // 渲染卡片
+            function renderCards() {
+                const grid = document.getElementById('cardGrid');
+                if (!grid) return;
+                grid.innerHTML = '';
+                cardsData.forEach(card => {
+                    const cardDiv = document.createElement('div');
+                    cardDiv.className = 'card';
+                    cardDiv.id = `card-${card.id}`;
+                    let inputsHtml = '';
+                    card.inputs.forEach(inp => {
+                        inputsHtml += `
+                            <div class="input-row">
+                                <label>${t(`labels.${inp}`)}</label>
+                                <input type="number" id="${card.id}_${inp}" step="any" placeholder="—">
+                            </div>
+                        `;
+                    });
+                    cardDiv.innerHTML = `
+                        <div class="card-title">${t(`cardTitles.${card.id}`)}</div>
+                        <div class="card-equation">${t(`eq.${card.id}`)}</div>
+                        ${inputsHtml}
+                        <div class="button-group">
+                            <button class="btn" data-card="${card.id}">${t('buttons.calc')}</button>
+                            <button class="btn reset" data-reset="${card.id}">${t('buttons.reset')}</button>
+                        </div>
+                        <div class="result-box" id="${card.id}_result"></div>
+                    `;
+                    grid.appendChild(cardDiv);
+                });
+
+                document.querySelectorAll('.btn[data-card]').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const cardId = e.target.dataset.card;
+                        const card = cardsData.find(c => c.id === cardId);
+                        if (!card) return;
+                        const vals = {};
+                        card.inputs.forEach(inp => {
+                            const el = document.getElementById(`${cardId}_${inp}`);
+                            if (el && el.value.trim() !== '') vals[inp] = parseFloat(el.value);
+                        });
+                        const result = card.solve(vals);
+                        const resDiv = document.getElementById(`${cardId}_result`);
+                        if (resDiv) {
+                            if (result && typeof result === 'object') {
+                                let resultStr = Object.entries(result).map(([key, val]) => {
+                                    if (typeof val !== 'number') return `${key}: ${val}`;
+                                    let label = key;
+                                    if (key === 'Fb') label = 'F_b';
+                                    else if (key === 'P1') label = 'P₁';
+                                    else if (key === 'v1') label = 'v₁';
+                                    else if (key === 'h1') label = 'h₁';
+                                    else if (key === 'P2') label = 'P₂';
+                                    else if (key === 'v2') label = 'v₂';
+                                    else if (key === 'h2') label = 'h₂';
+                                    else if (key === 'rho') label = 'ρ';
+                                    return `${label} = ${val.toFixed(4)}`;
+                                }).join(', ');
+                                resDiv.innerHTML = `<strong>${t('result')}</strong> ${resultStr}`;
+                            } else {
+                                resDiv.innerHTML = `<span style="color:var(--warning-color);">${t('insufficient')}</span>`;
+                            }
+                        }
+                    });
+                });
+
+                document.querySelectorAll('.btn.reset').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const cardId = e.target.dataset.reset;
+                        document.querySelectorAll(`#card-${cardId} input`).forEach(inp => inp.value = '');
+                        const resDiv = document.getElementById(`${cardId}_result`);
+                        if (resDiv) resDiv.innerHTML = '';
+                    });
+                });
+            }
+
+            // g值切换
+            const g9_8 = document.getElementById('g9_8');
+            const g10 = document.getElementById('g10');
+            if (g9_8 && g10) {
+                g9_8.addEventListener('click', () => {
+                    gValue = 9.8;
+                    window.gValue = 9.8;
+                    g9_8.classList.add('active');
+                    g10.classList.remove('active');
+                });
+                g10.addEventListener('click', () => {
+                    gValue = 10;
+                    window.gValue = 10;
+                    g10.classList.add('active');
+                    g9_8.classList.remove('active');
+                });
+            }
+            window.gValue = 9.8;
+
+            // 导航栏背景
+            function scrollNav() {
+                const nav = document.querySelector("nav");
+                if (nav) {
+                    if (window.scrollY === 0) nav.classList.remove("with-back");
+                    else nav.classList.add("with-back");
+                }
+            }
+            window.addEventListener('scroll', scrollNav);
+            scrollNav();
+
+            // 滚动动画
+            function initReveal() {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('is-visible');
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.1 });
+                document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
+            }
+
+            // 初始语言
+            if (navigator.language.startsWith('zh')) {
+                document.body.classList.replace('lang-en', 'lang-zh');
+                currentLang = 'zh';
+            } else {
+                document.body.classList.replace('lang-zh', 'lang-en');
+                currentLang = 'en';
+            }
+
+            // 渲染
+            renderInfoPanel();
+            renderCards();
+            initReveal();
         })();
     </script>
 </body>
