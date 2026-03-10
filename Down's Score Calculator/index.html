@@ -30,6 +30,944 @@
             border-radius: 0.5rem;
             padding: 0 0.5rem;
         }
+        /* 隐藏左侧空白区域，让右侧区域自然靠右 */
+        .header-left {
+            display: none;
+        }
+    </style>
+</head>
+<body class="lang-en">
+    <!-- 加载动画 -->
+    <div id="loading"><div class="spinner"></div></div>
+
+    <!-- 背景元素 -->
+    <div class="fixed inset-0 z-0 pointer-events-none">
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-purple-900/10 background-circle rounded-full blur-[120px] opacity-40"></div>
+        <div class="absolute inset-0 bg-grid-pattern opacity-30"></div>
+    </div>
+
+    <!-- 导航栏 -->
+    <nav class="fixed top-0 left-0 right-0 z-50 px-6 py-6 flex justify-between items-center transition">
+        <a href="../index.html" class="text-xl font-semibold tracking-tight text-white flex items-center gap-2">
+            <span class="w-6 h-6"><img src="https://raw.githubusercontent.com/nanqiouheng/nanqiouheng.github.io/main/DownsicientLoge.ico" alt="Down's Tools Logo"></span>
+            Down's Tools
+        </a>
+        <div class="hidden md:flex gap-8 text-sm font-medium text-neutral-300">
+            <a href="../index.html" class="hover:text-white transition-colors"><span class="lang-en">Home</span><span class="lang-zh">主页</span></a>
+            <a href="../index.html#features" class="hover:text-white transition-colors"><span class="lang-en">Features</span><span class="lang-zh">特性</span></a>
+            <a href="../index.html#demo" class="hover:text-white transition-colors"><span class="lang-en">Demo</span><span class="lang-zh">演示</span></a>
+            <a href="../index.html#about" class="hover:text-white transition-colors"><span class="lang-en">About</span><span class="lang-zh">关于</span></a>
+        </div>
+        <div class="flex items-center gap-4">
+            <!-- 语言切换按钮：无动画 -->
+            <button onclick="toggleLang()" class="text-xs font-medium text-neutral-400 hover:text-white transition-colors flex items-center gap-1.5 uppercase tracking-wider">
+                <iconify-icon icon="lucide:globe" width="14"></iconify-icon>
+                <span class="lang-en">EN</span>
+                <span class="lang-zh">中</span>
+            </button>
+            <!-- 物理计算器链接 (目录形式) -->
+            <a href="../Down's%20Physics%20Calculator/" class="text-sm font-medium text-white border border-white/20 px-4 py-2 rounded-full hover:bg-white hover:text-black transition-all duration-300">
+                <span class="lang-en">Physics Solver</span><span class="lang-zh">物理计算器</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- 保存管理模态框 -->
+    <div id="saveModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" data-i18n="saveManagement">保存管理</h3>
+                <button class="close-modal" id="closeSaveModal">×</button>
+            </div>
+            <div class="modal-body">
+                <div id="saveList"></div>
+                <div id="emptySaveState" class="empty-state" style="display: none;">
+                    <p data-i18n="noSavedRecords">暂无保存记录</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="saveCurrentBtn" class="save-manage-btn" data-i18n="saveCurrentState">保存当前状态</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 保存输入模态框 (无默认值) -->
+    <div id="saveInputModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" data-i18n="saveCurrentState">保存当前状态</h3>
+                <button class="close-modal" id="closeSaveInputModal">×</button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="saveNameInput" class="modal-input" data-i18n-placeholder="saveNamePlaceholder" placeholder="请输入保存名称" autofocus>
+            </div>
+            <div class="modal-footer">
+                <button id="cancelSaveBtn" class="action-btn remove-row-btn" data-i18n="cancel">取消</button>
+                <button id="confirmSaveBtn" class="action-btn solve-item-btn" data-i18n="save">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 重命名模态框 -->
+    <div id="renameModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" data-i18n="renameSave">重命名保存</h3>
+                <button class="close-modal" id="closeRenameModal">×</button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="renameInput" class="modal-input" data-i18n-placeholder="renamePlaceholder" placeholder="请输入新名称" autofocus>
+                <input type="hidden" id="renameSaveId">
+            </div>
+            <div class="modal-footer">
+                <button id="cancelRenameBtn" class="action-btn remove-row-btn" data-i18n="cancel">取消</button>
+                <button id="confirmRenameBtn" class="action-btn solve-item-btn" data-i18n="rename">重命名</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主容器 (移除了所有标题和指引文字) -->
+    <div class="container relative z-10" style="margin-top: 100px;">
+        <div class="header-area">
+            <!-- 左侧区域已隐藏，不再显示任何标题 -->
+            <div class="header-left"></div>
+            <div class="header-right">
+                <button id="manageSavesBtn" class="save-manage-btn" data-i18n="saveManagement">保存管理</button>
+                <div class="overall-score-container">
+                    <div class="overall-score" contenteditable="true">0</div>
+                    <button id="solve-overall-btn" class="btn-primary" style="padding:0.6rem 1.5rem;" data-i18n="calculateOverall">计算总分</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 表格区域 -->
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th data-i18n="project">项目</th>
+                        <th data-i18n="weight">权重</th>
+                        <th data-i18n="grade">成绩</th>
+                        <th data-i18n="actions">操作</th>
+                    </tr>
+                </thead>
+                <tbody id="grade-table-body">
+                    <!-- 初始为空 -->
+                </tbody>
+            </table>
+        </div>
+
+        <button id="add-row-btn" data-i18n="addNewProject">+ 添加新项目</button>
+    </div>
+
+    <!-- 页脚 (仅地球和 GitHub) -->
+    <footer class="py-12 px-6 border-t border-white/10 bg-black relative z-10">
+        <div class="max-w-6xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6 mb-8">
+                <div class="flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-purple-500"></span>
+                    <span class="text-white font-semibold text-lg">Down's Tools</span>
+                </div>
+                <div class="flex gap-6 text-neutral-400">
+                    <a href="https://nanqiouheng.github.io" class="hover:text-purple-500 transition-colors"><iconify-icon icon="lucide:earth" width="20"></iconify-icon></a>
+                    <a href="https://github.com/nanqiouheng" class="hover:text-purple-500 transition-colors"><iconify-icon icon="lucide:github" width="20"></iconify-icon></a>
+                </div>
+            </div>
+            <div class="text-center text-neutral-500 text-sm">
+                <span class="lang-en">Powered by Down`sicient | Copyright © 2026 Down`sicient Studio, Tach's subsidiary studio</span>
+                <span class="lang-zh">Powered by Down`sicient | 版权所有 © 2026 Down`sicient Studio，Tach的附属工作室</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 加载动画控制
+        window.addEventListener('load', function() {
+            const loading = document.getElementById('loading');
+            if (loading) {
+                loading.style.opacity = '0';
+                setTimeout(() => loading.style.display = 'none', 300);
+            }
+        });
+
+        const SAVE_STORAGE_KEY = 'grade_calculator_saves';
+        const LANGUAGE_STORAGE_KEY = 'grade_calculator_language';
+
+        const translations = {
+            zh: {
+                // appTitle 和 calculatorTitle 已移除，保留其他条目
+                project: "项目",
+                weight: "权重",
+                grade: "成绩",
+                actions: "操作",
+                addNewProject: "+ 添加新项目",
+                calculateOverall: "计算总分",
+                saveManagement: "保存管理",
+                solveItem: "求解",
+                removeItem: "删除",
+                addSubItem: "添加子项",
+                saveCurrentState: "保存当前状态",
+                load: "加载",
+                rename: "重命名",
+                delete: "删除",
+                cancel: "取消",
+                save: "保存",
+                saveNamePlaceholder: "请输入保存名称",
+                renameSave: "重命名保存",
+                renamePlaceholder: "请输入新名称",
+                noSavedRecords: "暂无保存记录",
+                confirmDelete: "确定要删除这个项目及其所有子项目吗？",
+                confirmDeleteSave: "确定要删除这个保存记录吗？",
+                saveSuccess: "保存成功！",
+                loadSuccess: "加载成功！",
+                renameSuccess: "重命名成功！",
+                deleteSuccess: "删除成功！",
+                invalidTotalScore: "无效的总分目标值。",
+                cannotSolveParent: "无法为包含子项的项目求解。请为具体的子节点项目求解。",
+                zeroWeightError: "无法为权重为零或负数的项目求解。",
+                saveFailed: "保存失败，请检查控制台错误信息。",
+                enterNewName: "请输入新名称！",
+                newProject: "新项目",
+                newSubProject: "新子项目",
+                loading: "加载中...",
+            },
+            en: {
+                project: "Project",
+                weight: "Weight",
+                grade: "Score",
+                actions: "Actions",
+                addNewProject: "+ Add New Project",
+                calculateOverall: "Calculate Total",
+                saveManagement: "Save Management",
+                solveItem: "Solve",
+                removeItem: "Delete",
+                addSubItem: "Add Sub-item",
+                saveCurrentState: "Save Current State",
+                load: "Load",
+                rename: "Rename",
+                delete: "Delete",
+                cancel: "Cancel",
+                save: "Save",
+                saveNamePlaceholder: "Enter save name",
+                renameSave: "Rename Save",
+                renamePlaceholder: "Enter new name",
+                noSavedRecords: "No saved records",
+                confirmDelete: "Are you sure you want to delete this item and all its sub-items?",
+                confirmDeleteSave: "Are you sure you want to delete this save record?",
+                saveSuccess: "Save successful!",
+                loadSuccess: "Load successful!",
+                renameSuccess: "Rename successful!",
+                deleteSuccess: "Delete successful!",
+                invalidTotalScore: "Invalid total score target.",
+                cannotSolveParent: "Cannot solve for items with sub-items. Please solve for specific sub-items.",
+                zeroWeightError: "Cannot solve for items with zero or negative weight.",
+                saveFailed: "Save failed, please check console for errors.",
+                enterNewName: "Please enter a new name!",
+                newProject: "New Project",
+                newSubProject: "New Sub-project",
+                loading: "Loading...",
+            }
+        };
+
+        let currentLang = 'zh';
+        let gradeTableBody;
+
+        // --- 主要函数定义 (与之前相同) ---
+        function getGrade(score) {
+            if (score >= 93) return 'A'; 
+            if (score >= 90) return 'A−'; 
+            if (score >= 86) return 'B';
+            if (score >= 80) return 'B−'; 
+            if (score >= 76) return 'C'; 
+            if (score >= 70) return 'C−';
+            if (score >= 66) return 'D'; 
+            if (score >= 60) return 'D−'; 
+            return 'F';
+        }
+
+        function generateId() {
+            return 'item-' + Math.random().toString(36).substr(2, 9);
+        }
+
+        function getEffectiveWeight(row) {
+            if (!row) return 0;
+            let weight = (parseFloat(row.querySelector('.editable-weight').textContent) || 0) / 100;
+            const parentId = row.dataset.parentId;
+            if (parentId) {
+                const parentRow = document.getElementById(parentId);
+                weight *= getEffectiveWeight(parentRow);
+            }
+            return weight;
+        }
+
+        function updateParentScore(parentId) {
+            if (!parentId) return;
+            const parentRow = document.getElementById(parentId);
+            if (!parentRow) return;
+
+            let weightedSum = 0;
+            let totalWeight = 0;
+            const children = gradeTableBody.querySelectorAll(`[data-parent-id="${parentId}"]`);
+
+            if (children.length === 0) {
+                parentRow.querySelector('.editable-score').contentEditable = true;
+                return;
+            }
+
+            children.forEach(child => {
+                const weight = parseFloat(child.querySelector('.editable-weight').textContent) || 0;
+                const score = parseFloat(child.querySelector('.editable-score').textContent);
+                if (!isNaN(score)) {
+                    weightedSum += score * weight;
+                    totalWeight += weight;
+                }
+            });
+
+            const parentScore = totalWeight > 0 ? weightedSum / totalWeight : 0;
+            const parentScoreEl = parentRow.querySelector('.editable-score');
+            parentScoreEl.textContent = parentScore.toFixed(1);
+            updateGradeForScore(parentScoreEl);
+
+            if (parentRow.dataset.parentId) {
+                updateParentScore(parentRow.dataset.parentId);
+            }
+        }
+
+        function calculateOverallScore() {
+            let totalScore = 0;
+            gradeTableBody.querySelectorAll('tr').forEach(row => {
+                if (!gradeTableBody.querySelector(`[data-parent-id="${row.id}"]`)) {
+                    const score = parseFloat(row.querySelector('.editable-score').textContent);
+                    if (!isNaN(score)) {
+                        totalScore += getEffectiveWeight(row) * score;
+                    }
+                }
+            });
+            const overallScoreElement = document.querySelector('.overall-score');
+            overallScoreElement.textContent = totalScore.toFixed(1);
+            overallScoreElement.style.transform = 'scale(1.05)';
+            setTimeout(() => {
+                overallScoreElement.style.transform = 'scale(1)';
+            }, 150);
+        }
+
+        function solveForItem(button) {
+            const targetRow = button.closest('tr');
+            if (gradeTableBody.querySelector(`[data-parent-id="${targetRow.id}"]`)) {
+                alert(translations[currentLang]['cannotSolveParent']);
+                return;
+            }
+
+            const desiredGrade = parseFloat(document.querySelector('.overall-score').textContent);
+            if (isNaN(desiredGrade)) {
+                alert(translations[currentLang]['invalidTotalScore']);
+                return;
+            }
+
+            const targetEffectiveWeight = getEffectiveWeight(targetRow);
+            if (targetEffectiveWeight <= 0) {
+                alert(translations[currentLang]['zeroWeightError']);
+                return;
+            }
+
+            let sumOfOtherProducts = 0;
+            gradeTableBody.querySelectorAll('tr').forEach(row => {
+                if (row.id !== targetRow.id && !gradeTableBody.querySelector(`[data-parent-id="${row.id}"]`)) {
+                    const score = parseFloat(row.querySelector('.editable-score').textContent);
+                    if (!isNaN(score)) {
+                        sumOfOtherProducts += getEffectiveWeight(row) * score;
+                    }
+                }
+            });
+
+            const requiredScore = (desiredGrade - sumOfOtherProducts) / targetEffectiveWeight;
+            const targetScoreEl = targetRow.querySelector('.editable-score');
+            targetScoreEl.textContent = Math.max(0, Math.min(100, requiredScore)).toFixed(1);
+            updateGradeForScore(targetScoreEl);
+
+            const parentId = targetRow.dataset.parentId;
+            if(parentId) updateParentScore(parentId);
+        }
+
+        function renderRow(itemData, parentId = null, level = 0) {
+            const row = document.createElement('tr');
+            row.id = itemData.id;
+            if (parentId) row.dataset.parentId = parentId;
+
+            const hasChildren = itemData.subItems && itemData.subItems.length > 0;
+            const score = itemData.score ?? '0';
+            const grade = isNaN(parseFloat(score)) ? '' : getGrade(score);
+
+            row.innerHTML = `
+                <td>
+                    <div class="project-name-cell" style="padding-left: ${level * 25 + 8}px">
+                        ${level > 0 ? '<span class="sub-item-indicator">└</span>' : ''}
+                        <span contenteditable="true">${itemData.name}</span>
+                    </div>
+                </td>
+                <td>
+                    <span class="editable-weight" contenteditable="true">${itemData.weight}</span>
+                </td>
+                <td>
+                    <div class="grade-cell">
+                        <span class="editable-score" contenteditable="${!hasChildren}">${score}</span> 
+                        <span class="letter-grade">${grade}</span>
+                    </div>
+                </td>
+                <td>
+                    <button class="add-sub-btn action-btn">${translations[currentLang]['addSubItem']}</button>
+                    <button class="solve-item-btn action-btn">${translations[currentLang]['solveItem']}</button>
+                    <button class="remove-row-btn action-btn">${translations[currentLang]['removeItem']}</button>
+                </td>
+            `;
+            gradeTableBody.appendChild(row);
+
+            if (hasChildren) {
+                itemData.subItems.forEach(subItem => renderRow(subItem, itemData.id, level + 1));
+                updateParentScore(itemData.id);
+            }
+        }
+
+        function addTopLevelRow() {
+            const newItemName = translations[currentLang]['newProject'];
+            renderRow({ id: generateId(), name: newItemName, weight: '0%', score: '0' });
+            gradeTableBody.lastElementChild.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function addSubItem(button) {
+            const parentRow = button.closest('tr');
+            const parentId = parentRow.id;
+            parentRow.querySelector('.editable-score').contentEditable = false;
+
+            const level = parseInt(parentRow.querySelector('.project-name-cell').style.paddingLeft.replace('px', '')) / 25 + 1;
+
+            const newItemName = translations[currentLang]['newSubProject'];
+            const newRowData = { id: generateId(), name: newItemName, weight: '0%', score: '0' };
+
+            const newRow = document.createElement('tr');
+            newRow.id = newRowData.id;
+            newRow.dataset.parentId = parentId;
+            newRow.innerHTML = `
+                <td>
+                    <div class="project-name-cell" style="padding-left: ${level * 25 + 8}px">
+                        <span class="sub-item-indicator">└</span>
+                        <span contenteditable="true">${newRowData.name}</span>
+                    </div>
+                </td>
+                <td>
+                    <span class="editable-weight" contenteditable="true">${newRowData.weight}</span>
+                </td>
+                <td>
+                    <div class="grade-cell">
+                        <span class="editable-score" contenteditable="true">${newRowData.score}</span> 
+                        <span class="letter-grade">F</span>
+                    </div>
+                </td>
+                <td>
+                    <button class="add-sub-btn action-btn">${translations[currentLang]['addSubItem']}</button>
+                    <button class="solve-item-btn action-btn">${translations[currentLang]['solveItem']}</button>
+                    <button class="remove-row-btn action-btn">${translations[currentLang]['removeItem']}</button>
+                </td>
+            `;
+            parentRow.after(newRow);
+            updateParentScore(parentId);
+            newRow.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function removeRow(button) {
+            if (!confirm(translations[currentLang]['confirmDelete'])) return;
+
+            const rowToRemove = button.closest('tr');
+            const parentId = rowToRemove.dataset.parentId;
+            const children = gradeTableBody.querySelectorAll(`[data-parent-id="${rowToRemove.id}"]`);
+            children.forEach(child => removeRow(child.querySelector('.remove-row-btn')));
+            rowToRemove.remove();
+            if(parentId) {
+                updateParentScore(parentId);
+            }
+        }
+
+        function updateGradeForScore(scoreElement) {
+            const score = parseFloat(scoreElement.textContent);
+            if (isNaN(score)) return;
+            const letterGradeSpan = scoreElement.closest('.grade-cell').querySelector('.letter-grade');
+            if (letterGradeSpan) {
+                letterGradeSpan.textContent = getGrade(score);
+                if (score >= 90) letterGradeSpan.style.color = 'var(--success-color)';
+                else if (score >= 80) letterGradeSpan.style.color = 'var(--accent)';
+                else if (score >= 70) letterGradeSpan.style.color = 'var(--warning-color)';
+                else letterGradeSpan.style.color = 'var(--danger-color)';
+            }
+        }
+
+        function getCurrentData() {
+            const rows = gradeTableBody.querySelectorAll('tr');
+            const data = [];
+            const overallScore = parseFloat(document.querySelector('.overall-score').textContent) || 0;
+
+            const itemMap = new Map();
+
+            rows.forEach(row => {
+                const id = row.id;
+                const name = row.querySelector('.project-name-cell span[contenteditable="true"]').textContent;
+                const weight = row.querySelector('.editable-weight').textContent;
+                const score = row.querySelector('.editable-score').textContent;
+                const parentId = row.dataset.parentId || null;
+
+                const item = {
+                    id,
+                    name,
+                    weight,
+                    score,
+                    subItems: []
+                };
+
+                itemMap.set(id, item);
+
+                if (!parentId) {
+                    data.push(item);
+                }
+            });
+
+            rows.forEach(row => {
+                const id = row.id;
+                const parentId = row.dataset.parentId;
+
+                if (parentId && itemMap.has(parentId)) {
+                    const parent = itemMap.get(parentId);
+                    const child = itemMap.get(id);
+                    parent.subItems.push(child);
+                }
+            });
+
+            return {
+                overallScore,
+                items: data,
+                timestamp: new Date().toISOString()
+            };
+        }
+
+        function loadData(data) {
+            gradeTableBody.innerHTML = '';
+
+            document.querySelector('.overall-score').textContent = data.overallScore.toFixed(1);
+
+            data.items.forEach(item => {
+                renderRow(item);
+            });
+
+            setTimeout(calculateOverallScore, 100);
+        }
+
+        function renderSaveList() {
+            const saveListElement = document.getElementById('saveList');
+            const emptyStateElement = document.getElementById('emptySaveState');
+            const saves = saveManager.getAllSaves();
+
+            if (saves.length === 0) {
+                saveListElement.innerHTML = '';
+                emptyStateElement.style.display = 'block';
+                return;
+            }
+
+            emptyStateElement.style.display = 'none';
+            saveListElement.innerHTML = '';
+
+            saves.forEach(save => {
+                const saveItem = document.createElement('div');
+                saveItem.className = 'save-item';
+                saveItem.innerHTML = `
+                    <div style="display: flex; align-items: center; flex: 1;">
+                        <div class="save-item-name">${save.name}</div>
+                        <div class="save-item-meta">${currentLang === 'zh' ? '保存时间:' : 'Saved:'} ${save.formattedDate}</div>
+                    </div>
+                    <div class="save-item-actions">
+                        <button class="save-action-btn btn-load" data-save-id="${save.id}">${translations[currentLang]['load']}</button>
+                        <button class="save-action-btn btn-rename" data-save-id="${save.id}">${translations[currentLang]['rename']}</button>
+                        <button class="save-action-btn btn-delete" data-save-id="${save.id}">${translations[currentLang]['delete']}</button>
+                    </div>
+                `;
+                saveListElement.appendChild(saveItem);
+            });
+        }
+
+        function openSaveModal() {
+            renderSaveList();
+            document.getElementById('saveModal').style.display = 'flex';
+        }
+
+        function openSaveInputModal() {
+            document.getElementById('saveNameInput').value = '';
+            document.getElementById('saveInputModal').style.display = 'flex';
+            document.getElementById('saveNameInput').focus();
+        }
+
+        function openRenameModal(saveId) {
+            const save = saveManager.getSave(saveId);
+            if (save) {
+                document.getElementById('renameInput').value = save.name;
+                document.getElementById('renameSaveId').value = saveId;
+                document.getElementById('renameModal').style.display = 'flex';
+                document.getElementById('renameInput').focus();
+            }
+        }
+
+        class SaveManager {
+            constructor() {
+                this.saves = this.loadSaves();
+            }
+
+            loadSaves() {
+                try {
+                    const savesJson = localStorage.getItem(SAVE_STORAGE_KEY);
+                    return savesJson ? JSON.parse(savesJson) : [];
+                } catch (e) {
+                    console.error('加载保存记录失败:', e);
+                    return [];
+                }
+            }
+
+            saveSaves() {
+                try {
+                    localStorage.setItem(SAVE_STORAGE_KEY, JSON.stringify(this.saves));
+                } catch (e) {
+                    console.error('保存记录失败:', e);
+                    alert(translations[currentLang]['saveFailed']);
+                }
+            }
+
+            addSave(name, data) {
+                const timestamp = new Date().toISOString();
+                const formattedDate = new Date().toLocaleString(currentLang === 'zh' ? 'zh-CN' : 'en-US');
+                const saveName = name.trim() || (currentLang === 'zh' ? '未命名' : 'Unnamed');
+                const save = {
+                    id: 'save_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+                    name: saveName,
+                    timestamp: timestamp,
+                    formattedDate: formattedDate,
+                    data: data
+                };
+                this.saves.unshift(save);
+                this.saveSaves();
+                return save;
+            }
+
+            renameSave(id, newName) {
+                const saveIndex = this.saves.findIndex(save => save.id === id);
+                if (saveIndex !== -1) {
+                    this.saves[saveIndex].name = newName;
+                    this.saves[saveIndex].timestamp = new Date().toISOString();
+                    this.saves[saveIndex].formattedDate = new Date().toLocaleString(currentLang === 'zh' ? 'zh-CN' : 'en-US');
+                    this.saveSaves();
+                    return true;
+                }
+                return false;
+            }
+
+            deleteSave(id) {
+                const initialLength = this.saves.length;
+                this.saves = this.saves.filter(save => save.id !== id);
+                if (this.saves.length !== initialLength) {
+                    this.saveSaves();
+                    return true;
+                }
+                return false;
+            }
+
+            getSave(id) {
+                return this.saves.find(save => save.id === id);
+            }
+
+            getAllSaves() {
+                return [...this.saves];
+            }
+        }
+
+        const saveManager = new SaveManager();
+
+        function initData() {
+            gradeTableBody.innerHTML = '';
+            const overallEl = document.querySelector('.overall-score');
+            if (overallEl) overallEl.textContent = '0';
+            calculateOverallScore();
+        }
+
+        function initLanguage() {
+            const savedLang = localStorage.getItem(LANGUAGE_STORAGE_KEY);
+            if (savedLang && (savedLang === 'zh' || savedLang === 'en')) {
+                currentLang = savedLang;
+            } else {
+                const browserLang = navigator.language || navigator.userLanguage;
+                if (browserLang.startsWith('zh')) {
+                    currentLang = 'zh';
+                } else {
+                    currentLang = 'en';
+                }
+                localStorage.setItem(LANGUAGE_STORAGE_KEY, currentLang);
+            }
+
+            if (currentLang === 'zh') {
+                document.body.classList.add('lang-zh');
+                document.body.classList.remove('lang-en');
+            } else {
+                document.body.classList.add('lang-en');
+                document.body.classList.remove('lang-zh');
+            }
+
+            applyLanguage();
+        }
+
+        function toggleLang() {
+            const newLang = currentLang === 'en' ? 'zh' : 'en';
+            currentLang = newLang;
+            localStorage.setItem(LANGUAGE_STORAGE_KEY, currentLang);
+            document.body.classList.remove('lang-en', 'lang-zh');
+            document.body.classList.add(`lang-${newLang}`);
+            applyLanguage();
+        }
+
+        function applyLanguage() {
+            document.querySelectorAll('[data-i18n]').forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                if (translations[currentLang][key]) {
+                    element.textContent = translations[currentLang][key];
+                }
+            });
+
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
+                const key = element.getAttribute('data-i18n-placeholder');
+                if (translations[currentLang][key]) {
+                    element.placeholder = translations[currentLang][key];
+                }
+            });
+
+            updateTableButtonTexts();
+        }
+
+        function updateTableButtonTexts() {
+            document.querySelectorAll('.add-sub-btn').forEach(btn => {
+                btn.textContent = translations[currentLang]['addSubItem'];
+            });
+            document.querySelectorAll('.solve-item-btn').forEach(btn => {
+                btn.textContent = translations[currentLang]['solveItem'];
+            });
+            document.querySelectorAll('.remove-row-btn').forEach(btn => {
+                btn.textContent = translations[currentLang]['removeItem'];
+            });
+            document.querySelectorAll('.btn-load').forEach(btn => {
+                btn.textContent = translations[currentLang]['load'];
+            });
+            document.querySelectorAll('.btn-rename').forEach(btn => {
+                btn.textContent = translations[currentLang]['rename'];
+            });
+            document.querySelectorAll('.btn-delete').forEach(btn => {
+                btn.textContent = translations[currentLang]['delete'];
+            });
+        }
+
+        function bindEvents() {
+            document.getElementById('manageSavesBtn').addEventListener('click', openSaveModal);
+            document.getElementById('saveCurrentBtn').addEventListener('click', openSaveInputModal);
+
+            document.getElementById('closeSaveModal').addEventListener('click', () => {
+                document.getElementById('saveModal').style.display = 'none';
+            });
+
+            document.getElementById('closeSaveInputModal').addEventListener('click', () => {
+                document.getElementById('saveInputModal').style.display = 'none';
+            });
+
+            document.getElementById('closeRenameModal').addEventListener('click', () => {
+                document.getElementById('renameModal').style.display = 'none';
+            });
+
+            document.getElementById('cancelSaveBtn').addEventListener('click', () => {
+                document.getElementById('saveInputModal').style.display = 'none';
+            });
+
+            document.getElementById('cancelRenameBtn').addEventListener('click', () => {
+                document.getElementById('renameModal').style.display = 'none';
+            });
+
+            document.getElementById('confirmSaveBtn').addEventListener('click', () => {
+                const saveName = document.getElementById('saveNameInput').value.trim();
+                if (!saveName) {
+                    alert(translations[currentLang]['enterNewName']);
+                    return;
+                }
+                const currentData = getCurrentData();
+
+                try {
+                    saveManager.addSave(saveName, currentData);
+                    document.getElementById('saveInputModal').style.display = 'none';
+                    document.getElementById('saveModal').style.display = 'none';
+                    renderSaveList();
+                    alert(translations[currentLang]['saveSuccess']);
+                } catch (error) {
+                    console.error('保存失败:', error);
+                    alert(translations[currentLang]['saveFailed']);
+                }
+            });
+
+            document.getElementById('confirmRenameBtn').addEventListener('click', () => {
+                const saveId = document.getElementById('renameSaveId').value;
+                const newName = document.getElementById('renameInput').value.trim();
+                if (newName) {
+                    if (saveManager.renameSave(saveId, newName)) {
+                        document.getElementById('renameModal').style.display = 'none';
+                        renderSaveList();
+                        alert(translations[currentLang]['renameSuccess']);
+                    }
+                } else {
+                    alert(translations[currentLang]['enterNewName']);
+                }
+            });
+ 
+            document.body.addEventListener('click', (e) => {
+                if (e.target.matches('#add-row-btn')) addTopLevelRow();
+                if (e.target.matches('.add-sub-btn')) addSubItem(e.target);
+                if (e.target.matches('.remove-row-btn')) removeRow(e.target);
+                if (e.target.matches('#solve-overall-btn')) calculateOverallScore();
+                if (e.target.matches('.solve-item-btn')) solveForItem(e.target);
+
+                if (e.target.matches('.btn-load')) {
+                    const saveId = e.target.dataset.saveId;
+                    const save = saveManager.getSave(saveId);
+                    if (save) {
+                        loadData(save.data);
+                        document.getElementById('saveModal').style.display = 'none';
+                        alert(translations[currentLang]['loadSuccess']);
+                    }
+                }
+
+                if (e.target.matches('.btn-rename')) {
+                    const saveId = e.target.dataset.saveId;
+                    openRenameModal(saveId);
+                }
+
+                if (e.target.matches('.btn-delete')) {
+                    const saveId = e.target.dataset.saveId;
+                    if (confirm(translations[currentLang]['confirmDeleteSave'])) {
+                        if (saveManager.deleteSave(saveId)) {
+                            renderSaveList();
+                            alert(translations[currentLang]['deleteSuccess']);
+                        }
+                    }
+                }
+            });
+
+            window.addEventListener('click', (e) => {
+                if (e.target.classList.contains('modal')) {
+                    e.target.style.display = 'none';
+                }
+            });
+
+            document.body.addEventListener('blur', (e) => {
+                const target = e.target;
+                if (target.matches('.editable-weight') || target.matches('.editable-score')) {
+                    const num = parseFloat(target.textContent);
+                    if (target.matches('.editable-weight')) {
+                        const weightValue = Math.max(0, Math.min(100, isNaN(num) ? 0 : num));
+                        target.textContent = weightValue + '%';
+                    }
+                    if (target.matches('.editable-score')) {
+                        const scoreValue = Math.max(0, Math.min(1000, isNaN(num) ? 0 : num));
+                        target.textContent = scoreValue;
+                        updateGradeForScore(target);
+                    }
+                    const parentId = target.closest('tr').dataset.parentId;
+                    if(parentId) updateParentScore(parentId);
+                }
+                if (target.matches('.overall-score')) {
+                    const num = parseFloat(target.textContent);
+                    const scoreValue = Math.max(0, Math.min(1000, isNaN(num) ? 0 : num));
+                    target.textContent = scoreValue;
+                }
+            }, true);
+
+            document.body.addEventListener('keydown', (e) => {
+                if (e.target.isContentEditable && e.key === 'Enter') {
+                    e.preventDefault();
+                    e.target.blur();
+                }
+                if (e.key === 'Escape') {
+                    const modals = document.querySelectorAll('.modal');
+                    modals.forEach(modal => {
+                        if (modal.style.display === 'flex') {
+                            modal.style.display = 'none';
+                        }
+                    });
+                }
+                if (e.ctrlKey && e.key === 's') {
+                    e.preventDefault();
+                    openSaveInputModal();
+                }
+            });
+        }
+
+        function scrollNav() {
+            const nav = document.querySelector("nav");
+            if (window.scrollY === 0) nav.classList.remove("with-back");
+            else nav.classList.add("with-back");
+        }
+        window.addEventListener('scroll', scrollNav);
+        scrollNav();
+
+        function initReveal() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
+        }
+
+        function initApp() {
+            initLanguage();
+            gradeTableBody = document.getElementById('grade-table-body');
+            bindEvents();
+            initData();
+            initReveal();
+        }
+
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html><!DOCTYPE html>
+<html>
+<head>
+    <title>Down's Score Calculator | 唐氏分数计算器</title>
+    <link rel="icon" href="https://raw.githubusercontent.com/nanqiouheng/nanqiouheng.github.io/main/DownsicientLoge.ico" type="image/x-icon" />
+    <!-- 字体与图标库（与主页一致） -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <link rel="preconnect" href="https://fonts.loli.net">
+    <link rel="preconnect" href="https://gstatic.loli.net" crossorigin="">
+    <link href="https://fonts.loli.net/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&amp;family=Geist:wght@100..900&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.loli.net/css2?family=Noto+Serif+SC:wght@200..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/misans@4.1.0/lib/Normal/MiSans-Regular.min.css" />
+    <link rel="stylesheet" crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/misans@4.1.0/lib/Normal/MiSans-Semibold.min.css" />
+    <!-- 引用根目录下的统一样式表 -->
+    <link rel="stylesheet" href="../index.css">
+    <!-- 页面专属样式：字母等级靠右，总分框初始0 -->
+    <style>
+        .grade-cell .letter-grade {
+            margin-left: auto;
+        }
+        .overall-score {
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--success-color);
+            transition: transform 0.15s;
+            min-width: 120px;
+            text-align: center;
+            background: rgba(0,0,0,0.2);
+            border-radius: 0.5rem;
+            padding: 0 0.5rem;
+        }
         /* 返回主页按钮已移除，无需额外样式 */
     </style>
 </head>
@@ -957,3 +1895,4 @@
     </script>
 </body>
 </html>
+
