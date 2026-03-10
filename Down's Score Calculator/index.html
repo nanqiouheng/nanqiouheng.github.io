@@ -14,12 +14,11 @@
     <link rel="stylesheet" crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/misans@4.1.0/lib/Normal/MiSans-Semibold.min.css" />
     <!-- 引用根目录下的统一样式表 -->
     <link rel="stylesheet" href="../index.css">
-    <!-- 页面专属样式：将字母等级靠右对齐，初始无默认行 -->
+    <!-- 页面专属样式：字母等级靠右，总分框初始0 -->
     <style>
         .grade-cell .letter-grade {
             margin-left: auto;
         }
-        /* 总分框初始值为0的样式 */
         .overall-score {
             font-size: 3rem;
             font-weight: bold;
@@ -31,10 +30,11 @@
             border-radius: 0.5rem;
             padding: 0 0.5rem;
         }
+        /* 返回主页按钮已移除，无需额外样式 */
     </style>
 </head>
 <body class="lang-en">
-    <!-- 加载动画 (与主页一致) -->
+    <!-- 加载动画 -->
     <div id="loading"><div class="spinner"></div></div>
 
     <!-- 背景元素 -->
@@ -43,7 +43,7 @@
         <div class="absolute inset-0 bg-grid-pattern opacity-30"></div>
     </div>
 
-    <!-- 导航栏 (链接已适配目录形式) -->
+    <!-- 导航栏 (已移除返回主页按钮) -->
     <nav class="fixed top-0 left-0 right-0 z-50 px-6 py-6 flex justify-between items-center transition">
         <a href="../index.html" class="text-xl font-semibold tracking-tight text-white flex items-center gap-2">
             <span class="w-6 h-6"><img src="https://raw.githubusercontent.com/nanqiouheng/nanqiouheng.github.io/main/DownsicientLoge.ico" alt="Down's Tools Logo"></span>
@@ -88,7 +88,7 @@
         </div>
     </div>
 
-    <!-- 保存输入模态框 -->
+    <!-- 保存输入模态框 (无默认值) -->
     <div id="saveInputModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -96,7 +96,7 @@
                 <button class="close-modal" id="closeSaveInputModal">×</button>
             </div>
             <div class="modal-body">
-                <input type="text" id="saveNameInput" class="modal-input" data-i18n-placeholder="saveNamePlaceholder" placeholder="请输入保存名称（默认：当前日期）" autofocus>
+                <input type="text" id="saveNameInput" class="modal-input" data-i18n-placeholder="saveNamePlaceholder" placeholder="请输入保存名称" autofocus>
             </div>
             <div class="modal-footer">
                 <button id="cancelSaveBtn" class="action-btn remove-row-btn" data-i18n="cancel">取消</button>
@@ -123,14 +123,13 @@
         </div>
     </div>
 
-    <!-- 主容器 -->
+    <!-- 主容器 (返回主页按钮已移除) -->
     <div class="container relative z-10" style="margin-top: 100px;">
         <div class="header-area">
             <div class="header-left">
-                <a href="../index.html" class="home-btn" target="_blank" data-i18n="returnHome">返回主页</a>
+                <!-- 返回主页按钮已删除，只保留标题 -->
                 <h2 data-i18n="appTitle">Down's Score Calculator</h2>
             </div>
-            <!-- 语言切换器已移除，统一使用右上角按钮 -->
             <div class="header-right">
                 <button id="manageSavesBtn" class="save-manage-btn" data-i18n="saveManagement">保存管理</button>
                 <div class="overall-score-container">
@@ -162,7 +161,7 @@
                     </tr>
                 </thead>
                 <tbody id="grade-table-body">
-                    <!-- 初始为空，无任何项目 -->
+                    <!-- 初始为空 -->
                 </tbody>
             </table>
         </div>
@@ -170,7 +169,7 @@
         <button id="add-row-btn" data-i18n="addNewProject">+ 添加新项目</button>
     </div>
 
-    <!-- 页脚 (已移除工具链接，仅保留地球和 GitHub) -->
+    <!-- 页脚 (仅地球和 GitHub) -->
     <footer class="py-12 px-6 border-t border-white/10 bg-black relative z-10">
         <div class="max-w-6xl mx-auto">
             <div class="flex flex-col md:flex-row justify-between items-center gap-6 mb-8">
@@ -200,11 +199,9 @@
             }
         });
 
-        // 保存管理相关变量
         const SAVE_STORAGE_KEY = 'grade_calculator_saves';
         const LANGUAGE_STORAGE_KEY = 'grade_calculator_language';
 
-        // 国际化支持
         const translations = {
             zh: {
                 appTitle: "唐氏分数计算器",
@@ -217,11 +214,8 @@
                 actions: "操作",
                 addNewProject: "+ 添加新项目",
                 calculateOverall: "计算总分",
-                returnHome: "返回主页",
                 saveManagement: "保存管理",
                 footerText: "Powered by Down`sicient | 版权所有 © 2026 Down`sicient Studio，Tach的附属工作室",
-                light: "浅色",
-                dark: "深色",
                 solveItem: "求解",
                 removeItem: "删除",
                 addSubItem: "添加子项",
@@ -231,7 +225,7 @@
                 delete: "删除",
                 cancel: "取消",
                 save: "保存",
-                saveNamePlaceholder: "请输入保存名称（默认：当前日期）",
+                saveNamePlaceholder: "请输入保存名称",
                 renameSave: "重命名保存",
                 renamePlaceholder: "请输入新名称",
                 noSavedRecords: "暂无保存记录",
@@ -249,8 +243,6 @@
                 newProject: "新项目",
                 newSubProject: "新子项目",
                 loading: "加载中...",
-                switchingToChinese: "切换到中文",
-                switchingToEnglish: "切换到英文"
             },
             en: {
                 appTitle: "Down's Score Calculator",
@@ -263,11 +255,8 @@
                 actions: "Actions",
                 addNewProject: "+ Add New Project",
                 calculateOverall: "Calculate Total",
-                returnHome: "Return Home",
                 saveManagement: "Save Management",
                 footerText: "Powered by Down`sicient | Copyright © 2026 Down`sicient Studio, Tach's subsidiary studio",
-                light: "Light",
-                dark: "Dark",
                 solveItem: "Solve",
                 removeItem: "Delete",
                 addSubItem: "Add Sub-item",
@@ -277,7 +266,7 @@
                 delete: "Delete",
                 cancel: "Cancel",
                 save: "Save",
-                saveNamePlaceholder: "Enter save name (default: current date)",
+                saveNamePlaceholder: "Enter save name",
                 renameSave: "Rename Save",
                 renamePlaceholder: "Enter new name",
                 noSavedRecords: "No saved records",
@@ -295,16 +284,13 @@
                 newProject: "New Project",
                 newSubProject: "New Sub-project",
                 loading: "Loading...",
-                switchingToChinese: "切换到中文",
-                switchingToEnglish: "Switching to English"
             }
         };
 
-        // 当前语言
         let currentLang = 'zh';
         let gradeTableBody;
 
-        // --- 主要函数定义 ---
+        // --- 主要函数定义 (与之前相同) ---
         function getGrade(score) {
             if (score >= 93) return 'A'; 
             if (score >= 90) return 'A−'; 
@@ -532,7 +518,6 @@
             }
         }
 
-        // 获取当前表格数据
         function getCurrentData() {
             const rows = gradeTableBody.querySelectorAll('tr');
             const data = [];
@@ -580,7 +565,6 @@
             };
         }
 
-        // 加载数据到表格
         function loadData(data) {
             gradeTableBody.innerHTML = '';
 
@@ -593,7 +577,6 @@
             setTimeout(calculateOverallScore, 100);
         }
 
-        // 渲染保存列表
         function renderSaveList() {
             const saveListElement = document.getElementById('saveList');
             const emptyStateElement = document.getElementById('emptySaveState');
@@ -626,21 +609,18 @@
             });
         }
 
-        // 打开保存管理模态框
         function openSaveModal() {
             renderSaveList();
             document.getElementById('saveModal').style.display = 'flex';
         }
 
-        // 打开保存输入模态框
         function openSaveInputModal() {
-            const defaultName = `${translations[currentLang]['saveCurrentState']} ${new Date().toLocaleString(currentLang === 'zh' ? 'zh-CN' : 'en-US')}`;
-            document.getElementById('saveNameInput').value = defaultName;
+            // 不再填充默认名称，输入框为空
+            document.getElementById('saveNameInput').value = '';
             document.getElementById('saveInputModal').style.display = 'flex';
             document.getElementById('saveNameInput').focus();
         }
 
-        // 打开重命名模态框
         function openRenameModal(saveId) {
             const save = saveManager.getSave(saveId);
             if (save) {
@@ -651,7 +631,6 @@
             }
         }
 
-        // 保存管理功能
         class SaveManager {
             constructor() {
                 this.saves = this.loadSaves();
@@ -679,9 +658,11 @@
             addSave(name, data) {
                 const timestamp = new Date().toISOString();
                 const formattedDate = new Date().toLocaleString(currentLang === 'zh' ? 'zh-CN' : 'en-US');
+                // 如果名称为空，使用默认提示（但输入框已强制要求输入，这里仍做后备）
+                const saveName = name.trim() || (currentLang === 'zh' ? '未命名' : 'Unnamed');
                 const save = {
                     id: 'save_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
-                    name: name || translations[currentLang]['saveCurrentState'] + ' ' + formattedDate,
+                    name: saveName,
                     timestamp: timestamp,
                     formattedDate: formattedDate,
                     data: data
@@ -722,18 +703,15 @@
             }
         }
 
-        // 初始化保存管理器
         const saveManager = new SaveManager();
 
-        // 初始化数据：表格为空，总分框为0
         function initData() {
             gradeTableBody.innerHTML = '';
             const overallEl = document.querySelector('.overall-score');
             if (overallEl) overallEl.textContent = '0';
-            calculateOverallScore(); // 计算总分（此时为0）
+            calculateOverallScore();
         }
 
-        // 初始化语言
         function initLanguage() {
             const savedLang = localStorage.getItem(LANGUAGE_STORAGE_KEY);
             if (savedLang && (savedLang === 'zh' || savedLang === 'en')) {
@@ -759,7 +737,6 @@
             applyLanguage();
         }
 
-        // 切换语言（无动画）
         function toggleLang() {
             const newLang = currentLang === 'en' ? 'zh' : 'en';
             currentLang = newLang;
@@ -769,7 +746,6 @@
             applyLanguage();
         }
 
-        // 应用语言到页面
         function applyLanguage() {
             document.querySelectorAll('[data-i18n]').forEach(element => {
                 const key = element.getAttribute('data-i18n');
@@ -788,34 +764,27 @@
             updateTableButtonTexts();
         }
 
-        // 更新表格中的按钮文本
         function updateTableButtonTexts() {
             document.querySelectorAll('.add-sub-btn').forEach(btn => {
                 btn.textContent = translations[currentLang]['addSubItem'];
             });
-
             document.querySelectorAll('.solve-item-btn').forEach(btn => {
                 btn.textContent = translations[currentLang]['solveItem'];
             });
-
             document.querySelectorAll('.remove-row-btn').forEach(btn => {
                 btn.textContent = translations[currentLang]['removeItem'];
             });
-
             document.querySelectorAll('.btn-load').forEach(btn => {
                 btn.textContent = translations[currentLang]['load'];
             });
-
             document.querySelectorAll('.btn-rename').forEach(btn => {
                 btn.textContent = translations[currentLang]['rename'];
             });
-
             document.querySelectorAll('.btn-delete').forEach(btn => {
                 btn.textContent = translations[currentLang]['delete'];
             });
         }
 
-        // 绑定所有事件
         function bindEvents() {
             document.getElementById('manageSavesBtn').addEventListener('click', openSaveModal);
             document.getElementById('saveCurrentBtn').addEventListener('click', openSaveInputModal);
@@ -842,6 +811,10 @@
 
             document.getElementById('confirmSaveBtn').addEventListener('click', () => {
                 const saveName = document.getElementById('saveNameInput').value.trim();
+                if (!saveName) {
+                    alert(translations[currentLang]['enterNewName']);
+                    return;
+                }
                 const currentData = getCurrentData();
 
                 try {
@@ -952,7 +925,6 @@
             });
         }
 
-        // 导航栏滚动效果
         function scrollNav() {
             const nav = document.querySelector("nav");
             if (window.scrollY === 0) nav.classList.remove("with-back");
@@ -961,7 +933,6 @@
         window.addEventListener('scroll', scrollNav);
         scrollNav();
 
-        // 滚动动画
         function initReveal() {
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
@@ -974,13 +945,11 @@
             document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
         }
 
-        // 初始化应用
         function initApp() {
             initLanguage();
             gradeTableBody = document.getElementById('grade-table-body');
-
             bindEvents();
-            initData(); // 表格为空，总分0
+            initData();
             initReveal();
         }
 
