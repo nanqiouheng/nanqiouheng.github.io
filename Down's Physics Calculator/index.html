@@ -15,9 +15,55 @@
     <link rel="stylesheet" crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/misans@4.1.0/lib/Normal/MiSans-Semibold.min.css" />
     <!-- 统一 favicon -->
     <link rel="icon" href="https://raw.githubusercontent.com/nanqiouheng/nanqiouheng.github.io/main/DownsicientLoge.ico" type="image/x-icon" />
-
-    <!-- 完整统一样式表 (来自上级目录的 index.css) -->
+    <!-- 引用根目录下的统一样式表 -->
     <link rel="stylesheet" href="../index.css">
+    <!-- 页面专属样式：卡片详情按钮、动画增强 -->
+    <style>
+        .card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 30px -10px rgba(139, 92, 246, 0.3);
+            border-color: var(--accent);
+        }
+        .detail-btn {
+            background: rgba(139, 92, 246, 0.1);
+            color: var(--accent);
+            border: 1px solid var(--border-light);
+            border-radius: 9999px;
+            padding: 0.4rem 1rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            margin-top: 0.75rem;
+            align-self: flex-start;
+        }
+        .detail-btn:hover {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+            transform: scale(1.02);
+        }
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 0.5rem;
+        }
+        /* 确保模态框内容中的列表样式 */
+        .modal-content ul {
+            margin-top: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .modal-content li {
+            margin-left: 1.5rem;
+        }
+    </style>
 </head>
 <body class="lang-en">
     <!-- 加载动画 -->
@@ -29,47 +75,30 @@
         <div class="absolute inset-0 bg-grid-pattern opacity-30"></div>
     </div>
 
-    <!-- ========== 导航栏 ========== -->
+    <!-- 导航栏 -->
     <nav class="fixed top-0 left-0 right-0 z-50 px-6 py-6 flex justify-between items-center transition">
-        <!-- Logo 指向主页 -->
         <a href="../index.html" class="text-xl font-semibold tracking-tight text-white flex items-center gap-2">
             <span class="w-6 h-6"><img src="https://raw.githubusercontent.com/nanqiouheng/nanqiouheng.github.io/main/DownsicientLoge.ico" alt="Down's Tools"></span>
             Down's Tools
         </a>
-
-        <!-- 桌面导航链接 (指向主页各区域) -->
         <div class="hidden md:flex gap-8 text-sm font-medium text-neutral-300">
-            <a href="../index.html" class="hover:text-white transition-colors">
-                <span class="lang-en">Home</span><span class="lang-zh">主页</span>
-            </a>
-            <a href="../index.html#features" class="hover:text-white transition-colors">
-                <span class="lang-en">Features</span><span class="lang-zh">特性</span>
-            </a>
-            <a href="../index.html#demo" class="hover:text-white transition-colors">
-                <span class="lang-en">Demo</span><span class="lang-zh">演示</span>
-            </a>
-            <a href="../index.html#about" class="hover:text-white transition-colors">
-                <span class="lang-en">About</span><span class="lang-zh">关于</span>
-            </a>
+            <a href="../index.html" class="hover:text-white transition-colors"><span class="lang-en">Home</span><span class="lang-zh">主页</span></a>
+            <a href="../index.html#features" class="hover:text-white transition-colors"><span class="lang-en">Features</span><span class="lang-zh">特性</span></a>
+            <a href="../index.html#demo" class="hover:text-white transition-colors"><span class="lang-en">Demo</span><span class="lang-zh">演示</span></a>
+            <a href="../index.html#about" class="hover:text-white transition-colors"><span class="lang-en">About</span><span class="lang-zh">关于</span></a>
         </div>
-
-        <!-- 右侧：语言切换 + g值选择器 + 分数计算器链接 -->
         <div class="flex items-center gap-4">
             <button onclick="toggleLang()" class="text-xs font-medium text-neutral-400 hover:text-white transition-colors flex items-center gap-1.5 uppercase tracking-wider">
                 <iconify-icon icon="lucide:globe" width="14"></iconify-icon>
                 <span class="lang-en">EN</span>
                 <span class="lang-zh">中</span>
             </button>
-
-            <!-- g 值选择器 -->
             <div class="g-selector">
                 <span class="text-xs text-neutral-400 px-2 lang-en">g =</span>
                 <span class="text-xs text-neutral-400 px-2 lang-zh">g =</span>
                 <button class="g-option active" id="g9_8">9.8</button>
                 <button class="g-option" id="g10">10</button>
             </div>
-
-            <!-- 分数计算器链接 (目录形式) -->
             <a href="../Down's%20Score%20Calculator/" class="text-sm font-medium text-white border border-white/20 px-4 py-2 rounded-full hover:bg-white hover:text-black transition-all duration-300">
                 <span class="lang-en">Score Calc</span><span class="lang-zh">分数计算器</span>
             </a>
@@ -78,14 +107,8 @@
 
     <!-- 主容器 -->
     <div class="container-custom relative z-10 mx-auto px-4 pt-32 pb-12">
-        <!-- 当前时间显示区域已移除 -->
-
-        <!-- 公式说明区域 (动态生成) -->
-        <div class="info-panel reveal-on-scroll" id="infoPanel"></div>
-
-        <!-- 卡片网格容器 (动态生成，包含新加水压卡片) -->
+        <!-- 卡片网格容器 (动态生成) -->
         <div class="card-grid" id="cardGrid"></div>
-
         <!-- 底部提示 -->
         <div class="text-center text-neutral-500 text-sm mt-8" id="footerText">
             <span class="lang-en">π = 3.14 · Enter known values, click Solve · Supports scientific notation (e.g., 6.67e-11)</span>
@@ -159,17 +182,14 @@
                     body.classList.replace('lang-zh', 'lang-en');
                     currentLang = 'en';
                 }
-                renderInfoPanel();
                 renderCards();
             };
 
-            // 翻译字典 (包含详细解释和例子)
+            // 翻译字典 (包含详细解释和例子，新增浮力 buoyancy)
             const t = (key) => {
                 const translations = {
                     zh: {
-                        infoTitle: "📐 七大核心公式 · 点击标签查看详情",
-                        infoDesc: "每张卡片对应一个核心模块。输入已知量，点击“计算”求解未知量。",
-                        topics: ["运动学 (匀加速)", "牛顿第二定律", "功能关系", "动量与冲量", "圆周/万有引力", "简谐运动", "水的压强与压力"],
+                        topics: ["运动学 (匀加速)", "牛顿第二定律", "功能关系", "动量与冲量", "圆周/万有引力", "简谐运动", "水的压强与压力", "浮力 (阿基米德原理)"],
                         cardTitles: {
                             kin: "运动学 (匀加速)",
                             newt: "牛顿第二定律",
@@ -177,7 +197,8 @@
                             mom: "动量与冲量",
                             circ: "圆周运动 / 万有引力",
                             shm: "简谐运动 (弹簧)",
-                            hydro: "水的压强与压力"
+                            hydro: "水的压强与压力",
+                            buoy: "浮力 (阿基米德原理)"
                         },
                         eq: {
                             kin: "v = v₀ + a t    Δx = v₀ t + ½ a t²    v² = v₀² + 2 a Δx",
@@ -186,9 +207,9 @@
                             mom: "p = m v    J = F Δt = Δp",
                             circ: "F_c = m v² / r    F_g = G M m / r²",
                             shm: "F = -k x    T = 2π √(m / k)",
-                            hydro: "P = ρ g h    F = P · A"
+                            hydro: "P = ρ g h    F = P · A",
+                            buoy: "F_b = ρ g V"
                         },
-                        // 详细解释与示例
                         details: {
                             kin: `
                                 <p><strong>物理意义：</strong>描述物体在匀加速直线运动中的速度、位移与时间的关系。</p>
@@ -240,6 +261,18 @@
                                 <p><strong>公式说明：</strong>适用于静止液体，压强只与深度和密度有关，与容器形状无关。</p>
                                 <p><strong>示例：</strong>水深 10 m 处，水的密度 1000 kg/m³，g=9.8，求压强及一个 2 m² 闸门受到的压力。<br>
                                 解：P = 1000×9.8×10 = 98000 Pa，F = 98000×2 = 196000 N。</p>
+                            `,
+                            buoy: `
+                                <p><strong>物理意义：</strong>浸在流体中的物体受到向上的浮力，大小等于物体排开的流体的重力（阿基米德原理）。</p>
+                                <p><strong>公式：</strong>F_b = ρ g V</p>
+                                <p><strong>变量说明：</strong></p>
+                                <ul class="list-disc pl-5 space-y-1">
+                                    <li>ρ —— 流体密度 (kg/m³)</li>
+                                    <li>g —— 重力加速度 (m/s²)</li>
+                                    <li>V —— 物体排开流体的体积 (m³)</li>
+                                </ul>
+                                <p><strong>示例：</strong>一个体积为 0.5 m³ 的物体完全浸没在水中（ρ = 1000 kg/m³），g=9.8，求浮力。<br>
+                                解：F_b = 1000 × 9.8 × 0.5 = 4900 N。</p>
                             `
                         },
                         labels: {
@@ -248,16 +281,14 @@
                             p: "p (kg·m/s)", dt: "Δt (s)", dv: "Δv (m/s)",
                             r: "r (m)", M: "M (kg)", Fg: "F_g (N)",
                             k: "k (N/m)", x: "x (m)", T: "T (s)",
-                            rho: "ρ (kg/m³)", A: "A (m²)"
+                            rho: "ρ (kg/m³)", A: "A (m²)", V: "V (m³)"   // 新增体积
                         },
-                        buttons: { calc: "计算", reset: "重置" },
+                        buttons: { calc: "计算", reset: "重置", details: "📘 公式详解" },
                         result: "结果：",
                         insufficient: "⚠️ 输入不足或无法计算",
                     },
                     en: {
-                        infoTitle: "📐 Seven Core Formulas · Click Tags for Details",
-                        infoDesc: "Each card corresponds to a core topic. Enter known values and click 'Solve' to find the unknown.",
-                        topics: ["Kinematics (const a)", "Newton's 2nd Law", "Work-Energy", "Momentum & Impulse", "Circular/Gravity", "Simple Harmonic Motion", "Water Pressure & Force"],
+                        topics: ["Kinematics (const a)", "Newton's 2nd Law", "Work-Energy", "Momentum & Impulse", "Circular/Gravity", "Simple Harmonic Motion", "Water Pressure & Force", "Buoyancy (Archimedes)"],
                         cardTitles: {
                             kin: "Kinematics (constant acceleration)",
                             newt: "Newton's Second Law",
@@ -265,7 +296,8 @@
                             mom: "Momentum & Impulse",
                             circ: "Circular Motion / Gravity",
                             shm: "Simple Harmonic Motion (Spring)",
-                            hydro: "Water Pressure & Force"
+                            hydro: "Water Pressure & Force",
+                            buoy: "Buoyancy (Archimedes' Principle)"
                         },
                         eq: {
                             kin: "v = v₀ + a t    Δx = v₀ t + ½ a t²    v² = v₀² + 2 a Δx",
@@ -274,7 +306,8 @@
                             mom: "p = m v    J = F Δt = Δp",
                             circ: "F_c = m v² / r    F_g = G M m / r²",
                             shm: "F = -k x    T = 2π √(m / k)",
-                            hydro: "P = ρ g h    F = P · A"
+                            hydro: "P = ρ g h    F = P · A",
+                            buoy: "F_b = ρ g V"
                         },
                         details: {
                             kin: `
@@ -327,6 +360,18 @@
                                 <p><strong>Notes:</strong> For static fluids, pressure depends only on depth and density, not on container shape.</p>
                                 <p><strong>Example:</strong> At 10 m depth in water (ρ = 1000 kg/m³, g=9.8), find pressure and force on a 2 m² gate.<br>
                                 Solution: P = 1000×9.8×10 = 98000 Pa, F = 98000×2 = 196000 N.</p>
+                            `,
+                            buoy: `
+                                <p><strong>Physical meaning:</strong> An object immersed in a fluid experiences an upward buoyant force equal to the weight of the fluid displaced (Archimedes' principle).</p>
+                                <p><strong>Formula:</strong> F_b = ρ g V</p>
+                                <p><strong>Variables:</strong></p>
+                                <ul class="list-disc pl-5 space-y-1">
+                                    <li>ρ — fluid density (kg/m³)</li>
+                                    <li>g — gravitational acceleration (m/s²)</li>
+                                    <li>V — volume of fluid displaced (m³)</li>
+                                </ul>
+                                <p><strong>Example:</strong> An object with volume 0.5 m³ is fully submerged in water (ρ = 1000 kg/m³), g=9.8. Find buoyant force.<br>
+                                Solution: F_b = 1000 × 9.8 × 0.5 = 4900 N.</p>
                             `
                         },
                         labels: {
@@ -335,9 +380,9 @@
                             p: "p (kg·m/s)", dt: "Δt (s)", dv: "Δv (m/s)",
                             r: "r (m)", M: "M (kg)", Fg: "F_g (N)",
                             k: "k (N/m)", x: "x (m)", T: "T (s)",
-                            rho: "ρ (kg/m³)", A: "A (m²)"
+                            rho: "ρ (kg/m³)", A: "A (m²)", V: "V (m³)"
                         },
-                        buttons: { calc: "Solve", reset: "Reset" },
+                        buttons: { calc: "Solve", reset: "Reset", details: "📘 Details" },
                         result: "Result:",
                         insufficient: "⚠️ Insufficient input or cannot solve",
                     }
@@ -345,7 +390,7 @@
                 return key.split('.').reduce((obj, k) => obj?.[k], translations[currentLang]) || key;
             };
 
-            // 卡片数据 (包含 hydro 卡片)
+            // 卡片数据 (新增 buoy 卡片)
             const cardsData = [
                 { id: 'kin', inputs: ['v0','v','a','t','dx'],
                   solve: (vals) => {
@@ -383,6 +428,15 @@
                           }
                       }
                       return null;
+                  } },
+                { id: 'buoy', inputs: ['rho','V'],
+                  solve: (vals) => {
+                      const g = window.gValue !== undefined ? window.gValue : 9.8;
+                      if (vals.rho !== undefined && vals.V !== undefined) {
+                          const Fb = vals.rho * g * vals.V;
+                          return { Fb };
+                      }
+                      return null;
                   } }
             ];
 
@@ -395,23 +449,6 @@
                     ${detailsHtml}
                 `;
                 modalOverlay.style.display = 'flex';
-            }
-
-            // 渲染信息面板 (包含7个标签)
-            function renderInfoPanel() {
-                const panel = document.getElementById('infoPanel');
-                const topics = t('topics');
-                const topicKeys = ['kin','newt','work','mom','circ','shm','hydro'];
-                panel.innerHTML = `
-                    <div class="info-title">${t('infoTitle')}</div>
-                    <div class="info-desc">${t('infoDesc')}</div>
-                    <div class="topic-tags">
-                        ${topics.map((topic, idx) => `<span class="topic-tag" data-topic="${topicKeys[idx]}">${topic}</span>`).join('')}
-                    </div>
-                `;
-                document.querySelectorAll('.topic-tag').forEach(tag => {
-                    tag.addEventListener('click', () => showModal(tag.dataset.topic));
-                });
             }
 
             // 渲染卡片
@@ -442,7 +479,13 @@
                             <button class="btn" data-card="${card.id}">${t('buttons.calc')}</button>
                             <button class="btn reset" data-reset="${card.id}">${t('buttons.reset')}</button>
                         </div>
-                        <div class="result-box" id="${card.id}_result"></div>
+                        <div class="card-footer">
+                            <div class="result-box" id="${card.id}_result"></div>
+                            <button class="detail-btn" data-detail="${card.id}">
+                                <iconify-icon icon="lucide:info" width="16"></iconify-icon>
+                                ${t('buttons.details')}
+                            </button>
+                        </div>
                     `;
                     grid.appendChild(cardDiv);
                 });
@@ -465,7 +508,8 @@
                                 let resultStr = '';
                                 if (result.P !== undefined) resultStr += `P = ${result.P.toFixed(4)} Pa`;
                                 if (result.F !== undefined) resultStr += `, F = ${result.F.toFixed(4)} N`;
-                                if (Object.keys(result).length === 1) {
+                                if (result.Fb !== undefined) resultStr += `F_b = ${result.Fb.toFixed(4)} N`;
+                                if (Object.keys(result).length === 1 && !result.P && !result.F && !result.Fb) {
                                     const key = Object.keys(result)[0];
                                     const val = result[key];
                                     resultStr = `${key} = ${val.toFixed(4)}`;
@@ -484,6 +528,14 @@
                         const cardId = e.target.dataset.reset;
                         document.querySelectorAll(`#card-${cardId} input`).forEach(inp => inp.value = '');
                         document.getElementById(`${cardId}_result`).innerHTML = '';
+                    });
+                });
+
+                // 绑定详情按钮事件
+                document.querySelectorAll('.detail-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const cardId = e.target.closest('.detail-btn').dataset.detail;
+                        showModal(cardId);
                     });
                 });
             }
@@ -535,7 +587,6 @@
             }
 
             // 初次渲染
-            renderInfoPanel();
             renderCards();
             initReveal();
         })();
