@@ -14,10 +14,22 @@
     <link rel="stylesheet" crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/misans@4.1.0/lib/Normal/MiSans-Semibold.min.css" />
     <!-- 引用根目录下的统一样式表 -->
     <link rel="stylesheet" href="../index.css">
-    <!-- 页面专属样式：将字母等级靠右对齐 -->
+    <!-- 页面专属样式：将字母等级靠右对齐，初始无默认行 -->
     <style>
         .grade-cell .letter-grade {
             margin-left: auto;
+        }
+        /* 总分框初始值为0的样式 */
+        .overall-score {
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--success-color);
+            transition: transform 0.15s;
+            min-width: 120px;
+            text-align: center;
+            background: rgba(0,0,0,0.2);
+            border-radius: 0.5rem;
+            padding: 0 0.5rem;
         }
     </style>
 </head>
@@ -122,7 +134,7 @@
             <div class="header-right">
                 <button id="manageSavesBtn" class="save-manage-btn" data-i18n="saveManagement">保存管理</button>
                 <div class="overall-score-container">
-                    <div class="overall-score" contenteditable="true">100</div>
+                    <div class="overall-score" contenteditable="true">0</div>
                     <button id="solve-overall-btn" class="btn-primary" style="padding:0.6rem 1.5rem;" data-i18n="calculateOverall">计算总分</button>
                 </div>
             </div>
@@ -150,7 +162,7 @@
                     </tr>
                 </thead>
                 <tbody id="grade-table-body">
-                    <!-- 初始为空，无预制项目 -->
+                    <!-- 初始为空，无任何项目 -->
                 </tbody>
             </table>
         </div>
@@ -524,7 +536,7 @@
         function getCurrentData() {
             const rows = gradeTableBody.querySelectorAll('tr');
             const data = [];
-            const overallScore = parseFloat(document.querySelector('.overall-score').textContent) || 100;
+            const overallScore = parseFloat(document.querySelector('.overall-score').textContent) || 0;
 
             const itemMap = new Map();
 
@@ -713,12 +725,12 @@
         // 初始化保存管理器
         const saveManager = new SaveManager();
 
-        // 初始化数据（空白无预制项目）
+        // 初始化数据：表格为空，总分框为0
         function initData() {
             gradeTableBody.innerHTML = '';
             const overallEl = document.querySelector('.overall-score');
             if (overallEl) overallEl.textContent = '0';
-            calculateOverallScore();
+            calculateOverallScore(); // 计算总分（此时为0）
         }
 
         // 初始化语言
@@ -736,7 +748,6 @@
                 localStorage.setItem(LANGUAGE_STORAGE_KEY, currentLang);
             }
 
-            // 更新 body 类
             if (currentLang === 'zh') {
                 document.body.classList.add('lang-zh');
                 document.body.classList.remove('lang-en');
@@ -748,7 +759,7 @@
             applyLanguage();
         }
 
-        // 切换语言（供导航栏按钮调用）- 无动画
+        // 切换语言（无动画）
         function toggleLang() {
             const newLang = currentLang === 'en' ? 'zh' : 'en';
             currentLang = newLang;
@@ -806,11 +817,9 @@
 
         // 绑定所有事件
         function bindEvents() {
-            // 保存管理相关
             document.getElementById('manageSavesBtn').addEventListener('click', openSaveModal);
             document.getElementById('saveCurrentBtn').addEventListener('click', openSaveInputModal);
 
-            // 模态框关闭按钮
             document.getElementById('closeSaveModal').addEventListener('click', () => {
                 document.getElementById('saveModal').style.display = 'none';
             });
@@ -823,7 +832,6 @@
                 document.getElementById('renameModal').style.display = 'none';
             });
 
-            // 取消按钮
             document.getElementById('cancelSaveBtn').addEventListener('click', () => {
                 document.getElementById('saveInputModal').style.display = 'none';
             });
@@ -832,7 +840,6 @@
                 document.getElementById('renameModal').style.display = 'none';
             });
 
-            // 确认保存按钮
             document.getElementById('confirmSaveBtn').addEventListener('click', () => {
                 const saveName = document.getElementById('saveNameInput').value.trim();
                 const currentData = getCurrentData();
@@ -849,7 +856,6 @@
                 }
             });
 
-            // 确认重命名按钮
             document.getElementById('confirmRenameBtn').addEventListener('click', () => {
                 const saveId = document.getElementById('renameSaveId').value;
                 const newName = document.getElementById('renameInput').value.trim();
@@ -864,7 +870,6 @@
                 }
             });
  
-            // 表格操作按钮事件（事件委托）
             document.body.addEventListener('click', (e) => {
                 if (e.target.matches('#add-row-btn')) addTopLevelRow();
                 if (e.target.matches('.add-sub-btn')) addSubItem(e.target);
@@ -872,7 +877,6 @@
                 if (e.target.matches('#solve-overall-btn')) calculateOverallScore();
                 if (e.target.matches('.solve-item-btn')) solveForItem(e.target);
 
-                // 保存列表操作
                 if (e.target.matches('.btn-load')) {
                     const saveId = e.target.dataset.saveId;
                     const save = saveManager.getSave(saveId);
@@ -899,7 +903,6 @@
                 }
             });
 
-            // 点击模态框外部关闭
             window.addEventListener('click', (e) => {
                 if (e.target.classList.contains('modal')) {
                     e.target.style.display = 'none';
@@ -934,7 +937,6 @@
                     e.preventDefault();
                     e.target.blur();
                 }
-
                 if (e.key === 'Escape') {
                     const modals = document.querySelectorAll('.modal');
                     modals.forEach(modal => {
@@ -943,7 +945,6 @@
                         }
                     });
                 }
-
                 if (e.ctrlKey && e.key === 's') {
                     e.preventDefault();
                     openSaveInputModal();
@@ -979,11 +980,10 @@
             gradeTableBody = document.getElementById('grade-table-body');
 
             bindEvents();
-            initData(); // 空白表格
+            initData(); // 表格为空，总分0
             initReveal();
         }
 
-        // 启动
         document.addEventListener('DOMContentLoaded', initApp);
     </script>
 </body>
