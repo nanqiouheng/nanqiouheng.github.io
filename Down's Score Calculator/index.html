@@ -82,8 +82,9 @@
     <!-- 主容器 -->
     <div class="container relative z-10" style="margin-top: 100px;">
         <div class="header-area">
-            <!-- 左侧完全隐藏，右侧独占一行且靠右 -->
+            <!-- 左侧完全隐藏 -->
             <div class="header-left"></div>
+            <!-- 右侧总分区域 -->
             <div class="header-right">
                 <div class="overall-score-container">
                     <div class="overall-score" contenteditable="true">0</div>
@@ -484,11 +485,13 @@
                 if (target.matches('.editable-weight') || target.matches('.editable-score')) {
                     const num = parseFloat(target.textContent);
                     if (target.matches('.editable-weight')) {
+                        // 权重限制在0-100之间，并添加百分号
                         const weightValue = Math.max(0, Math.min(100, isNaN(num) ? 0 : num));
                         target.textContent = weightValue + '%';
                     }
                     if (target.matches('.editable-score')) {
-                        const scoreValue = Math.max(0, Math.min(1000, isNaN(num) ? 0 : num));
+                        // 成绩限制在0-100之间
+                        const scoreValue = Math.max(0, Math.min(100, isNaN(num) ? 0 : num));
                         target.textContent = scoreValue;
                         updateGradeForScore(target);
                     }
@@ -496,6 +499,7 @@
                     if(parentId) updateParentScore(parentId);
                 }
                 if (target.matches('.overall-score')) {
+                    // 总分限制在0-1000之间（可根据需要调整）
                     const num = parseFloat(target.textContent);
                     const scoreValue = Math.max(0, Math.min(1000, isNaN(num) ? 0 : num));
                     target.textContent = scoreValue;
