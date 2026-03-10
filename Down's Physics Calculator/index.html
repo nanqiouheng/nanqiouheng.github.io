@@ -1,445 +1,34 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
-    <title>AP Physics 1 · 专业计算器 | 唐氏物理求解器</title>
-    <!-- 公共资源 -->
+    <title>Down's Score Calculator | 唐氏分数计算器</title>
+    <link rel="icon" href="https://raw.githubusercontent.com/nanqiouheng/nanqiouheng.github.io/main/DownsicientLoge.ico" type="image/x-icon" />
+    <!-- 字体与图标库（与主页一致） -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
     <link rel="preconnect" href="https://fonts.loli.net">
     <link rel="preconnect" href="https://gstatic.loli.net" crossorigin="">
-    <link href="https://fonts.loli.net/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&family=Geist:wght@100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.loli.net/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&amp;family=Geist:wght@100..900&amp;display=swap" rel="stylesheet">
     <link href="https://fonts.loli.net/css2?family=Noto+Serif+SC:wght@200..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/misans@4.1.0/lib/Normal/MiSans-Regular.min.css" />
     <link rel="stylesheet" crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/misans@4.1.0/lib/Normal/MiSans-Semibold.min.css" />
-    <link rel="icon" href="https://raw.githubusercontent.com/nanqiouheng/nanqiouheng.github.io/main/DownsicientLoge.ico" type="image/x-icon" />
-    <!-- 引用根目录统一样式表（可选） -->
+    <!-- 引用根目录下的统一样式表 -->
     <link rel="stylesheet" href="../index.css">
-    <!-- 内嵌现代卡片样式 -->
-    <style>
-        /* 全局变量与基础 */
-        :root {
-            --accent: #8b5cf6;
-            --accent-light: #a78bfa;
-            --accent-dark: #7c3aed;
-            --bg-primary: #050505;
-            --bg-secondary: rgba(22, 22, 22, 0.5);
-            --text-primary: #e5e5e5;
-            --text-secondary: #a3a3a3;
-            --border-light: rgba(255, 255, 255, 0.08);
-            --card-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.5);
-        }
-
-        body {
-            font-family: 'MiSans', sans-serif;
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
-            overflow-x: hidden;
-        }
-
-        /* 导航栏 */
-        nav {
-            transition: background-color 0.5s, backdrop-filter 0.5s;
-            background: transparent;
-        }
-        nav.with-back {
-            background: var(--bg-secondary);
-            backdrop-filter: blur(15px);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-        }
-
-        /* 卡片网格 */
-        .card-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin: 2rem 0;
-        }
-
-        /* 现代卡牌 */
-        .card {
-            background: rgba(20, 20, 20, 0.7);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--border-light);
-            border-radius: 2rem;
-            padding: 1.5rem;
-            transition: all 0.3s cubic-bezier(0.2, 0, 0, 1);
-            cursor: pointer;
-            box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.3);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--accent), var(--accent-light));
-            transform: scaleX(0);
-            transition: transform 0.3s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-8px) scale(1.02);
-            border-color: var(--accent);
-            box-shadow: 0 30px 40px -15px rgba(139, 92, 246, 0.3);
-            background: rgba(30, 30, 30, 0.8);
-        }
-
-        .card:hover::before {
-            transform: scaleX(1);
-        }
-
-        .card-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--accent);
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .card-equation {
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid var(--border-light);
-            border-radius: 1.5rem;
-            padding: 1rem;
-            font-family: 'Cambria Math', 'Times New Roman', serif;
-            font-size: 1.2rem;
-            text-align: center;
-            margin: 1.2rem 0;
-            color: white;
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
-        }
-
-        .input-row {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .input-row label {
-            width: 90px;
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-            font-weight: 500;
-        }
-
-        .input-row input {
-            flex: 1;
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid var(--border-light);
-            border-radius: 2rem;
-            padding: 0.7rem 1rem;
-            color: white;
-            font-size: 0.95rem;
-            transition: all 0.2s;
-        }
-
-        .input-row input:focus {
-            outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.3);
-            background: rgba(0, 0, 0, 0.6);
-        }
-
-        .button-group {
-            display: flex;
-            gap: 0.8rem;
-            margin: 1.5rem 0 0.5rem;
-        }
-
-        .btn {
-            flex: 1;
-            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
-            border: none;
-            color: white;
-            font-weight: 600;
-            padding: 0.8rem;
-            border-radius: 3rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-size: 0.95rem;
-            letter-spacing: 0.5px;
-        }
-
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px -5px rgba(139, 92, 246, 0.5);
-        }
-
-        .btn.reset {
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--text-secondary);
-            border: 1px solid var(--border-light);
-        }
-
-        .btn.reset:hover {
-            background: rgba(255, 255, 255, 0.15);
-            color: white;
-        }
-
-        .result-box {
-            background: rgba(16, 185, 129, 0.1);
-            border-left: 4px solid #10b981;
-            padding: 0.8rem 1rem;
-            border-radius: 1rem;
-            margin-top: 1rem;
-            font-size: 0.95rem;
-            word-break: break-word;
-            transition: all 0.2s;
-        }
-
-        /* 信息面板（顶部标签） */
-        .info-panel {
-            background: rgba(20, 20, 20, 0.6);
-            backdrop-filter: blur(12px);
-            border: 1px solid var(--border-light);
-            border-radius: 2rem;
-            padding: 1.8rem;
-            margin-bottom: 2rem;
-        }
-
-        .topic-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.7rem;
-        }
-
-        .topic-tag {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border-light);
-            padding: 0.6rem 1.5rem;
-            border-radius: 3rem;
-            font-size: 0.95rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            color: var(--text-secondary);
-        }
-
-        .topic-tag:hover {
-            background: var(--accent);
-            color: white;
-            border-color: var(--accent);
-            transform: scale(1.05);
-        }
-
-        /* g 值选择器 */
-        .g-selector {
-            display: flex;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border-light);
-            border-radius: 3rem;
-            padding: 0.25rem;
-        }
-
-        .g-option {
-            background: transparent;
-            border: none;
-            color: var(--text-secondary);
-            padding: 0.4rem 1.2rem;
-            border-radius: 3rem;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.2s;
-        }
-
-        .g-option.active {
-            background: var(--accent);
-            color: white;
-        }
-
-        /* 全屏模态框（现代卡片详情页） */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(15px);
-            justify-content: center;
-            align-items: center;
-            z-index: 10000;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .modal-overlay.active {
-            display: flex;
-            opacity: 1;
-        }
-
-        .modal-window {
-            background: rgba(25, 25, 25, 0.95);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--border-light);
-            border-radius: 2.5rem;
-            width: 90%;
-            max-width: 900px;
-            max-height: 85vh;
-            overflow-y: auto;
-            box-shadow: 0 50px 70px -20px black;
-            transform: scale(0.9) translateY(20px);
-            transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.3, 1.1);
-        }
-
-        .modal-overlay.active .modal-window {
-            transform: scale(1) translateY(0);
-        }
-
-        .modal-header {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 1.5rem 2rem;
-            display: flex;
-            align-items: center;
-            border-bottom: 1px solid var(--border-light);
-            position: sticky;
-            top: 0;
-            backdrop-filter: blur(10px);
-            z-index: 10;
-            border-radius: 2.5rem 2.5rem 0 0;
-        }
-
-        .modal-close {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            background: #ff5f56;
-            border: none;
-            margin-right: 1.5rem;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        .modal-close:hover {
-            transform: scale(1.1);
-            background: #ff3b30;
-        }
-
-        .modal-title {
-            font-weight: 600;
-            color: white;
-            font-size: 1.8rem;
-            background: linear-gradient(135deg, var(--accent), #a78bfa);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .modal-content {
-            padding: 2.5rem;
-            color: var(--text-secondary);
-            line-height: 1.8;
-            font-size: 1.1rem;
-        }
-
-        .modal-content .formula-detail {
-            font-family: 'Cambria Math', serif;
-            font-size: 2rem;
-            text-align: center;
-            margin: 2rem 0;
-            background: rgba(0, 0, 0, 0.4);
-            padding: 1.5rem;
-            border-radius: 2rem;
-            color: white;
-            border: 1px solid var(--border-light);
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
-        }
-
-        .modal-content p {
-            margin-bottom: 1.2rem;
-        }
-
-        .modal-content ul {
-            margin: 1rem 0 1.5rem 2rem;
-        }
-
-        .modal-content li {
-            margin-bottom: 0.5rem;
-        }
-
-        .modal-content strong {
-            color: var(--accent);
-        }
-
-        /* 背景网格 */
-        .bg-grid-pattern {
-            background-image: 
-                linear-gradient(to right, #ffffff05 1px, transparent 1px),
-                linear-gradient(to bottom, #ffffff05 1px, transparent 1px);
-            background-size: 40px 40px;
-            mask-image: radial-gradient(circle at center, black, transparent 80%);
-        }
-
-        .background-circle {
-            background: radial-gradient(circle at center, var(--accent) 0%, #4f46e5 100%);
-            animation: background-radiant 60s linear infinite;
-        }
-
-        @keyframes background-radiant {
-            0% { background-size: 100%; }
-            50% { background-size: 500%; }
-            100% { background-size: 100%; }
-        }
-
-        /* 加载动画 */
-        #loading {
-            position: fixed;
-            inset: 0;
-            background: var(--bg-primary);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            transition: opacity 0.3s;
-        }
-
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid rgba(255, 255, 255, 0.1);
-            border-top-color: var(--accent);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* 页脚 */
-        footer {
-            padding: 3rem 1.5rem;
-            border-top: 1px solid var(--border-light);
-            background: black;
-        }
-
-        /* 响应式 */
-        @media (max-width: 768px) {
-            .modal-window { width: 95%; }
-            .modal-title { font-size: 1.4rem; }
-            .modal-content { padding: 1.5rem; }
-            .modal-content .formula-detail { font-size: 1.3rem; }
-        }
-    </style>
 </head>
 <body class="lang-en">
-    <!-- 加载动画 -->
+    <!-- 加载动画 (与主页一致) -->
     <div id="loading"><div class="spinner"></div></div>
 
     <!-- 背景元素 -->
-    <div class="fixed-bg fixed inset-0 z-0 pointer-events-none">
+    <div class="fixed inset-0 z-0 pointer-events-none">
         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-purple-900/10 background-circle rounded-full blur-[120px] opacity-40"></div>
         <div class="absolute inset-0 bg-grid-pattern opacity-30"></div>
     </div>
 
-    <!-- 导航栏 -->
+    <!-- 导航栏 (链接已适配目录形式) -->
     <nav class="fixed top-0 left-0 right-0 z-50 px-6 py-6 flex justify-between items-center transition">
         <a href="../index.html" class="text-xl font-semibold tracking-tight text-white flex items-center gap-2">
-            <span class="w-6 h-6"><img src="https://raw.githubusercontent.com/nanqiouheng/nanqiouheng.github.io/main/DownsicientLoge.ico" alt="Down's Tools"></span>
+            <span class="w-6 h-6"><img src="https://raw.githubusercontent.com/nanqiouheng/nanqiouheng.github.io/main/DownsicientLoge.ico" alt="Down's Tools Logo"></span>
             Down's Tools
         </a>
         <div class="hidden md:flex gap-8 text-sm font-medium text-neutral-300">
@@ -449,49 +38,121 @@
             <a href="../index.html#about" class="hover:text-white transition-colors"><span class="lang-en">About</span><span class="lang-zh">关于</span></a>
         </div>
         <div class="flex items-center gap-4">
+            <!-- 语言切换按钮：无动画 -->
             <button onclick="toggleLang()" class="text-xs font-medium text-neutral-400 hover:text-white transition-colors flex items-center gap-1.5 uppercase tracking-wider">
                 <iconify-icon icon="lucide:globe" width="14"></iconify-icon>
-                <span class="lang-en">EN</span><span class="lang-zh">中</span>
+                <span class="lang-en">EN</span>
+                <span class="lang-zh">中</span>
             </button>
-            <div class="g-selector">
-                <span class="text-xs text-neutral-400 px-2 lang-en">g =</span>
-                <span class="text-xs text-neutral-400 px-2 lang-zh">g =</span>
-                <button class="g-option active" id="g9_8">9.8</button>
-                <button class="g-option" id="g10">10</button>
-            </div>
-            <a href="../Down's%20Score%20Calculator/" class="text-sm font-medium text-white border border-white/20 px-4 py-2 rounded-full hover:bg-white hover:text-black transition-all duration-300">
-                <span class="lang-en">Score Calc</span><span class="lang-zh">分数计算器</span>
+            <!-- 物理计算器链接 (目录形式) -->
+            <a href="../Down's%20Physics%20Calculator/" class="text-sm font-medium text-white border border-white/20 px-4 py-2 rounded-full hover:bg-white hover:text-black transition-all duration-300">
+                <span class="lang-en">Physics Solver</span><span class="lang-zh">物理计算器</span>
             </a>
         </div>
     </nav>
 
-    <!-- 主容器 -->
-    <div class="container-custom relative z-10 mx-auto px-4 pt-32 pb-12">
-        <!-- 顶部信息面板（主题标签） -->
-        <div class="info-panel reveal-on-scroll" id="infoPanel"></div>
-
-        <!-- 卡片网格 -->
-        <div class="card-grid" id="cardGrid"></div>
-
-        <!-- 底部提示 -->
-        <div class="text-center text-neutral-500 text-sm mt-8" id="footerText">
-            <span class="lang-en">π = 3.14 · Enter known values, click Solve · Supports scientific notation (e.g., 6.67e-11)</span>
-            <span class="lang-zh">π = 3.14 · 输入已知量，点击计算 · 支持科学计数法 (如 6.67e-11)</span>
-        </div>
-    </div>
-
-    <!-- 全屏模态框（卡片详情页） -->
-    <div class="modal-overlay" id="modalOverlay">
-        <div class="modal-window" id="modalWindow">
+    <!-- 保存管理模态框 -->
+    <div id="saveModal" class="modal">
+        <div class="modal-content">
             <div class="modal-header">
-                <button class="modal-close" id="modalClose"></button>
-                <span class="modal-title" id="modalTitle">Formula Details</span>
+                <h3 class="modal-title" data-i18n="saveManagement">保存管理</h3>
+                <button class="close-modal" id="closeSaveModal">×</button>
             </div>
-            <div class="modal-content" id="modalContent"></div>
+            <div class="modal-body">
+                <div id="saveList"></div>
+                <div id="emptySaveState" class="empty-state" style="display: none;">
+                    <p data-i18n="noSavedRecords">暂无保存记录</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="saveCurrentBtn" class="save-manage-btn" data-i18n="saveCurrentState">保存当前状态</button>
+            </div>
         </div>
     </div>
 
-    <!-- 页脚 -->
+    <!-- 保存输入模态框 -->
+    <div id="saveInputModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" data-i18n="saveCurrentState">保存当前状态</h3>
+                <button class="close-modal" id="closeSaveInputModal">×</button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="saveNameInput" class="modal-input" data-i18n-placeholder="saveNamePlaceholder" placeholder="请输入保存名称（默认：当前日期）" autofocus>
+            </div>
+            <div class="modal-footer">
+                <button id="cancelSaveBtn" class="action-btn remove-row-btn" data-i18n="cancel">取消</button>
+                <button id="confirmSaveBtn" class="action-btn solve-item-btn" data-i18n="save">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 重命名模态框 -->
+    <div id="renameModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" data-i18n="renameSave">重命名保存</h3>
+                <button class="close-modal" id="closeRenameModal">×</button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="renameInput" class="modal-input" data-i18n-placeholder="renamePlaceholder" placeholder="请输入新名称" autofocus>
+                <input type="hidden" id="renameSaveId">
+            </div>
+            <div class="modal-footer">
+                <button id="cancelRenameBtn" class="action-btn remove-row-btn" data-i18n="cancel">取消</button>
+                <button id="confirmRenameBtn" class="action-btn solve-item-btn" data-i18n="rename">重命名</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主容器 -->
+    <div class="container relative z-10" style="margin-top: 100px;">
+        <div class="header-area">
+            <div class="header-left">
+                <a href="../index.html" class="home-btn" target="_blank" data-i18n="returnHome">返回主页</a>
+                <h2 data-i18n="appTitle">Down's Score Calculator</h2>
+            </div>
+            <!-- 语言切换器已移除，统一使用右上角按钮 -->
+            <div class="header-right">
+                <button id="manageSavesBtn" class="save-manage-btn" data-i18n="saveManagement">保存管理</button>
+                <div class="overall-score-container">
+                    <div class="overall-score" contenteditable="true">100</div>
+                    <button id="solve-overall-btn" class="btn-primary" style="padding:0.6rem 1.5rem;" data-i18n="calculateOverall">计算总分</button>
+                </div>
+            </div>
+        </div>
+
+        <h3 data-i18n="calculatorTitle">分数计算器</h3>
+
+        <div class="instructions-container">
+            <div class="instructions-text">
+                <p>
+                    <strong data-i18n="instructions">使用指引:</strong> 
+                    <span data-i18n="instructionsText">输入成绩和权重进行计算，支持多层级的子项目</span>
+                </p>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th data-i18n="project">项目</th>
+                        <th data-i18n="weight">权重</th>
+                        <th data-i18n="grade">成绩</th>
+                        <th data-i18n="actions">操作</th>
+                    </tr>
+                </thead>
+                <tbody id="grade-table-body">
+                    <!-- 初始为空，无预制项目 -->
+                </tbody>
+            </table>
+        </div>
+
+        <button id="add-row-btn" data-i18n="addNewProject">+ 添加新项目</button>
+    </div>
+
+    <!-- 页脚 (已移除工具链接，仅保留地球和 GitHub) -->
     <footer class="py-12 px-6 border-t border-white/10 bg-black relative z-10">
         <div class="max-w-6xl mx-auto">
             <div class="flex flex-col md:flex-row justify-between items-center gap-6 mb-8">
@@ -512,533 +173,812 @@
     </footer>
 
     <script>
-        (function() {
-            // 隐藏加载动画
+        // 加载动画控制
+        window.addEventListener('load', function() {
             const loading = document.getElementById('loading');
             if (loading) {
                 loading.style.opacity = '0';
                 setTimeout(() => loading.style.display = 'none', 300);
             }
+        });
 
-            // ---------- 全局变量 ----------
-            let currentLang = 'en';
-            let gValue = 9.8;
-            const PI = 3.14;
+        // 保存管理相关变量
+        const SAVE_STORAGE_KEY = 'grade_calculator_saves';
+        const LANGUAGE_STORAGE_KEY = 'grade_calculator_language';
 
-            // 模态框元素
-            const modalOverlay = document.getElementById('modalOverlay');
-            const modalClose = document.getElementById('modalClose');
-            const modalTitle = document.getElementById('modalTitle');
-            const modalContent = document.getElementById('modalContent');
-
-            if (modalClose) {
-                modalClose.addEventListener('click', () => {
-                    modalOverlay.classList.remove('active');
-                });
+        // 国际化支持
+        const translations = {
+            zh: {
+                appTitle: "唐氏分数计算器",
+                calculatorTitle: "分数计算器",
+                instructions: "使用指引:",
+                instructionsText: "输入成绩和权重进行计算，支持多层级的子项目",
+                project: "项目",
+                weight: "权重",
+                grade: "成绩",
+                actions: "操作",
+                addNewProject: "+ 添加新项目",
+                calculateOverall: "计算总分",
+                returnHome: "返回主页",
+                saveManagement: "保存管理",
+                footerText: "Powered by Down`sicient | 版权所有 © 2026 Down`sicient Studio，Tach的附属工作室",
+                light: "浅色",
+                dark: "深色",
+                solveItem: "求解",
+                removeItem: "删除",
+                addSubItem: "添加子项",
+                saveCurrentState: "保存当前状态",
+                load: "加载",
+                rename: "重命名",
+                delete: "删除",
+                cancel: "取消",
+                save: "保存",
+                saveNamePlaceholder: "请输入保存名称（默认：当前日期）",
+                renameSave: "重命名保存",
+                renamePlaceholder: "请输入新名称",
+                noSavedRecords: "暂无保存记录",
+                confirmDelete: "确定要删除这个项目及其所有子项目吗？",
+                confirmDeleteSave: "确定要删除这个保存记录吗？",
+                saveSuccess: "保存成功！",
+                loadSuccess: "加载成功！",
+                renameSuccess: "重命名成功！",
+                deleteSuccess: "删除成功！",
+                invalidTotalScore: "无效的总分目标值。",
+                cannotSolveParent: "无法为包含子项的项目求解。请为具体的子节点项目求解。",
+                zeroWeightError: "无法为权重为零或负数的项目求解。",
+                saveFailed: "保存失败，请检查控制台错误信息。",
+                enterNewName: "请输入新名称！",
+                newProject: "新项目",
+                newSubProject: "新子项目",
+                loading: "加载中...",
+                switchingToChinese: "切换到中文",
+                switchingToEnglish: "切换到英文"
+            },
+            en: {
+                appTitle: "Down's Score Calculator",
+                calculatorTitle: "Score Calculator",
+                instructions: "Instructions:",
+                instructionsText: "Enter scores and weights for calculation, supports multi-level sub-items",
+                project: "Project",
+                weight: "Weight",
+                grade: "Score",
+                actions: "Actions",
+                addNewProject: "+ Add New Project",
+                calculateOverall: "Calculate Total",
+                returnHome: "Return Home",
+                saveManagement: "Save Management",
+                footerText: "Powered by Down`sicient | Copyright © 2026 Down`sicient Studio, Tach's subsidiary studio",
+                light: "Light",
+                dark: "Dark",
+                solveItem: "Solve",
+                removeItem: "Delete",
+                addSubItem: "Add Sub-item",
+                saveCurrentState: "Save Current State",
+                load: "Load",
+                rename: "Rename",
+                delete: "Delete",
+                cancel: "Cancel",
+                save: "Save",
+                saveNamePlaceholder: "Enter save name (default: current date)",
+                renameSave: "Rename Save",
+                renamePlaceholder: "Enter new name",
+                noSavedRecords: "No saved records",
+                confirmDelete: "Are you sure you want to delete this item and all its sub-items?",
+                confirmDeleteSave: "Are you sure you want to delete this save record?",
+                saveSuccess: "Save successful!",
+                loadSuccess: "Load successful!",
+                renameSuccess: "Rename successful!",
+                deleteSuccess: "Delete successful!",
+                invalidTotalScore: "Invalid total score target.",
+                cannotSolveParent: "Cannot solve for items with sub-items. Please solve for specific sub-items.",
+                zeroWeightError: "Cannot solve for items with zero or negative weight.",
+                saveFailed: "Save failed, please check console for errors.",
+                enterNewName: "Please enter a new name!",
+                newProject: "New Project",
+                newSubProject: "New Sub-project",
+                loading: "Loading...",
+                switchingToChinese: "切换到中文",
+                switchingToEnglish: "Switching to English"
             }
-            if (modalOverlay) {
-                modalOverlay.addEventListener('click', (e) => {
-                    if (e.target === modalOverlay) modalOverlay.classList.remove('active');
-                });
+        };
+
+        // 当前语言
+        let currentLang = 'zh';
+        let gradeTableBody;
+
+        // --- 主要函数定义 ---
+        function getGrade(score) {
+            if (score >= 93) return 'A'; 
+            if (score >= 90) return 'A−'; 
+            if (score >= 86) return 'B';
+            if (score >= 80) return 'B−'; 
+            if (score >= 76) return 'C'; 
+            if (score >= 70) return 'C−';
+            if (score >= 66) return 'D'; 
+            if (score >= 60) return 'D−'; 
+            return 'F';
+        }
+
+        function generateId() {
+            return 'item-' + Math.random().toString(36).substr(2, 9);
+        }
+
+        function getEffectiveWeight(row) {
+            if (!row) return 0;
+            let weight = (parseFloat(row.querySelector('.editable-weight').textContent) || 0) / 100;
+            const parentId = row.dataset.parentId;
+            if (parentId) {
+                const parentRow = document.getElementById(parentId);
+                weight *= getEffectiveWeight(parentRow);
+            }
+            return weight;
+        }
+
+        function updateParentScore(parentId) {
+            if (!parentId) return;
+            const parentRow = document.getElementById(parentId);
+            if (!parentRow) return;
+
+            let weightedSum = 0;
+            let totalWeight = 0;
+            const children = gradeTableBody.querySelectorAll(`[data-parent-id="${parentId}"]`);
+
+            if (children.length === 0) {
+                parentRow.querySelector('.editable-score').contentEditable = true;
+                return;
             }
 
-            // 语言切换函数
-            window.toggleLang = function() {
-                const body = document.body;
-                if (body.classList.contains('lang-en')) {
-                    body.classList.replace('lang-en', 'lang-zh');
-                    currentLang = 'zh';
-                } else {
-                    body.classList.replace('lang-zh', 'lang-en');
-                    currentLang = 'en';
+            children.forEach(child => {
+                const weight = parseFloat(child.querySelector('.editable-weight').textContent) || 0;
+                const score = parseFloat(child.querySelector('.editable-score').textContent);
+                if (!isNaN(score)) {
+                    weightedSum += score * weight;
+                    totalWeight += weight;
                 }
-                renderInfoPanel();
-                renderCards();
-            };
+            });
 
-            // ---------- 完整翻译字典（九大主题）----------
-            const translations = {
-                zh: {
-                    infoTitle: "📐 九大核心公式 · 点击标签或卡片查看详情",
-                    infoDesc: "每张卡片对应一个核心模块。输入已知量，点击“计算”求解未知量。",
-                    topics: [
-                        "运动学 (匀加速)", "牛顿第二定律", "功能关系", "动量与冲量",
-                        "圆周/万有引力", "简谐运动", "水的压强与压力", "浮力", "伯努利方程"
-                    ],
-                    cardTitles: {
-                        kin: "运动学 (匀加速)",
-                        newt: "牛顿第二定律",
-                        work: "功能关系",
-                        mom: "动量与冲量",
-                        circ: "圆周运动 / 万有引力",
-                        shm: "简谐运动 (弹簧)",
-                        hydro: "水的压强与压力",
-                        buoyancy: "浮力 (阿基米德原理)",
-                        bernoulli: "伯努利方程"
-                    },
-                    eq: {
-                        kin: "v = v₀ + a t    Δx = v₀ t + ½ a t²    v² = v₀² + 2 a Δx",
-                        newt: "F = m a",
-                        work: "W = ΔKE = ½ m (v² − v₀²)    PE = m g h",
-                        mom: "p = m v    J = F Δt = Δp",
-                        circ: "F_c = m v² / r    F_g = G M m / r²",
-                        shm: "F = -k x    T = 2π √(m / k)",
-                        hydro: "P = ρ g h    F = P · A",
-                        buoyancy: "F_b = ρ g V",
-                        bernoulli: "P + ½ ρ v² + ρ g h = constant"
-                    },
-                    details: {
-                        kin: `
-                            <p><strong>物理意义：</strong>描述物体在匀加速直线运动中的速度、位移与时间的关系。</p>
-                            <p><strong>公式说明：</strong></p>
-                            <ul class="list-disc pl-5 space-y-1">
-                                <li>v = v₀ + a t —— 末速度公式</li>
-                                <li>Δx = v₀ t + ½ a t² —— 位移公式</li>
-                                <li>v² = v₀² + 2 a Δx —— 不含时间的关系式</li>
-                            </ul>
-                            <p><strong>示例：</strong>一辆汽车从静止开始以 2 m/s² 的加速度行驶 5 秒，求末速度和位移。<br>
-                            解：v₀ = 0, a = 2, t = 5 → v = 0 + 2×5 = 10 m/s, Δx = 0×5 + ½×2×5² = 25 m。</p>
-                        `,
-                        newt: `
-                            <p><strong>物理意义：</strong>物体所受合外力等于其质量与加速度的乘积（F=ma）。</p>
-                            <p><strong>公式说明：</strong>力是改变物体运动状态的原因，加速度方向与合外力方向一致。</p>
-                            <p><strong>示例：</strong>一个 5 kg 的物体受到 20 N 的水平拉力，求加速度。<br>
-                            解：a = F/m = 20/5 = 4 m/s²。</p>
-                        `,
-                        work: `
-                            <p><strong>物理意义：</strong>合外力对物体做的功等于物体动能的变化（动能定理）；重力势能变化与重力做功有关。</p>
-                            <p><strong>公式说明：</strong></p>
-                            <ul class="list-disc pl-5 space-y-1">
-                                <li>W = ΔKE = ½ m (v² - v₀²) —— 动能定理</li>
-                                <li>PE = m g h —— 重力势能</li>
-                            </ul>
-                            <p><strong>示例：</strong>一个 2 kg 物体从静止加速到 6 m/s，求外力做的功。<br>
-                            解：W = ½×2×(6² - 0) = 36 J。</p>
-                        `,
-                        mom: `
-                            <p><strong>物理意义：</strong>动量 p = mv；冲量 J = FΔt 等于动量的变化 Δp。</p>
-                            <p><strong>公式说明：</strong>冲量是力对时间的积累效应，动量定理适用于碰撞、打击等问题。</p>
-                            <p><strong>示例：</strong>一个 0.5 kg 的球以 10 m/s 飞来，被球棒打击后以 15 m/s 反向飞回，作用时间 0.02 s，求平均作用力。<br>
-                            解：Δp = m(v' - v) = 0.5×(-15 - 10) = -12.5 kg·m/s，F = Δp/Δt = -12.5/0.02 = -625 N（负号表示方向与初速度相反）。</p>
-                        `,
-                        circ: `
-                            <p><strong>物理意义：</strong>向心力 F_c = m v²/r 维持物体做圆周运动；万有引力 F_g = G M m / r² 描述两物体间的引力。</p>
-                            <p><strong>公式说明：</strong>向心力不是一种新的力，而是指向圆心的合力；G = 6.67×10⁻¹¹ N·m²/kg²。</p>
-                            <p><strong>示例：</strong>一个 1000 kg 的卫星以 7.5 km/s 的速度在距地心 7000 km 的圆轨道上运行，求向心力。<br>
-                            解：F_c = 1000×(7500)² / (7×10⁶) ≈ 8036 N。</p>
-                        `,
-                        shm: `
-                            <p><strong>物理意义：</strong>简谐运动中，回复力 F = -k x 与位移成正比反向；弹簧振子周期 T = 2π √(m/k)。</p>
-                            <p><strong>公式说明：</strong>k 为劲度系数，负号表示力与位移方向相反。</p>
-                            <p><strong>示例：</strong>一个 0.2 kg 的物体挂在劲度系数 80 N/m 的弹簧上，求振动周期。<br>
-                            解：T = 2π √(0.2/80) = 2π √0.0025 = 2π×0.05 = 0.314 s。</p>
-                        `,
-                        hydro: `
-                            <p><strong>物理意义：</strong>液体中某点的压强 P = ρ g h（ρ 为液体密度，h 为深度），压力 F = P·A 为压强乘以受力面积。</p>
-                            <p><strong>公式说明：</strong>适用于静止液体，压强只与深度和密度有关，与容器形状无关。</p>
-                            <p><strong>示例：</strong>水深 10 m 处，水的密度 1000 kg/m³，g=9.8，求压强及一个 2 m² 闸门受到的压力。<br>
-                            解：P = 1000×9.8×10 = 98000 Pa，F = 98000×2 = 196000 N。</p>
-                        `,
-                        buoyancy: `
-                            <p><strong>物理意义：</strong>浸在流体中的物体所受浮力等于它排开的流体的重力（阿基米德原理）。</p>
-                            <p><strong>公式：</strong>F_b = ρ g V，其中 ρ 为流体密度，V 为物体排开流体的体积。</p>
-                            <p><strong>示例：</strong>一个体积为 0.5 m³ 的木块完全浸没在水中（ρ = 1000 kg/m³），求浮力。<br>
-                            解：F_b = 1000 × 9.8 × 0.5 = 4900 N。</p>
-                            <p><strong>注：</strong>若物体漂浮或悬浮，浮力等于物体重力。</p>
-                        `,
-                        bernoulli: `
-                            <p><strong>物理意义：</strong>理想流体定常流动时，沿流线压强、动能密度和势能密度之和守恒。</p>
-                            <p><strong>公式：</strong>P + ½ ρ v² + ρ g h = constant（沿流线）。</p>
-                            <p><strong>应用示例：</strong>水在水平管道中流动，已知某点压强 P₁ = 200 kPa，流速 v₁ = 2 m/s，另一点流速 v₂ = 4 m/s，求该点压强 P₂（ρ = 1000 kg/m³）。<br>
-                            解：由伯努利方程（h₁ = h₂）得 P₂ = P₁ + ½ ρ (v₁² - v₂²) = 200000 + ½×1000×(4 - 16) = 200000 - 6000 = 194000 Pa。</p>
-                        `
-                    },
-                    labels: {
-                        v0: "v₀ (m/s)", v: "v (m/s)", a: "a (m/s²)", t: "t (s)", dx: "Δx (m)",
-                        F: "F (N)", m: "m (kg)", h: "h (m)", W: "W (J)", PE: "PE (J)",
-                        p: "p (kg·m/s)", dt: "Δt (s)", dv: "Δv (m/s)",
-                        r: "r (m)", M: "M (kg)", Fg: "F_g (N)",
-                        k: "k (N/m)", x: "x (m)", T: "T (s)",
-                        rho: "ρ (kg/m³)", A: "A (m²)",
-                        V: "V (m³)", Fb: "F_b (N)",
-                        P1: "P₁ (Pa)", v1: "v₁ (m/s)", h1: "h₁ (m)",
-                        P2: "P₂ (Pa)", v2: "v₂ (m/s)", h2: "h₂ (m)"
-                    },
-                    buttons: { calc: "计算", reset: "重置" },
-                    result: "结果：",
-                    insufficient: "⚠️ 输入不足或无法计算"
-                },
-                en: {
-                    infoTitle: "📐 Nine Core Formulas · Click Tags or Cards for Details",
-                    infoDesc: "Each card corresponds to a core topic. Enter known values and click 'Solve' to find the unknown.",
-                    topics: [
-                        "Kinematics (const a)", "Newton's 2nd Law", "Work-Energy", "Momentum & Impulse",
-                        "Circular/Gravity", "Simple Harmonic Motion", "Water Pressure & Force", "Buoyancy", "Bernoulli's Equation"
-                    ],
-                    cardTitles: {
-                        kin: "Kinematics (constant acceleration)",
-                        newt: "Newton's Second Law",
-                        work: "Work-Energy Theorem",
-                        mom: "Momentum & Impulse",
-                        circ: "Circular Motion / Gravity",
-                        shm: "Simple Harmonic Motion (Spring)",
-                        hydro: "Water Pressure & Force",
-                        buoyancy: "Buoyancy (Archimedes' Principle)",
-                        bernoulli: "Bernoulli's Equation"
-                    },
-                    eq: {
-                        kin: "v = v₀ + a t    Δx = v₀ t + ½ a t²    v² = v₀² + 2 a Δx",
-                        newt: "F = m a",
-                        work: "W = ΔKE = ½ m (v² − v₀²)    PE = m g h",
-                        mom: "p = m v    J = F Δt = Δp",
-                        circ: "F_c = m v² / r    F_g = G M m / r²",
-                        shm: "F = -k x    T = 2π √(m / k)",
-                        hydro: "P = ρ g h    F = P · A",
-                        buoyancy: "F_b = ρ g V",
-                        bernoulli: "P + ½ ρ v² + ρ g h = constant"
-                    },
-                    details: {
-                        kin: `
-                            <p><strong>Physical meaning:</strong> Describes the relationship between velocity, displacement, and time for constant acceleration motion.</p>
-                            <p><strong>Formulas:</strong></p>
-                            <ul class="list-disc pl-5 space-y-1">
-                                <li>v = v₀ + a t — final velocity</li>
-                                <li>Δx = v₀ t + ½ a t² — displacement</li>
-                                <li>v² = v₀² + 2 a Δx — time-free relation</li>
-                            </ul>
-                            <p><strong>Example:</strong> A car starts from rest and accelerates at 2 m/s² for 5 s. Find final velocity and displacement.<br>
-                            Solution: v₀ = 0, a = 2, t = 5 → v = 0 + 2×5 = 10 m/s, Δx = 0×5 + ½×2×5² = 25 m.</p>
-                        `,
-                        newt: `
-                            <p><strong>Physical meaning:</strong> Net force equals mass times acceleration (F = ma).</p>
-                            <p><strong>Formula:</strong> The acceleration direction is the same as the net force direction.</p>
-                            <p><strong>Example:</strong> A 5 kg object is pulled with a 20 N horizontal force. Find acceleration.<br>
-                            Solution: a = F/m = 20/5 = 4 m/s².</p>
-                        `,
-                        work: `
-                            <p><strong>Physical meaning:</strong> Work done by net force equals change in kinetic energy (work-energy theorem); gravitational potential energy relates to work by gravity.</p>
-                            <p><strong>Formulas:</strong></p>
-                            <ul class="list-disc pl-5 space-y-1">
-                                <li>W = ΔKE = ½ m (v² - v₀²) — work-energy theorem</li>
-                                <li>PE = m g h — gravitational potential energy</li>
-                            </ul>
-                            <p><strong>Example:</strong> A 2 kg object accelerates from rest to 6 m/s. Find the work done.<br>
-                            Solution: W = ½×2×(6² - 0) = 36 J.</p>
-                        `,
-                        mom: `
-                            <p><strong>Physical meaning:</strong> Momentum p = mv; impulse J = FΔt equals change in momentum Δp.</p>
-                            <p><strong>Formulas:</strong> Impulse is the time integral of force, used in collisions and impacts.</p>
-                            <p><strong>Example:</strong> A 0.5 kg ball comes at 10 m/s and is hit back at 15 m/s in 0.02 s. Find average force.<br>
-                            Solution: Δp = 0.5×(-15 - 10) = -12.5 kg·m/s, F = Δp/Δt = -12.5/0.02 = -625 N (negative indicates opposite direction).</p>
-                        `,
-                        circ: `
-                            <p><strong>Physical meaning:</strong> Centripetal force F_c = m v²/r keeps an object in circular motion; universal gravitation F_g = G M m / r² describes gravitational attraction.</p>
-                            <p><strong>Notes:</strong> Centripetal force is the net force pointing toward the center; G = 6.67×10⁻¹¹ N·m²/kg².</p>
-                            <p><strong>Example:</strong> A 1000 kg satellite orbits at 7.5 km/s with radius 7000 km. Find centripetal force.<br>
-                            Solution: F_c = 1000×(7500)² / (7×10⁶) ≈ 8036 N.</p>
-                        `,
-                        shm: `
-                            <p><strong>Physical meaning:</strong> In simple harmonic motion, restoring force F = -k x is proportional to displacement; period T = 2π √(m/k).</p>
-                            <p><strong>Formulas:</strong> k is spring constant, negative sign indicates force opposes displacement.</p>
-                            <p><strong>Example:</strong> A 0.2 kg mass on a spring with k = 80 N/m. Find period.<br>
-                            Solution: T = 2π √(0.2/80) = 2π √0.0025 = 2π×0.05 = 0.314 s.</p>
-                        `,
-                        hydro: `
-                            <p><strong>Physical meaning:</strong> Pressure at depth in a fluid: P = ρ g h (ρ density, h depth); force on a surface: F = P·A.</p>
-                            <p><strong>Notes:</strong> For static fluids, pressure depends only on depth and density, not on container shape.</p>
-                            <p><strong>Example:</strong> At 10 m depth in water (ρ = 1000 kg/m³, g=9.8), find pressure and force on a 2 m² gate.<br>
-                            Solution: P = 1000×9.8×10 = 98000 Pa, F = 98000×2 = 196000 N.</p>
-                        `,
-                        buoyancy: `
-                            <p><strong>Physical meaning:</strong> The buoyant force on an object submerged in a fluid equals the weight of the fluid displaced by the object (Archimedes' principle).</p>
-                            <p><strong>Formula:</strong> F_b = ρ g V, where ρ is fluid density, V is displaced volume.</p>
-                            <p><strong>Example:</strong> A wooden block with volume 0.5 m³ is fully submerged in water (ρ = 1000 kg/m³). Find the buoyant force.<br>
-                            Solution: F_b = 1000 × 9.8 × 0.5 = 4900 N.</p>
-                            <p><strong>Note:</strong> If the object floats or is suspended, buoyant force equals its weight.</p>
-                        `,
-                        bernoulli: `
-                            <p><strong>Physical meaning:</strong> For an ideal fluid in steady flow, the sum of pressure, kinetic energy density, and potential energy density is constant along a streamline.</p>
-                            <p><strong>Formula:</strong> P + ½ ρ v² + ρ g h = constant (along streamline).</p>
-                            <p><strong>Example:</strong> Water flows through a horizontal pipe. At point 1, P₁ = 200 kPa, v₁ = 2 m/s. At point 2, v₂ = 4 m/s. Find P₂ (ρ = 1000 kg/m³).<br>
-                            Solution: Since h₁ = h₂, P₂ = P₁ + ½ ρ (v₁² - v₂²) = 200000 + ½×1000×(4 - 16) = 200000 - 6000 = 194000 Pa.</p>
-                        `
-                    },
-                    labels: {
-                        v0: "v₀ (m/s)", v: "v (m/s)", a: "a (m/s²)", t: "t (s)", dx: "Δx (m)",
-                        F: "F (N)", m: "m (kg)", h: "h (m)", W: "W (J)", PE: "PE (J)",
-                        p: "p (kg·m/s)", dt: "Δt (s)", dv: "Δv (m/s)",
-                        r: "r (m)", M: "M (kg)", Fg: "F_g (N)",
-                        k: "k (N/m)", x: "x (m)", T: "T (s)",
-                        rho: "ρ (kg/m³)", A: "A (m²)",
-                        V: "V (m³)", Fb: "F_b (N)",
-                        P1: "P₁ (Pa)", v1: "v₁ (m/s)", h1: "h₁ (m)",
-                        P2: "P₂ (Pa)", v2: "v₂ (m/s)", h2: "h₂ (m)"
-                    },
-                    buttons: { calc: "Solve", reset: "Reset" },
-                    result: "Result:",
-                    insufficient: "⚠️ Insufficient input or cannot solve"
+            const parentScore = totalWeight > 0 ? weightedSum / totalWeight : 0;
+            const parentScoreEl = parentRow.querySelector('.editable-score');
+            parentScoreEl.textContent = parentScore.toFixed(1);
+            updateGradeForScore(parentScoreEl);
+
+            if (parentRow.dataset.parentId) {
+                updateParentScore(parentRow.dataset.parentId);
+            }
+        }
+
+        function calculateOverallScore() {
+            let totalScore = 0;
+            gradeTableBody.querySelectorAll('tr').forEach(row => {
+                if (!gradeTableBody.querySelector(`[data-parent-id="${row.id}"]`)) {
+                    const score = parseFloat(row.querySelector('.editable-score').textContent);
+                    if (!isNaN(score)) {
+                        totalScore += getEffectiveWeight(row) * score;
+                    }
                 }
-            };
+            });
+            const overallScoreElement = document.querySelector('.overall-score');
+            overallScoreElement.textContent = totalScore.toFixed(1);
+            overallScoreElement.style.transform = 'scale(1.05)';
+            setTimeout(() => {
+                overallScoreElement.style.transform = 'scale(1)';
+            }, 150);
+        }
 
-            const t = (key) => {
-                return key.split('.').reduce((obj, k) => obj?.[k], translations[currentLang]) || key;
-            };
-
-            // 卡片数据 (包含九张卡片)
-            const cardsData = [
-                { id: 'kin', inputs: ['v0','v','a','t','dx'],
-                  solve: (vals) => {
-                      try {
-                          if (vals.v0 !== undefined && vals.a !== undefined && vals.t !== undefined) return { v: vals.v0 + vals.a * vals.t };
-                          if (vals.v0 !== undefined && vals.v !== undefined && vals.a !== undefined) return { t: (vals.v - vals.v0) / vals.a };
-                          if (vals.v0 !== undefined && vals.t !== undefined && vals.v !== undefined) return { a: (vals.v - vals.v0) / vals.t };
-                          if (vals.v0 !== undefined && vals.t !== undefined && vals.a !== undefined) return { v: vals.v0 + vals.a * vals.t };
-                      } catch (e) { console.error('kin error', e); }
-                      return null;
-                  } },
-                { id: 'newt', inputs: ['F','m','a'],
-                  solve: (vals) => {
-                      try {
-                          if (vals.m !== undefined && vals.a !== undefined) return { F: vals.m * vals.a };
-                          if (vals.F !== undefined && vals.m !== undefined) return { a: vals.F / vals.m };
-                          if (vals.F !== undefined && vals.a !== undefined) return { m: vals.F / vals.a };
-                      } catch (e) { console.error('newt error', e); }
-                      return null;
-                  } },
-                { id: 'work', inputs: ['m','v0','v','h','W','PE'],
-                  solve: (vals) => { return null; } },
-                { id: 'mom', inputs: ['m','v','p','F','dt','dv'],
-                  solve: (vals) => { return null; } },
-                { id: 'circ', inputs: ['m','v','r','F','M','Fg'],
-                  solve: (vals) => { return null; } },
-                { id: 'shm', inputs: ['k','x','F','m','T'],
-                  solve: (vals) => { return null; } },
-                { id: 'hydro', inputs: ['rho','h','A'],
-                  solve: (vals) => {
-                      try {
-                          const g = window.gValue ?? 9.8;
-                          if (vals.rho !== undefined && vals.h !== undefined) {
-                              const P = vals.rho * g * vals.h;
-                              if (vals.A !== undefined) return { P, F: P * vals.A };
-                              return { P };
-                          }
-                      } catch (e) { console.error('hydro error', e); }
-                      return null;
-                  } },
-                { id: 'buoyancy', inputs: ['rho','V','Fb'],
-                  solve: (vals) => {
-                      try {
-                          const g = window.gValue ?? 9.8;
-                          if (vals.rho !== undefined && vals.V !== undefined) return { Fb: vals.rho * g * vals.V };
-                          if (vals.Fb !== undefined && vals.rho !== undefined) return { V: vals.Fb / (vals.rho * g) };
-                          if (vals.Fb !== undefined && vals.V !== undefined) return { rho: vals.Fb / (g * vals.V) };
-                      } catch (e) { console.error('buoyancy error', e); }
-                      return null;
-                  } },
-                { id: 'bernoulli', inputs: ['P1','v1','h1','P2','v2','h2','rho'],
-                  solve: (vals) => {
-                      try {
-                          const g = window.gValue ?? 9.8;
-                          if (vals.rho === undefined) return null;
-                          const known = ['P1','v1','h1','P2','v2','h2'].filter(k => vals[k] !== undefined);
-                          if (known.length !== 5) return null;
-                          const missing = ['P1','v1','h1','P2','v2','h2'].find(k => vals[k] === undefined);
-                          const left = (missing !== 'P1' ? vals.P1 : 0) + (missing !== 'v1' ? 0.5 * vals.rho * vals.v1 * vals.v1 : 0) + (missing !== 'h1' ? vals.rho * g * vals.h1 : 0);
-                          const right = (missing !== 'P2' ? vals.P2 : 0) + (missing !== 'v2' ? 0.5 * vals.rho * vals.v2 * vals.v2 : 0) + (missing !== 'h2' ? vals.rho * g * vals.h2 : 0);
-                          if (missing === 'P1') return { P1: right - (0.5 * vals.rho * vals.v1 * vals.v1 + vals.rho * g * vals.h1) };
-                          if (missing === 'v1') {
-                              const term = right - (vals.P1 + vals.rho * g * vals.h1);
-                              if (term < 0) return null;
-                              return { v1: Math.sqrt(2 * term / vals.rho) };
-                          }
-                          if (missing === 'h1') return { h1: (right - vals.P1 - 0.5 * vals.rho * vals.v1 * vals.v1) / (vals.rho * g) };
-                          if (missing === 'P2') return { P2: left - (0.5 * vals.rho * vals.v2 * vals.v2 + vals.rho * g * vals.h2) };
-                          if (missing === 'v2') {
-                              const term = left - (vals.P2 + vals.rho * g * vals.h2);
-                              if (term < 0) return null;
-                              return { v2: Math.sqrt(2 * term / vals.rho) };
-                          }
-                          if (missing === 'h2') return { h2: (left - vals.P2 - 0.5 * vals.rho * vals.v2 * vals.v2) / (vals.rho * g) };
-                      } catch (e) { console.error('bernoulli error', e); }
-                      return null;
-                  } }
-            ];
-
-            // 显示模态框
-            function showModal(topicKey) {
-                if (!modalTitle || !modalContent) return;
-                modalTitle.innerText = t(`cardTitles.${topicKey}`);
-                const detailsHtml = t(`details.${topicKey}`);
-                modalContent.innerHTML = `<div class="formula-detail">${t(`eq.${topicKey}`)}</div>${detailsHtml}`;
-                modalOverlay.classList.add('active');
+        function solveForItem(button) {
+            const targetRow = button.closest('tr');
+            if (gradeTableBody.querySelector(`[data-parent-id="${targetRow.id}"]`)) {
+                alert(translations[currentLang]['cannotSolveParent']);
+                return;
             }
 
-            // 渲染信息面板
-            function renderInfoPanel() {
-                const panel = document.getElementById('infoPanel');
-                if (!panel) return;
-                const topics = t('topics');
-                const topicKeys = ['kin','newt','work','mom','circ','shm','hydro','buoyancy','bernoulli'];
-                panel.innerHTML = `
-                    <div class="info-title">${t('infoTitle')}</div>
-                    <div class="info-desc">${t('infoDesc')}</div>
-                    <div class="topic-tags">
-                        ${topics.map((topic, idx) => `<span class="topic-tag" data-topic="${topicKeys[idx]}">${topic}</span>`).join('')}
+            const desiredGrade = parseFloat(document.querySelector('.overall-score').textContent);
+            if (isNaN(desiredGrade)) {
+                alert(translations[currentLang]['invalidTotalScore']);
+                return;
+            }
+
+            const targetEffectiveWeight = getEffectiveWeight(targetRow);
+            if (targetEffectiveWeight <= 0) {
+                alert(translations[currentLang]['zeroWeightError']);
+                return;
+            }
+
+            let sumOfOtherProducts = 0;
+            gradeTableBody.querySelectorAll('tr').forEach(row => {
+                if (row.id !== targetRow.id && !gradeTableBody.querySelector(`[data-parent-id="${row.id}"]`)) {
+                    const score = parseFloat(row.querySelector('.editable-score').textContent);
+                    if (!isNaN(score)) {
+                        sumOfOtherProducts += getEffectiveWeight(row) * score;
+                    }
+                }
+            });
+
+            const requiredScore = (desiredGrade - sumOfOtherProducts) / targetEffectiveWeight;
+            const targetScoreEl = targetRow.querySelector('.editable-score');
+            targetScoreEl.textContent = Math.max(0, Math.min(100, requiredScore)).toFixed(1);
+            updateGradeForScore(targetScoreEl);
+
+            const parentId = targetRow.dataset.parentId;
+            if(parentId) updateParentScore(parentId);
+        }
+
+        function renderRow(itemData, parentId = null, level = 0) {
+            const row = document.createElement('tr');
+            row.id = itemData.id;
+            if (parentId) row.dataset.parentId = parentId;
+
+            const hasChildren = itemData.subItems && itemData.subItems.length > 0;
+            const score = itemData.score ?? '0';
+            const grade = isNaN(parseFloat(score)) ? '' : getGrade(score);
+
+            row.innerHTML = `
+                <td>
+                    <div class="project-name-cell" style="padding-left: ${level * 25 + 8}px">
+                        ${level > 0 ? '<span class="sub-item-indicator">└</span>' : ''}
+                        <span contenteditable="true">${itemData.name}</span>
+                    </div>
+                </td>
+                <td>
+                    <span class="editable-weight" contenteditable="true">${itemData.weight}</span>
+                </td>
+                <td>
+                    <div class="grade-cell">
+                        <span class="editable-score" contenteditable="${!hasChildren}">${score}</span> 
+                        <span class="letter-grade">${grade}</span>
+                    </div>
+                </td>
+                <td>
+                    <button class="add-sub-btn action-btn">${translations[currentLang]['addSubItem']}</button>
+                    <button class="solve-item-btn action-btn">${translations[currentLang]['solveItem']}</button>
+                    <button class="remove-row-btn action-btn">${translations[currentLang]['removeItem']}</button>
+                </td>
+            `;
+            gradeTableBody.appendChild(row);
+
+            if (hasChildren) {
+                itemData.subItems.forEach(subItem => renderRow(subItem, itemData.id, level + 1));
+                updateParentScore(itemData.id);
+            }
+        }
+
+        function addTopLevelRow() {
+            const newItemName = translations[currentLang]['newProject'];
+            renderRow({ id: generateId(), name: newItemName, weight: '0%', score: '0' });
+            gradeTableBody.lastElementChild.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function addSubItem(button) {
+            const parentRow = button.closest('tr');
+            const parentId = parentRow.id;
+            parentRow.querySelector('.editable-score').contentEditable = false;
+
+            const level = parseInt(parentRow.querySelector('.project-name-cell').style.paddingLeft.replace('px', '')) / 25 + 1;
+
+            const newItemName = translations[currentLang]['newSubProject'];
+            const newRowData = { id: generateId(), name: newItemName, weight: '0%', score: '0' };
+
+            const newRow = document.createElement('tr');
+            newRow.id = newRowData.id;
+            newRow.dataset.parentId = parentId;
+            newRow.innerHTML = `
+                <td>
+                    <div class="project-name-cell" style="padding-left: ${level * 25 + 8}px">
+                        <span class="sub-item-indicator">└</span>
+                        <span contenteditable="true">${newRowData.name}</span>
+                    </div>
+                </td>
+                <td>
+                    <span class="editable-weight" contenteditable="true">${newRowData.weight}</span>
+                </td>
+                <td>
+                    <div class="grade-cell">
+                        <span class="editable-score" contenteditable="true">${newRowData.score}</span> 
+                        <span class="letter-grade">F</span>
+                    </div>
+                </td>
+                <td>
+                    <button class="add-sub-btn action-btn">${translations[currentLang]['addSubItem']}</button>
+                    <button class="solve-item-btn action-btn">${translations[currentLang]['solveItem']}</button>
+                    <button class="remove-row-btn action-btn">${translations[currentLang]['removeItem']}</button>
+                </td>
+            `;
+            parentRow.after(newRow);
+            updateParentScore(parentId);
+            newRow.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function removeRow(button) {
+            if (!confirm(translations[currentLang]['confirmDelete'])) return;
+
+            const rowToRemove = button.closest('tr');
+            const parentId = rowToRemove.dataset.parentId;
+            const children = gradeTableBody.querySelectorAll(`[data-parent-id="${rowToRemove.id}"]`);
+            children.forEach(child => removeRow(child.querySelector('.remove-row-btn')));
+            rowToRemove.remove();
+            if(parentId) {
+                updateParentScore(parentId);
+            }
+        }
+
+        function updateGradeForScore(scoreElement) {
+            const score = parseFloat(scoreElement.textContent);
+            if (isNaN(score)) return;
+            const letterGradeSpan = scoreElement.closest('.grade-cell').querySelector('.letter-grade');
+            if (letterGradeSpan) {
+                letterGradeSpan.textContent = getGrade(score);
+                if (score >= 90) letterGradeSpan.style.color = 'var(--success-color)';
+                else if (score >= 80) letterGradeSpan.style.color = 'var(--accent)';
+                else if (score >= 70) letterGradeSpan.style.color = 'var(--warning-color)';
+                else letterGradeSpan.style.color = 'var(--danger-color)';
+            }
+        }
+
+        // 获取当前表格数据
+        function getCurrentData() {
+            const rows = gradeTableBody.querySelectorAll('tr');
+            const data = [];
+            const overallScore = parseFloat(document.querySelector('.overall-score').textContent) || 100;
+
+            const itemMap = new Map();
+
+            rows.forEach(row => {
+                const id = row.id;
+                const name = row.querySelector('.project-name-cell span[contenteditable="true"]').textContent;
+                const weight = row.querySelector('.editable-weight').textContent;
+                const score = row.querySelector('.editable-score').textContent;
+                const parentId = row.dataset.parentId || null;
+
+                const item = {
+                    id,
+                    name,
+                    weight,
+                    score,
+                    subItems: []
+                };
+
+                itemMap.set(id, item);
+
+                if (!parentId) {
+                    data.push(item);
+                }
+            });
+
+            rows.forEach(row => {
+                const id = row.id;
+                const parentId = row.dataset.parentId;
+
+                if (parentId && itemMap.has(parentId)) {
+                    const parent = itemMap.get(parentId);
+                    const child = itemMap.get(id);
+                    parent.subItems.push(child);
+                }
+            });
+
+            return {
+                overallScore,
+                items: data,
+                timestamp: new Date().toISOString()
+            };
+        }
+
+        // 加载数据到表格
+        function loadData(data) {
+            gradeTableBody.innerHTML = '';
+
+            document.querySelector('.overall-score').textContent = data.overallScore.toFixed(1);
+
+            data.items.forEach(item => {
+                renderRow(item);
+            });
+
+            setTimeout(calculateOverallScore, 100);
+        }
+
+        // 渲染保存列表
+        function renderSaveList() {
+            const saveListElement = document.getElementById('saveList');
+            const emptyStateElement = document.getElementById('emptySaveState');
+            const saves = saveManager.getAllSaves();
+
+            if (saves.length === 0) {
+                saveListElement.innerHTML = '';
+                emptyStateElement.style.display = 'block';
+                return;
+            }
+
+            emptyStateElement.style.display = 'none';
+            saveListElement.innerHTML = '';
+
+            saves.forEach(save => {
+                const saveItem = document.createElement('div');
+                saveItem.className = 'save-item';
+                saveItem.innerHTML = `
+                    <div style="display: flex; align-items: center; flex: 1;">
+                        <div class="save-item-name">${save.name}</div>
+                        <div class="save-item-meta">${currentLang === 'zh' ? '保存时间:' : 'Saved:'} ${save.formattedDate}</div>
+                    </div>
+                    <div class="save-item-actions">
+                        <button class="save-action-btn btn-load" data-save-id="${save.id}">${translations[currentLang]['load']}</button>
+                        <button class="save-action-btn btn-rename" data-save-id="${save.id}">${translations[currentLang]['rename']}</button>
+                        <button class="save-action-btn btn-delete" data-save-id="${save.id}">${translations[currentLang]['delete']}</button>
                     </div>
                 `;
-                document.querySelectorAll('.topic-tag').forEach(tag => {
-                    tag.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        showModal(tag.dataset.topic);
-                    });
-                });
+                saveListElement.appendChild(saveItem);
+            });
+        }
+
+        // 打开保存管理模态框
+        function openSaveModal() {
+            renderSaveList();
+            document.getElementById('saveModal').style.display = 'flex';
+        }
+
+        // 打开保存输入模态框
+        function openSaveInputModal() {
+            const defaultName = `${translations[currentLang]['saveCurrentState']} ${new Date().toLocaleString(currentLang === 'zh' ? 'zh-CN' : 'en-US')}`;
+            document.getElementById('saveNameInput').value = defaultName;
+            document.getElementById('saveInputModal').style.display = 'flex';
+            document.getElementById('saveNameInput').focus();
+        }
+
+        // 打开重命名模态框
+        function openRenameModal(saveId) {
+            const save = saveManager.getSave(saveId);
+            if (save) {
+                document.getElementById('renameInput').value = save.name;
+                document.getElementById('renameSaveId').value = saveId;
+                document.getElementById('renameModal').style.display = 'flex';
+                document.getElementById('renameInput').focus();
+            }
+        }
+
+        // 保存管理功能
+        class SaveManager {
+            constructor() {
+                this.saves = this.loadSaves();
             }
 
-            // 渲染卡片
-            function renderCards() {
-                const grid = document.getElementById('cardGrid');
-                if (!grid) return;
-                grid.innerHTML = '';
-                cardsData.forEach(card => {
-                    const cardDiv = document.createElement('div');
-                    cardDiv.className = 'card';
-                    cardDiv.id = `card-${card.id}`;
-                    cardDiv.setAttribute('data-topic', card.id); // 用于点击事件
-                    let inputsHtml = '';
-                    card.inputs.forEach(inp => {
-                        inputsHtml += `
-                            <div class="input-row">
-                                <label>${t(`labels.${inp}`)}</label>
-                                <input type="number" id="${card.id}_${inp}" step="any" placeholder="—">
-                            </div>
-                        `;
-                    });
-                    cardDiv.innerHTML = `
-                        <div class="card-title">${t(`cardTitles.${card.id}`)}</div>
-                        <div class="card-equation">${t(`eq.${card.id}`)}</div>
-                        ${inputsHtml}
-                        <div class="button-group">
-                            <button class="btn" data-card="${card.id}">${t('buttons.calc')}</button>
-                            <button class="btn reset" data-reset="${card.id}">${t('buttons.reset')}</button>
-                        </div>
-                        <div class="result-box" id="${card.id}_result"></div>
-                    `;
-                    grid.appendChild(cardDiv);
-
-                    // 为卡片添加点击事件（打开详情），但忽略按钮点击
-                    cardDiv.addEventListener('click', (e) => {
-                        // 如果点击的是按钮或者输入框，不打开模态框
-                        if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT') return;
-                        showModal(card.id);
-                    });
-                });
-
-                // 绑定计算事件
-                document.querySelectorAll('.btn[data-card]').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        e.stopPropagation(); // 防止触发卡片点击
-                        const cardId = e.target.dataset.card;
-                        const card = cardsData.find(c => c.id === cardId);
-                        if (!card) return;
-                        const vals = {};
-                        card.inputs.forEach(inp => {
-                            const el = document.getElementById(`${cardId}_${inp}`);
-                            if (el && el.value.trim() !== '') vals[inp] = parseFloat(el.value);
-                        });
-                        const result = card.solve(vals);
-                        const resDiv = document.getElementById(`${cardId}_result`);
-                        if (resDiv) {
-                            if (result && typeof result === 'object') {
-                                let resultStr = Object.entries(result).map(([key, val]) => {
-                                    if (typeof val !== 'number') return `${key}: ${val}`;
-                                    let label = key;
-                                    if (key === 'Fb') label = 'F_b';
-                                    else if (key === 'P1') label = 'P₁';
-                                    else if (key === 'v1') label = 'v₁';
-                                    else if (key === 'h1') label = 'h₁';
-                                    else if (key === 'P2') label = 'P₂';
-                                    else if (key === 'v2') label = 'v₂';
-                                    else if (key === 'h2') label = 'h₂';
-                                    else if (key === 'rho') label = 'ρ';
-                                    return `${label} = ${val.toFixed(4)}`;
-                                }).join(', ');
-                                resDiv.innerHTML = `<strong>${t('result')}</strong> ${resultStr}`;
-                            } else {
-                                resDiv.innerHTML = `<span style="color:var(--warning-color);">${t('insufficient')}</span>`;
-                            }
-                        }
-                    });
-                });
-
-                // 绑定重置事件
-                document.querySelectorAll('.btn.reset').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        const cardId = e.target.dataset.reset;
-                        document.querySelectorAll(`#card-${cardId} input`).forEach(inp => inp.value = '');
-                        const resDiv = document.getElementById(`${cardId}_result`);
-                        if (resDiv) resDiv.innerHTML = '';
-                    });
-                });
-            }
-
-            // g值切换
-            const g9_8 = document.getElementById('g9_8');
-            const g10 = document.getElementById('g10');
-            if (g9_8 && g10) {
-                g9_8.addEventListener('click', () => {
-                    gValue = 9.8;
-                    window.gValue = 9.8;
-                    g9_8.classList.add('active');
-                    g10.classList.remove('active');
-                });
-                g10.addEventListener('click', () => {
-                    gValue = 10;
-                    window.gValue = 10;
-                    g10.classList.add('active');
-                    g9_8.classList.remove('active');
-                });
-            }
-            window.gValue = 9.8;
-
-            // 导航栏背景
-            function scrollNav() {
-                const nav = document.querySelector("nav");
-                if (nav) {
-                    if (window.scrollY === 0) nav.classList.remove("with-back");
-                    else nav.classList.add("with-back");
+            loadSaves() {
+                try {
+                    const savesJson = localStorage.getItem(SAVE_STORAGE_KEY);
+                    return savesJson ? JSON.parse(savesJson) : [];
+                } catch (e) {
+                    console.error('加载保存记录失败:', e);
+                    return [];
                 }
             }
-            window.addEventListener('scroll', scrollNav);
-            scrollNav();
 
-            // 滚动动画
-            function initReveal() {
-                const observer = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            entry.target.classList.add('is-visible');
-                            observer.unobserve(entry.target);
+            saveSaves() {
+                try {
+                    localStorage.setItem(SAVE_STORAGE_KEY, JSON.stringify(this.saves));
+                } catch (e) {
+                    console.error('保存记录失败:', e);
+                    alert(translations[currentLang]['saveFailed']);
+                }
+            }
+
+            addSave(name, data) {
+                const timestamp = new Date().toISOString();
+                const formattedDate = new Date().toLocaleString(currentLang === 'zh' ? 'zh-CN' : 'en-US');
+                const save = {
+                    id: 'save_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+                    name: name || translations[currentLang]['saveCurrentState'] + ' ' + formattedDate,
+                    timestamp: timestamp,
+                    formattedDate: formattedDate,
+                    data: data
+                };
+                this.saves.unshift(save);
+                this.saveSaves();
+                return save;
+            }
+
+            renameSave(id, newName) {
+                const saveIndex = this.saves.findIndex(save => save.id === id);
+                if (saveIndex !== -1) {
+                    this.saves[saveIndex].name = newName;
+                    this.saves[saveIndex].timestamp = new Date().toISOString();
+                    this.saves[saveIndex].formattedDate = new Date().toLocaleString(currentLang === 'zh' ? 'zh-CN' : 'en-US');
+                    this.saveSaves();
+                    return true;
+                }
+                return false;
+            }
+
+            deleteSave(id) {
+                const initialLength = this.saves.length;
+                this.saves = this.saves.filter(save => save.id !== id);
+                if (this.saves.length !== initialLength) {
+                    this.saveSaves();
+                    return true;
+                }
+                return false;
+            }
+
+            getSave(id) {
+                return this.saves.find(save => save.id === id);
+            }
+
+            getAllSaves() {
+                return [...this.saves];
+            }
+        }
+
+        // 初始化保存管理器
+        const saveManager = new SaveManager();
+
+        // 初始化数据（空白无预制项目）
+        function initData() {
+            gradeTableBody.innerHTML = '';
+            const overallEl = document.querySelector('.overall-score');
+            if (overallEl) overallEl.textContent = '0';
+            calculateOverallScore();
+        }
+
+        // 初始化语言
+        function initLanguage() {
+            const savedLang = localStorage.getItem(LANGUAGE_STORAGE_KEY);
+            if (savedLang && (savedLang === 'zh' || savedLang === 'en')) {
+                currentLang = savedLang;
+            } else {
+                const browserLang = navigator.language || navigator.userLanguage;
+                if (browserLang.startsWith('zh')) {
+                    currentLang = 'zh';
+                } else {
+                    currentLang = 'en';
+                }
+                localStorage.setItem(LANGUAGE_STORAGE_KEY, currentLang);
+            }
+
+            // 更新 body 类
+            if (currentLang === 'zh') {
+                document.body.classList.add('lang-zh');
+                document.body.classList.remove('lang-en');
+            } else {
+                document.body.classList.add('lang-en');
+                document.body.classList.remove('lang-zh');
+            }
+
+            applyLanguage();
+        }
+
+        // 切换语言（供导航栏按钮调用）- 无动画
+        function toggleLang() {
+            const newLang = currentLang === 'en' ? 'zh' : 'en';
+            currentLang = newLang;
+            localStorage.setItem(LANGUAGE_STORAGE_KEY, currentLang);
+            document.body.classList.remove('lang-en', 'lang-zh');
+            document.body.classList.add(`lang-${newLang}`);
+            applyLanguage();
+        }
+
+        // 应用语言到页面
+        function applyLanguage() {
+            document.querySelectorAll('[data-i18n]').forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                if (translations[currentLang][key]) {
+                    element.textContent = translations[currentLang][key];
+                }
+            });
+
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
+                const key = element.getAttribute('data-i18n-placeholder');
+                if (translations[currentLang][key]) {
+                    element.placeholder = translations[currentLang][key];
+                }
+            });
+
+            updateTableButtonTexts();
+        }
+
+        // 更新表格中的按钮文本
+        function updateTableButtonTexts() {
+            document.querySelectorAll('.add-sub-btn').forEach(btn => {
+                btn.textContent = translations[currentLang]['addSubItem'];
+            });
+
+            document.querySelectorAll('.solve-item-btn').forEach(btn => {
+                btn.textContent = translations[currentLang]['solveItem'];
+            });
+
+            document.querySelectorAll('.remove-row-btn').forEach(btn => {
+                btn.textContent = translations[currentLang]['removeItem'];
+            });
+
+            document.querySelectorAll('.btn-load').forEach(btn => {
+                btn.textContent = translations[currentLang]['load'];
+            });
+
+            document.querySelectorAll('.btn-rename').forEach(btn => {
+                btn.textContent = translations[currentLang]['rename'];
+            });
+
+            document.querySelectorAll('.btn-delete').forEach(btn => {
+                btn.textContent = translations[currentLang]['delete'];
+            });
+        }
+
+        // 绑定所有事件
+        function bindEvents() {
+            // 保存管理相关
+            document.getElementById('manageSavesBtn').addEventListener('click', openSaveModal);
+            document.getElementById('saveCurrentBtn').addEventListener('click', openSaveInputModal);
+
+            // 模态框关闭按钮
+            document.getElementById('closeSaveModal').addEventListener('click', () => {
+                document.getElementById('saveModal').style.display = 'none';
+            });
+
+            document.getElementById('closeSaveInputModal').addEventListener('click', () => {
+                document.getElementById('saveInputModal').style.display = 'none';
+            });
+
+            document.getElementById('closeRenameModal').addEventListener('click', () => {
+                document.getElementById('renameModal').style.display = 'none';
+            });
+
+            // 取消按钮
+            document.getElementById('cancelSaveBtn').addEventListener('click', () => {
+                document.getElementById('saveInputModal').style.display = 'none';
+            });
+
+            document.getElementById('cancelRenameBtn').addEventListener('click', () => {
+                document.getElementById('renameModal').style.display = 'none';
+            });
+
+            // 确认保存按钮
+            document.getElementById('confirmSaveBtn').addEventListener('click', () => {
+                const saveName = document.getElementById('saveNameInput').value.trim();
+                const currentData = getCurrentData();
+
+                try {
+                    saveManager.addSave(saveName, currentData);
+                    document.getElementById('saveInputModal').style.display = 'none';
+                    document.getElementById('saveModal').style.display = 'none';
+                    renderSaveList();
+                    alert(translations[currentLang]['saveSuccess']);
+                } catch (error) {
+                    console.error('保存失败:', error);
+                    alert(translations[currentLang]['saveFailed']);
+                }
+            });
+
+            // 确认重命名按钮
+            document.getElementById('confirmRenameBtn').addEventListener('click', () => {
+                const saveId = document.getElementById('renameSaveId').value;
+                const newName = document.getElementById('renameInput').value.trim();
+                if (newName) {
+                    if (saveManager.renameSave(saveId, newName)) {
+                        document.getElementById('renameModal').style.display = 'none';
+                        renderSaveList();
+                        alert(translations[currentLang]['renameSuccess']);
+                    }
+                } else {
+                    alert(translations[currentLang]['enterNewName']);
+                }
+            });
+ 
+            // 表格操作按钮事件（事件委托）
+            document.body.addEventListener('click', (e) => {
+                if (e.target.matches('#add-row-btn')) addTopLevelRow();
+                if (e.target.matches('.add-sub-btn')) addSubItem(e.target);
+                if (e.target.matches('.remove-row-btn')) removeRow(e.target);
+                if (e.target.matches('#solve-overall-btn')) calculateOverallScore();
+                if (e.target.matches('.solve-item-btn')) solveForItem(e.target);
+
+                // 保存列表操作
+                if (e.target.matches('.btn-load')) {
+                    const saveId = e.target.dataset.saveId;
+                    const save = saveManager.getSave(saveId);
+                    if (save) {
+                        loadData(save.data);
+                        document.getElementById('saveModal').style.display = 'none';
+                        alert(translations[currentLang]['loadSuccess']);
+                    }
+                }
+
+                if (e.target.matches('.btn-rename')) {
+                    const saveId = e.target.dataset.saveId;
+                    openRenameModal(saveId);
+                }
+
+                if (e.target.matches('.btn-delete')) {
+                    const saveId = e.target.dataset.saveId;
+                    if (confirm(translations[currentLang]['confirmDeleteSave'])) {
+                        if (saveManager.deleteSave(saveId)) {
+                            renderSaveList();
+                            alert(translations[currentLang]['deleteSuccess']);
+                        }
+                    }
+                }
+            });
+
+            // 点击模态框外部关闭
+            window.addEventListener('click', (e) => {
+                if (e.target.classList.contains('modal')) {
+                    e.target.style.display = 'none';
+                }
+            });
+
+            document.body.addEventListener('blur', (e) => {
+                const target = e.target;
+                if (target.matches('.editable-weight') || target.matches('.editable-score')) {
+                    const num = parseFloat(target.textContent);
+                    if (target.matches('.editable-weight')) {
+                        const weightValue = Math.max(0, Math.min(100, isNaN(num) ? 0 : num));
+                        target.textContent = weightValue + '%';
+                    }
+                    if (target.matches('.editable-score')) {
+                        const scoreValue = Math.max(0, Math.min(1000, isNaN(num) ? 0 : num));
+                        target.textContent = scoreValue;
+                        updateGradeForScore(target);
+                    }
+                    const parentId = target.closest('tr').dataset.parentId;
+                    if(parentId) updateParentScore(parentId);
+                }
+                if (target.matches('.overall-score')) {
+                    const num = parseFloat(target.textContent);
+                    const scoreValue = Math.max(0, Math.min(1000, isNaN(num) ? 0 : num));
+                    target.textContent = scoreValue;
+                }
+            }, true);
+
+            document.body.addEventListener('keydown', (e) => {
+                if (e.target.isContentEditable && e.key === 'Enter') {
+                    e.preventDefault();
+                    e.target.blur();
+                }
+
+                if (e.key === 'Escape') {
+                    const modals = document.querySelectorAll('.modal');
+                    modals.forEach(modal => {
+                        if (modal.style.display === 'flex') {
+                            modal.style.display = 'none';
                         }
                     });
-                }, { threshold: 0.1 });
-                document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
-            }
+                }
 
-            // 初始语言
-            if (navigator.language.startsWith('zh')) {
-                document.body.classList.replace('lang-en', 'lang-zh');
-                currentLang = 'zh';
-            } else {
-                document.body.classList.replace('lang-zh', 'lang-en');
-                currentLang = 'en';
-            }
+                if (e.ctrlKey && e.key === 's') {
+                    e.preventDefault();
+                    openSaveInputModal();
+                }
+            });
+        }
 
-            // 渲染
-            renderInfoPanel();
-            renderCards();
+        // 导航栏滚动效果
+        function scrollNav() {
+            const nav = document.querySelector("nav");
+            if (window.scrollY === 0) nav.classList.remove("with-back");
+            else nav.classList.add("with-back");
+        }
+        window.addEventListener('scroll', scrollNav);
+        scrollNav();
+
+        // 滚动动画
+        function initReveal() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
+        }
+
+        // 初始化应用
+        function initApp() {
+            initLanguage();
+            gradeTableBody = document.getElementById('grade-table-body');
+
+            bindEvents();
+            initData(); // 空白表格
             initReveal();
-        })();
+        }
+
+        // 启动
+        document.addEventListener('DOMContentLoaded', initApp);
     </script>
 </body>
 </html>
