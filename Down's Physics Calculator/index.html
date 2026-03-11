@@ -16,21 +16,23 @@
     <link rel="icon" href="https://raw.githubusercontent.com/nanqiouheng/nanqiouheng.github.io/main/DownsicientLoge.ico" type="image/x-icon" />
     <link rel="stylesheet" href="../index.css">
     <style>
-        /* 卡片网格调整为三列 */
+        /* 卡片网格调整为三列，间距加大 */
         .card-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 1.5rem;
-            margin: 1.5rem 0;
+            gap: 2rem;
+            margin: 2rem 0;
         }
         @media (max-width: 1024px) {
             .card-grid {
                 grid-template-columns: repeat(2, 1fr);
+                gap: 1.5rem;
             }
         }
         @media (max-width: 768px) {
             .card-grid {
                 grid-template-columns: 1fr;
+                gap: 1.5rem;
             }
         }
 
@@ -81,6 +83,13 @@
             background-color: var(--accent);
             border-radius: 3px;
         }
+        /* 输入行间距加大 */
+        .input-row {
+            margin-bottom: 1rem;
+        }
+        .input-row label {
+            width: 90px;
+        }
         /* 模态框公式字体 */
         .modal-content .formula-detail {
             font-family: 'Cambria Math', 'STIX Two Math', 'Times New Roman', serif;
@@ -93,9 +102,6 @@
             color: var(--text-primary);
             white-space: nowrap;
             overflow-x: auto;
-        }
-        .input-row label {
-            width: 90px; /* 稍微加宽，适应新标签 */
         }
     </style>
 </head>
@@ -187,6 +193,7 @@
             let currentLang = 'en';
             let gValue = 9.8;
             const PI = 3.14;
+            const G = 6.67e-11; // 万有引力常数
 
             const modalOverlay = document.getElementById('modalOverlay');
             const modalClose = document.getElementById('modalClose');
@@ -213,15 +220,21 @@
             const t = (key) => {
                 const translations = {
                     zh: {
-                        topics: ["运动学 (匀加速)", "牛顿第二定律", "功能关系", "动量与冲量", "圆周/万有引力", "简谐运动", "水的压强与压力", "浮力 (阿基米德原理)", "伯努利方程"],
+                        topics: [
+                            "运动学 (匀加速)", "牛顿第二定律", "功能关系", "动量与冲量",
+                            "圆周运动", "万有引力", "简谐运动", "水的压强",
+                            "水的压力", "浮力 (阿基米德原理)", "伯努利方程"
+                        ],
                         cardTitles: {
                             kin: "运动学 (匀加速)",
                             newt: "牛顿第二定律",
                             work: "功能关系",
                             mom: "动量与冲量",
-                            circ: "圆周运动 / 万有引力",
+                            circ: "圆周运动",
+                            grav: "万有引力",
                             shm: "简谐运动 (弹簧)",
-                            hydro: "水的压强与压力",
+                            pressure: "水的压强",
+                            force: "水的压力",
                             buoy: "浮力 (阿基米德原理)",
                             bernoulli: "伯努利方程"
                         },
@@ -230,9 +243,11 @@
                             newt: "F = m a",
                             work: "W = ΔKE = ½ m (v² − v₀²)    PE = m g h",
                             mom: "p = m v    J = F Δt = Δp",
-                            circ: "F_c = m v² / r    F_g = G M m / r²",
+                            circ: "F_c = m v² / r",
+                            grav: "F_g = G M m / r²",
                             shm: "F = -k x    T = 2π √(m / k)",
-                            hydro: "P = ρ g h    F = P · A",
+                            pressure: "P = ρ g h",
+                            force: "F = P · A",
                             buoy: "F_b = ρ g V",
                             bernoulli: "P₁ + ½ρv₁² + ρgh₁ = P₂ + ½ρv₂² + ρgh₂"
                         },
@@ -271,10 +286,18 @@
                                 解：Δp = m(v' - v) = 0.5×(-15 - 10) = -12.5 kg·m/s，F = Δp/Δt = -12.5/0.02 = -625 N（负号表示方向与初速度相反）。</p>
                             `,
                             circ: `
-                                <p><strong>物理意义：</strong>向心力 F_c = m v²/r 维持物体做圆周运动；万有引力 F_g = G M m / r² 描述两物体间的引力。</p>
-                                <p><strong>公式说明：</strong>向心力不是一种新的力，而是指向圆心的合力；G = 6.67×10⁻¹¹ N·m²/kg²。</p>
-                                <p><strong>示例：</strong>一个 1000 kg 的卫星以 7.5 km/s 的速度在距地心 7000 km 的圆轨道上运行，求向心力。<br>
-                                解：F_c = 1000×(7500)² / (7×10⁶) ≈ 8036 N。</p>
+                                <p><strong>物理意义：</strong>向心力是维持物体做圆周运动的力，方向指向圆心。</p>
+                                <p><strong>公式：</strong>F_c = m v² / r</p>
+                                <p><strong>变量说明：</strong>m 质量，v 线速度，r 半径。</p>
+                                <p><strong>示例：</strong>一个 2 kg 的物体以 3 m/s 的速度在半径为 1.5 m 的圆周上运动，求向心力。<br>
+                                解：F_c = 2 × 3² / 1.5 = 12 N。</p>
+                            `,
+                            grav: `
+                                <p><strong>物理意义：</strong>任何两个质点之间都存在万有引力，大小与质量的乘积成正比，与距离的平方成反比。</p>
+                                <p><strong>公式：</strong>F_g = G M m / r²，G = 6.67×10⁻¹¹ N·m²/kg²</p>
+                                <p><strong>变量说明：</strong>M、m 为两物体质量，r 为距离。</p>
+                                <p><strong>示例：</strong>地球质量 M = 5.97×10²⁴ kg，卫星质量 m = 500 kg，轨道半径 r = 7×10⁶ m，求引力。<br>
+                                解：F_g = 6.67e-11 × 5.97e24 × 500 / (7e6)² ≈ 4070 N。</p>
                             `,
                             shm: `
                                 <p><strong>物理意义：</strong>简谐运动中，回复力 F = -k x 与位移成正比反向；弹簧振子周期 T = 2π √(m/k)。</p>
@@ -282,37 +305,33 @@
                                 <p><strong>示例：</strong>一个 0.2 kg 的物体挂在劲度系数 80 N/m 的弹簧上，求振动周期。<br>
                                 解：T = 2π √(0.2/80) = 2π √0.0025 = 2π×0.05 = 0.314 s。</p>
                             `,
-                            hydro: `
-                                <p><strong>物理意义：</strong>液体中某点的压强 P = ρ g h（ρ 为液体密度，h 为深度），压力 F = P·A 为压强乘以受力面积。</p>
-                                <p><strong>公式说明：</strong>适用于静止液体，压强只与深度和密度有关，与容器形状无关。</p>
-                                <p><strong>示例：</strong>水深 10 m 处，水的密度 1000 kg/m³，g=9.8，求压强及一个 2 m² 闸门受到的压力。<br>
-                                解：P = 1000×9.8×10 = 98000 Pa，F = 98000×2 = 196000 N。</p>
+                            pressure: `
+                                <p><strong>物理意义：</strong>液体中某点的压强 P = ρ g h，与深度和液体密度有关。</p>
+                                <p><strong>公式：</strong>P = ρ g h</p>
+                                <p><strong>变量说明：</strong>ρ 密度，g 重力加速度，h 深度。</p>
+                                <p><strong>示例：</strong>水深 10 m 处，水的密度 1000 kg/m³，g=9.8，求压强。<br>
+                                解：P = 1000×9.8×10 = 98000 Pa。</p>
+                            `,
+                            force: `
+                                <p><strong>物理意义：</strong>液体对平面的压力等于压强乘以受力面积。</p>
+                                <p><strong>公式：</strong>F = P · A</p>
+                                <p><strong>变量说明：</strong>P 压强，A 面积。</p>
+                                <p><strong>示例：</strong>闸门受到 98000 Pa 的压强，面积 2 m²，求压力。<br>
+                                解：F = 98000 × 2 = 196000 N。</p>
                             `,
                             buoy: `
                                 <p><strong>物理意义：</strong>浸在流体中的物体受到向上的浮力，大小等于物体排开的流体的重力（阿基米德原理）。</p>
                                 <p><strong>公式：</strong>F_b = ρ g V</p>
-                                <p><strong>变量说明：</strong></p>
-                                <ul class="list-disc pl-5 space-y-1">
-                                    <li>ρ —— 流体密度 (kg/m³)</li>
-                                    <li>g —— 重力加速度 (m/s²)</li>
-                                    <li>V —— 物体排开流体的体积 (m³)</li>
-                                </ul>
-                                <p><strong>示例：</strong>一个体积为 0.5 m³ 的物体完全浸没在水中（ρ = 1000 kg/m³），g=9.8，求浮力。<br>
-                                解：F_b = 1000 × 9.8 × 0.5 = 4900 N。</p>
+                                <p><strong>变量说明：</strong>ρ 流体密度，g 重力加速度，V 排开流体体积。</p>
+                                <p><strong>示例：</strong>体积 0.5 m³ 的物体完全浸没水中（ρ=1000 kg/m³），g=9.8，求浮力。<br>
+                                解：F_b = 1000×9.8×0.5 = 4900 N。</p>
                             `,
                             bernoulli: `
-                                <p><strong>物理意义：</strong>伯努利方程描述理想流体沿流线机械能守恒：静压能 + 动能 + 重力势能 = 常数。</p>
+                                <p><strong>物理意义：</strong>伯努利方程描述理想流体沿流线机械能守恒。</p>
                                 <p><strong>公式：</strong>P₁ + ½ρv₁² + ρgh₁ = P₂ + ½ρv₂² + ρgh₂</p>
-                                <p><strong>变量说明：</strong></p>
-                                <ul class="list-disc pl-5 space-y-1">
-                                    <li>P —— 压力 (Pa)</li>
-                                    <li>ρ —— 流体密度 (kg/m³)</li>
-                                    <li>v —— 流速 (m/s)</li>
-                                    <li>h —— 高度 (m)</li>
-                                    <li>g —— 重力加速度 (m/s²)</li>
-                                </ul>
+                                <p><strong>变量说明：</strong>P 压力，ρ 密度，v 流速，h 高度，g 重力加速度。</p>
                                 <p><strong>示例：</strong>水管中某点压力 200 kPa，流速 2 m/s，高度 5 m；另一点高度 3 m，流速 4 m/s，密度 1000 kg/m³，求另一点压力。<br>
-                                解：P₂ = P₁ + ½ρ(v₁² - v₂²) + ρg(h₁ - h₂) = 200000 + 0.5×1000×(4-16) + 1000×9.8×(5-3) = 200000 -6000 +19600 = 213600 Pa = 213.6 kPa。</p>
+                                解：P₂ = P₁ + ½ρ(v₁² - v₂²) + ρg(h₁ - h₂) = 200000 + 0.5×1000×(4-16) + 1000×9.8×(5-3) = 200000 -6000 +19600 = 213600 Pa。</p>
                             `
                         },
                         labels: {
@@ -322,6 +341,7 @@
                             r: "r (m)", M: "M (kg)", Fg: "F_g (N)",
                             k: "k (N/m)", x: "x (m)", T: "T (s)",
                             rho: "ρ (kg/m³)", A: "A (m²)", V: "V (m³)",
+                            P: "P (Pa)",  // 用于压力卡片
                             P1: "P₁ (Pa)", v1: "v₁ (m/s)", h1: "h₁ (m)",
                             P2: "P₂ (Pa)", v2: "v₂ (m/s)", h2: "h₂ (m)"
                         },
@@ -330,15 +350,21 @@
                         insufficient: "⚠️ 输入不足或无法计算",
                     },
                     en: {
-                        topics: ["Kinematics (const a)", "Newton's 2nd Law", "Work-Energy", "Momentum & Impulse", "Circular/Gravity", "Simple Harmonic Motion", "Water Pressure & Force", "Buoyancy (Archimedes)", "Bernoulli's Equation"],
+                        topics: [
+                            "Kinematics (const a)", "Newton's 2nd Law", "Work-Energy", "Momentum & Impulse",
+                            "Circular Motion", "Gravity", "Simple Harmonic Motion", "Water Pressure",
+                            "Water Force", "Buoyancy (Archimedes)", "Bernoulli's Equation"
+                        ],
                         cardTitles: {
                             kin: "Kinematics (constant acceleration)",
                             newt: "Newton's Second Law",
                             work: "Work-Energy Theorem",
                             mom: "Momentum & Impulse",
-                            circ: "Circular Motion / Gravity",
+                            circ: "Circular Motion",
+                            grav: "Universal Gravitation",
                             shm: "Simple Harmonic Motion (Spring)",
-                            hydro: "Water Pressure & Force",
+                            pressure: "Water Pressure",
+                            force: "Water Force",
                             buoy: "Buoyancy (Archimedes' Principle)",
                             bernoulli: "Bernoulli's Equation"
                         },
@@ -347,9 +373,11 @@
                             newt: "F = m a",
                             work: "W = ΔKE = ½ m (v² − v₀²)    PE = m g h",
                             mom: "p = m v    J = F Δt = Δp",
-                            circ: "F_c = m v² / r    F_g = G M m / r²",
+                            circ: "F_c = m v² / r",
+                            grav: "F_g = G M m / r²",
                             shm: "F = -k x    T = 2π √(m / k)",
-                            hydro: "P = ρ g h    F = P · A",
+                            pressure: "P = ρ g h",
+                            force: "F = P · A",
                             buoy: "F_b = ρ g V",
                             bernoulli: "P₁ + ½ρv₁² + ρgh₁ = P₂ + ½ρv₂² + ρgh₂"
                         },
@@ -388,10 +416,18 @@
                                 Solution: Δp = 0.5×(-15 - 10) = -12.5 kg·m/s, F = Δp/Δt = -12.5/0.02 = -625 N (negative indicates opposite direction).</p>
                             `,
                             circ: `
-                                <p><strong>Physical meaning:</strong> Centripetal force F_c = m v²/r keeps an object in circular motion; universal gravitation F_g = G M m / r² describes gravitational attraction.</p>
-                                <p><strong>Notes:</strong> Centripetal force is the net force pointing toward the center; G = 6.67×10⁻¹¹ N·m²/kg².</p>
-                                <p><strong>Example:</strong> A 1000 kg satellite orbits at 7.5 km/s with radius 7000 km. Find centripetal force.<br>
-                                Solution: F_c = 1000×(7500)² / (7×10⁶) ≈ 8036 N.</p>
+                                <p><strong>Physical meaning:</strong> Centripetal force is the force that keeps an object moving in a circular path, directed toward the center.</p>
+                                <p><strong>Formula:</strong> F_c = m v² / r</p>
+                                <p><strong>Variables:</strong> m = mass, v = speed, r = radius.</p>
+                                <p><strong>Example:</strong> A 2 kg object moves at 3 m/s in a circle of radius 1.5 m. Find centripetal force.<br>
+                                Solution: F_c = 2 × 3² / 1.5 = 12 N.</p>
+                            `,
+                            grav: `
+                                <p><strong>Physical meaning:</strong> Every point mass attracts every other point mass with a force proportional to the product of their masses and inversely proportional to the square of their separation.</p>
+                                <p><strong>Formula:</strong> F_g = G M m / r², G = 6.67×10⁻¹¹ N·m²/kg²</p>
+                                <p><strong>Variables:</strong> M, m = masses, r = distance.</p>
+                                <p><strong>Example:</strong> Earth mass M = 5.97×10²⁴ kg, satellite m = 500 kg, orbital radius r = 7×10⁶ m. Find gravitational force.<br>
+                                Solution: F_g = 6.67e-11 × 5.97e24 × 500 / (7e6)² ≈ 4070 N.</p>
                             `,
                             shm: `
                                 <p><strong>Physical meaning:</strong> In simple harmonic motion, restoring force F = -k x is proportional to displacement; period T = 2π √(m/k).</p>
@@ -399,37 +435,33 @@
                                 <p><strong>Example:</strong> A 0.2 kg mass on a spring with k = 80 N/m. Find period.<br>
                                 Solution: T = 2π √(0.2/80) = 2π √0.0025 = 2π×0.05 = 0.314 s.</p>
                             `,
-                            hydro: `
-                                <p><strong>Physical meaning:</strong> Pressure at depth in a fluid: P = ρ g h (ρ density, h depth); force on a surface: F = P·A.</p>
-                                <p><strong>Notes:</strong> For static fluids, pressure depends only on depth and density, not on container shape.</p>
-                                <p><strong>Example:</strong> At 10 m depth in water (ρ = 1000 kg/m³, g=9.8), find pressure and force on a 2 m² gate.<br>
-                                Solution: P = 1000×9.8×10 = 98000 Pa, F = 98000×2 = 196000 N.</p>
+                            pressure: `
+                                <p><strong>Physical meaning:</strong> Pressure at a depth in a fluid: P = ρ g h.</p>
+                                <p><strong>Formula:</strong> P = ρ g h</p>
+                                <p><strong>Variables:</strong> ρ = fluid density, g = gravity, h = depth.</p>
+                                <p><strong>Example:</strong> At 10 m depth in water (ρ = 1000 kg/m³, g=9.8), find pressure.<br>
+                                Solution: P = 1000×9.8×10 = 98000 Pa.</p>
+                            `,
+                            force: `
+                                <p><strong>Physical meaning:</strong> Force exerted by a fluid on a surface is pressure times area.</p>
+                                <p><strong>Formula:</strong> F = P · A</p>
+                                <p><strong>Variables:</strong> P = pressure, A = area.</p>
+                                <p><strong>Example:</strong> A gate with area 2 m² experiences 98000 Pa pressure. Find force.<br>
+                                Solution: F = 98000 × 2 = 196000 N.</p>
                             `,
                             buoy: `
                                 <p><strong>Physical meaning:</strong> An object immersed in a fluid experiences an upward buoyant force equal to the weight of the fluid displaced (Archimedes' principle).</p>
                                 <p><strong>Formula:</strong> F_b = ρ g V</p>
-                                <p><strong>Variables:</strong></p>
-                                <ul class="list-disc pl-5 space-y-1">
-                                    <li>ρ — fluid density (kg/m³)</li>
-                                    <li>g — gravitational acceleration (m/s²)</li>
-                                    <li>V — volume of fluid displaced (m³)</li>
-                                </ul>
+                                <p><strong>Variables:</strong> ρ = fluid density, g = gravity, V = displaced volume.</p>
                                 <p><strong>Example:</strong> An object with volume 0.5 m³ is fully submerged in water (ρ = 1000 kg/m³), g=9.8. Find buoyant force.<br>
                                 Solution: F_b = 1000 × 9.8 × 0.5 = 4900 N.</p>
                             `,
                             bernoulli: `
-                                <p><strong>Physical meaning:</strong> Bernoulli's equation describes energy conservation along a streamline for ideal fluid: pressure energy + kinetic energy + potential energy = constant.</p>
+                                <p><strong>Physical meaning:</strong> Bernoulli's equation describes energy conservation along a streamline for ideal fluid.</p>
                                 <p><strong>Formula:</strong> P₁ + ½ρv₁² + ρgh₁ = P₂ + ½ρv₂² + ρgh₂</p>
-                                <p><strong>Variables:</strong></p>
-                                <ul class="list-disc pl-5 space-y-1">
-                                    <li>P — pressure (Pa)</li>
-                                    <li>ρ — fluid density (kg/m³)</li>
-                                    <li>v — velocity (m/s)</li>
-                                    <li>h — height (m)</li>
-                                    <li>g — gravitational acceleration (m/s²)</li>
-                                </ul>
-                                <p><strong>Example:</strong> At point 1 in a pipe: P₁ = 200 kPa, v₁ = 2 m/s, h₁ = 5 m; at point 2: h₂ = 3 m, v₂ = 4 m/s, ρ = 1000 kg/m³. Find P₂.<br>
-                                Solution: P₂ = P₁ + ½ρ(v₁² - v₂²) + ρg(h₁ - h₂) = 200000 + 0.5×1000×(4-16) + 1000×9.8×(5-3) = 200000 -6000 +19600 = 213600 Pa = 213.6 kPa.</p>
+                                <p><strong>Variables:</strong> P = pressure, ρ = density, v = velocity, h = height, g = gravity.</p>
+                                <p><strong>Example:</strong> At point 1: P₁=200 kPa, v₁=2 m/s, h₁=5 m; point 2: h₂=3 m, v₂=4 m/s, ρ=1000 kg/m³. Find P₂.<br>
+                                Solution: P₂ = P₁ + ½ρ(v₁² - v₂²) + ρg(h₁ - h₂) = 200000 + 0.5×1000×(4-16) + 1000×9.8×(5-3) = 200000 -6000 +19600 = 213600 Pa.</p>
                             `
                         },
                         labels: {
@@ -439,6 +471,7 @@
                             r: "r (m)", M: "M (kg)", Fg: "F_g (N)",
                             k: "k (N/m)", x: "x (m)", T: "T (s)",
                             rho: "ρ (kg/m³)", A: "A (m²)", V: "V (m³)",
+                            P: "P (Pa)",
                             P1: "P₁ (Pa)", v1: "v₁ (m/s)", h1: "h₁ (m)",
                             P2: "P₂ (Pa)", v2: "v₂ (m/s)", h2: "h₂ (m)"
                         },
@@ -450,6 +483,7 @@
                 return key.split('.').reduce((obj, k) => obj?.[k], translations[currentLang]) || key;
             };
 
+            // 卡片数据 (11张)
             const cardsData = [
                 { id: 'kin', inputs: ['v0','v','a','t','dx'],
                   solve: (vals) => {
@@ -469,21 +503,42 @@
                   solve: (vals) => { return null; } },
                 { id: 'mom', inputs: ['m','v','p','F','dt','dv'],
                   solve: (vals) => { return null; } },
-                { id: 'circ', inputs: ['m','v','r','F','M','Fg'],
-                  solve: (vals) => { return null; } },
+                { id: 'circ', inputs: ['m','v','r','F'],
+                  solve: (vals) => {
+                      if (vals.m !== undefined && vals.v !== undefined && vals.r !== undefined) return { F: vals.m * vals.v * vals.v / vals.r };
+                      if (vals.m !== undefined && vals.r !== undefined && vals.F !== undefined) return { v: Math.sqrt(vals.F * vals.r / vals.m) };
+                      if (vals.v !== undefined && vals.r !== undefined && vals.F !== undefined) return { m: vals.F * vals.r / (vals.v * vals.v) };
+                      if (vals.m !== undefined && vals.v !== undefined && vals.F !== undefined) return { r: vals.m * vals.v * vals.v / vals.F };
+                      return null;
+                  } },
+                { id: 'grav', inputs: ['M','m','r','Fg'],
+                  solve: (vals) => {
+                      if (vals.M !== undefined && vals.m !== undefined && vals.r !== undefined) return { Fg: G * vals.M * vals.m / (vals.r * vals.r) };
+                      if (vals.M !== undefined && vals.r !== undefined && vals.Fg !== undefined) return { m: vals.Fg * vals.r * vals.r / (G * vals.M) };
+                      if (vals.m !== undefined && vals.r !== undefined && vals.Fg !== undefined) return { M: vals.Fg * vals.r * vals.r / (G * vals.m) };
+                      if (vals.M !== undefined && vals.m !== undefined && vals.Fg !== undefined) return { r: Math.sqrt(G * vals.M * vals.m / vals.Fg) };
+                      return null;
+                  } },
                 { id: 'shm', inputs: ['k','x','F','m','T'],
-                  solve: (vals) => { return null; } },
-                { id: 'hydro', inputs: ['rho','h','A'],
+                  solve: (vals) => {
+                      if (vals.k !== undefined && vals.x !== undefined) return { F: -vals.k * vals.x };
+                      if (vals.m !== undefined && vals.k !== undefined) return { T: 2 * PI * Math.sqrt(vals.m / vals.k) };
+                      return null;
+                  } },
+                { id: 'pressure', inputs: ['rho','h'],
                   solve: (vals) => {
                       const g = window.gValue !== undefined ? window.gValue : 9.8;
                       if (vals.rho !== undefined && vals.h !== undefined) {
                           const P = vals.rho * g * vals.h;
-                          if (vals.A !== undefined) {
-                              const F = P * vals.A;
-                              return { P, F };
-                          } else {
-                              return { P };
-                          }
+                          return { P };
+                      }
+                      return null;
+                  } },
+                { id: 'force', inputs: ['P','A'],
+                  solve: (vals) => {
+                      if (vals.P !== undefined && vals.A !== undefined) {
+                          const F = vals.P * vals.A;
+                          return { F };
                       }
                       return null;
                   } },
@@ -499,17 +554,10 @@
                 { id: 'bernoulli', inputs: ['P1','v1','h1','P2','v2','h2','rho'],
                   solve: (vals) => {
                       const g = window.gValue !== undefined ? window.gValue : 9.8;
-                      // 尝试求解缺失的变量：已知任意6个可求第7个，但需要判断哪个缺失
-                      const allKeys = ['P1','v1','h1','P2','v2','h2','rho'];
-                      const present = allKeys.filter(k => vals[k] !== undefined);
+                      const present = ['P1','v1','h1','P2','v2','h2','rho'].filter(k => vals[k] !== undefined);
                       if (present.length === 6) {
-                          const missing = allKeys.find(k => vals[k] === undefined);
-                          const rho = vals.rho ?? (missing === 'rho' ? null : 1000); // 临时默认，实际应求解
-                          // 简单实现：若已知除rho外其他6个，可求rho；否则求其他
-                          // 为简化，这里仅演示已知5个求第6个的逻辑，实际可扩展
-                          // 我们假设用户已知5个，尝试求第6个
-                          // 这里仅返回null，由用户自行使用完整的7个已知量
-                          // 实际可编写更复杂的求解器，但为了示例，暂不支持
+                          // 简单处理：已知6个求第7个，需要具体判断哪个缺失
+                          // 这里简化，暂不实现，返回null
                       }
                       return null;
                   } }
@@ -558,7 +606,6 @@
 
                     // 为卡片添加点击事件（排除按钮区域）
                     cardDiv.addEventListener('click', (e) => {
-                        // 如果点击的是按钮或输入框，不触发详情
                         if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.closest('button') || e.target.closest('input')) {
                             return;
                         }
@@ -569,7 +616,7 @@
                 // 绑定计算事件
                 document.querySelectorAll('.btn[data-card]').forEach(btn => {
                     btn.addEventListener('click', (e) => {
-                        e.stopPropagation(); // 防止触发卡片点击
+                        e.stopPropagation();
                         const cardId = e.target.dataset.card;
                         const card = cardsData.find(c => c.id === cardId);
                         if (!card) return;
@@ -584,9 +631,11 @@
                             if (result) {
                                 let resultStr = '';
                                 if (result.P !== undefined) resultStr += `P = ${result.P.toFixed(4)} Pa`;
-                                if (result.F !== undefined) resultStr += `, F = ${result.F.toFixed(4)} N`;
+                                if (result.F !== undefined) resultStr += `F = ${result.F.toFixed(4)} N`;
                                 if (result.Fb !== undefined) resultStr += `F_b = ${result.Fb.toFixed(4)} N`;
-                                if (Object.keys(result).length === 1 && !result.P && !result.F && !result.Fb) {
+                                if (result.Fg !== undefined) resultStr += `F_g = ${result.Fg.toFixed(4)} N`;
+                                if (result.T !== undefined) resultStr += `T = ${result.T.toFixed(4)} s`;
+                                if (Object.keys(result).length === 1 && !result.P && !result.F && !result.Fb && !result.Fg && !result.T) {
                                     const key = Object.keys(result)[0];
                                     const val = result[key];
                                     resultStr = `${key} = ${val.toFixed(4)}`;
